@@ -1,12 +1,10 @@
 package fr.epita.assistants;
 
 import fr.epita.assistants.myide.domain.entity.Feature;
-import fr.epita.assistants.myide.domain.entity.Node;
 import fr.epita.assistants.myide.domain.entity.Project;
 import fr.epita.assistants.myide.domain.service.NodeService;
 import fr.epita.assistants.myide.domain.service.ProjectService;
 
-import java.io.File;
 import java.nio.file.Path;
 
 public class MyProjectService implements ProjectService {
@@ -20,17 +18,17 @@ public class MyProjectService implements ProjectService {
     @Override
     public Project load(final Path root)
     {
-        // Instantiate root node
-        MyNode rootNode = new MyNode(root, Node.Types.FOLDER);
-
-        // Load all nodes
+        MyNode rootNode = new MyNode(root);
         rootNode.loadChildren();
 
-        // Instantiate the project
         MyProject project = new MyProject(rootNode);
 
         // Get the type of the project
-
+        project.getAspects().add(new AnyAspect());
+        if (rootNode.getChildren().stream().anyMatch(node -> node.getPath().getFileName().toString().equals("pom.xml")))
+            project.getAspects().add(new MavenAspect());
+        if (rootNode.getChildren().stream().anyMatch(node -> node.getPath().getFileName().toString().equals(".git")))
+            project.getAspects().add(new GitAspect());
 
         return project;
     }

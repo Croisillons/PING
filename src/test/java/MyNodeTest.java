@@ -38,7 +38,7 @@ public class MyNodeTest {
     @Test
     public void loadNoChildren()
     {
-        MyNode node = new MyNode(path, Node.Types.FOLDER);
+        MyNode node = new MyNode(path);
 
         node.loadChildren();
         Assertions.assertEquals(0, node.getChildren().size());
@@ -47,7 +47,7 @@ public class MyNodeTest {
     @Test
     public void loadChildren()
     {
-        MyNode node = new MyNode(path, Node.Types.FOLDER);
+        MyNode node = new MyNode(path);
         File subfolder1 = new File("src/test/testFiles/tmp/folder1");
         File subfile1 = new File("src/test/testFiles/tmp/folder1/file1");
         File subfile2 = new File("src/test/testFiles/tmp/file2");
@@ -72,7 +72,7 @@ public class MyNodeTest {
     @Test
     public void load2Files()
     {
-        MyNode node = new MyNode(path, Node.Types.FOLDER);
+        MyNode node = new MyNode(path);
         File subfile1 = new File("src/test/testFiles/tmp/file1");
         File subfile2 = new File("src/test/testFiles/tmp/file2");
         try
@@ -101,7 +101,7 @@ public class MyNodeTest {
             folder2/
                 file2
          **/
-        MyNode node = new MyNode(path, Node.Types.FOLDER);
+        MyNode node = new MyNode(path);
         File subfolder1 = new File("src/test/testFiles/tmp/folder1");
         File subfolder2 = new File("src/test/testFiles/tmp/folder2");
         File subfile1 = new File("src/test/testFiles/tmp/folder1/file1");

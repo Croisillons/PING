@@ -12,10 +12,10 @@ public class MyNode implements Node {
     private final Type type;
     private final List<Node> children;
 
-    public MyNode(final Path path, final Type type)
+    public MyNode(final Path path)
     {
         this.path = path;
-        this.type = type;
+        this.type = path.toFile().isDirectory() ? Node.Types.FOLDER : Node.Types.FILE;
         this.children = new ArrayList<>();
     }
 
@@ -60,7 +60,7 @@ public class MyNode implements Node {
         {
             for (File file : files)
             {
-                MyNode node = new MyNode(file.toPath(), file.isDirectory() ? Node.Types.FOLDER : Node.Types.FILE);
+                MyNode node = new MyNode(file.toPath());
                 this.children.add(node);
                 if (node.isFolder())
                     node.loadChildren();
