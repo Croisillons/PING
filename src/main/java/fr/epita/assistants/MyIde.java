@@ -18,6 +18,7 @@ public class MyIde {
      * @return An implementation of {@link ProjectService}.
      */
     public static ProjectService init(final Configuration configuration) {
+        MyProjectService projectService = new ProjectService(configuration)
         throw new UnsupportedOperationException("FIXME");
     }
 
