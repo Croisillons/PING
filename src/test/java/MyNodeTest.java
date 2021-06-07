@@ -40,7 +40,6 @@ public class MyNodeTest {
     {
         MyNode node = new MyNode(path);
 
-        node.loadChildren();
         Assertions.assertEquals(0, node.getChildren().size());
     }
 
@@ -65,7 +64,6 @@ public class MyNodeTest {
             return;
         }
 
-        node.loadChildren();
         Assertions.assertEquals(2, node.getChildren().size());
     }
 
@@ -87,7 +85,6 @@ public class MyNodeTest {
             return;
         }
 
-        node.loadChildren();
         Assertions.assertEquals(2, node.getChildren().size());
     }
 
@@ -119,8 +116,6 @@ public class MyNodeTest {
             Assertions.fail();
             return;
         }
-
-        node.loadChildren();
 
         Assertions.assertEquals(2, node.getChildren().size());
         Assertions.assertEquals(Node.Types.FOLDER, node.getType());

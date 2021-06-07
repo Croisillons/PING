@@ -8,13 +8,18 @@ import java.util.List;
 public class MyNode implements Node {
     private final Path path;
     private final Type type;
-    private final List<Node> children;
 
     public MyNode(final Path path)
     {
+        if (!path.toFile().exists())
+            throw new IllegalArgumentException("This file does not exist");
         this.path = path;
-        this.type = path.toFile().isDirectory() ? Node.Types.FOLDER : Node.Types.FILE;
-        this.children = new ArrayList<>();
+        if (path.toFile().isFile())
+            this.type = Types.FILE;
+        else if (path.toFile().isDirectory())
+            this.type = Types.FOLDER;
+        else
+            throw new IllegalArgumentException("Unrecognized file type");
     }
 
     /**
@@ -44,11 +49,7 @@ public class MyNode implements Node {
     @Override
     public List<Node> getChildren()
     {
-        return this.children;
-    }
-
-    public void loadChildren()
-    {
+        List<Node> children = new ArrayList<>();
         if (!isFolder())
             throw new IllegalStateException("Cannot load children of a file.");
 
@@ -59,10 +60,11 @@ public class MyNode implements Node {
             for (File file : files)
             {
                 MyNode node = new MyNode(file.toPath());
-                this.children.add(node);
+                children.add(node);
                 if (node.isFolder())
-                    node.loadChildren();
+                    node.getChildren();
             }
         }
+        return children;
     }
 }

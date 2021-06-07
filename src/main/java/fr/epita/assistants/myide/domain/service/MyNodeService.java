@@ -2,10 +2,14 @@ package fr.epita.assistants.myide.domain.service;
 
 import fr.epita.assistants.myide.domain.entity.MyNode;
 import fr.epita.assistants.myide.domain.entity.Node;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class MyNodeService implements NodeService {
     /**
@@ -75,9 +79,7 @@ public class MyNodeService implements NodeService {
             e.printStackTrace();
             throw new RuntimeException("Could not create file/folder");
         }
-        Node node = new MyNode(subPath);
-        folder.getChildren().add(node);
-        return node;
+        return new MyNode(subPath);
     }
 
     /**
@@ -90,7 +92,22 @@ public class MyNodeService implements NodeService {
      */
     @Override
     public Node move(final Node nodeToMove, final Node destinationFolder) {
-        //        destinationFolder.getChildren().add(nodeToMove);
-        return nodeToMove;
+        Path srcPath = nodeToMove.getPath();
+        Path dstPath = Path.of(destinationFolder.getPath().toString() + '/' + srcPath.getFileName()
+                .toString());
+
+        try {
+            if (nodeToMove.isFolder())
+                FileUtils.moveDirectory(srcPath.toFile(), dstPath.toFile());
+            else
+                Files.move(srcPath, dstPath);
+        } catch (FileAlreadyExistsException e) {
+            throw new RuntimeException("A file already exists with that name");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Couldn't move directory");
+        }
+
+        return new MyNode(dstPath);
     }
 }
