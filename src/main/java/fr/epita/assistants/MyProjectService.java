@@ -8,6 +8,7 @@ import fr.epita.assistants.myide.domain.service.ProjectService;
 import java.nio.file.Path;
 
 public class MyProjectService implements ProjectService {
+    NodeService nodeService = new MyNodeService();
     /**
      * Load a {@link Project} from a path.
      *
@@ -55,6 +56,6 @@ public class MyProjectService implements ProjectService {
     @Override
     public NodeService getNodeService()
     {
-        return null;
+        return this.nodeService;
     }
 }
