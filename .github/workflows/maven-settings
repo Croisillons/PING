@@ -1,0 +1,36 @@
+<settings>
+    <!-- Add your gitlab access token. -->
+    <servers>
+        <server>
+            <id>gitlab-labsi-public</id>
+            <configuration>
+                <httpHeaders>
+                    <property>
+                        <!-- Do not modify this. -->
+                        <name>Private-Token</name>
+                        <!-- replace YOUR_TOKEN by the token you got at the previous step. -->
+                        <value>${env.ACCESS_TOKEN}</value>
+                    </property>
+                </httpHeaders>
+            </configuration>
+        </server>
+    </servers>
+
+    <!-- Add the maven repository. -->
+    <profiles>
+        <profile>
+            <id>gitlab-labsi-public</id>
+            <repositories>
+                <repository>
+                    <id>gitlab-labsi-public</id>
+                    <url>https://gitlab.cri.epita.fr/api/v4/groups/3042/-/packages/maven/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
+    <!-- activate by default. -->
+    <activeProfiles>
+        <activeProfile>gitlab-labsi-public</activeProfile>
+    </activeProfiles>
+</settings>
