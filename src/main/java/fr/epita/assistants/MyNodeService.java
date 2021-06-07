@@ -57,13 +57,21 @@ public class MyNodeService implements NodeService {
         try
         {
             File newFile = new File(subPath.toString());
-            if (!newFile.createNewFile())
-                throw new RuntimeException("File already exists");
+            if (type == Node.Types.FILE)
+            {
+                if (!newFile.createNewFile())
+                    throw new RuntimeException("File already exists");
+            }
+            else
+            {
+                if (!newFile.mkdir())
+                    throw new RuntimeException("Could not create folder");
+            }
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            throw new RuntimeException("Could not create file");
+            throw new RuntimeException("Could not create file/folder");
         }
         Node node = new MyNode(subPath);
         folder.getChildren().add(node);
