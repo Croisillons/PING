@@ -1,16 +1,11 @@
-import fr.epita.assistants.MyProjectService;
-import fr.epita.assistants.MyProject;
-import fr.epita.assistants.myide.domain.entity.Aspect;
+import fr.epita.assistants.myide.domain.service.MyProjectService;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
-import fr.epita.assistants.myide.domain.entity.Node;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;

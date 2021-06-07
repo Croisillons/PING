@@ -1,6 +1,4 @@
-package fr.epita.assistants;
-
-import fr.epita.assistants.myide.domain.entity.Node;
+package fr.epita.assistants.myide.domain.entity;
 
 import java.io.File;
 import java.nio.file.Path;

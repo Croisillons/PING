@@ -1,4 +1,4 @@
-import fr.epita.assistants.MyNode;
+import fr.epita.assistants.myide.domain.entity.MyNode;
 import fr.epita.assistants.myide.domain.entity.Node;
 import org.junit.jupiter.api.*;
 

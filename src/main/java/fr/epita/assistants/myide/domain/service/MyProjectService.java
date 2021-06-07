@@ -1,9 +1,12 @@
-package fr.epita.assistants;
+package fr.epita.assistants.myide.domain.service;
 
+import fr.epita.assistants.myide.domain.aspect.GitAspect;
+import fr.epita.assistants.myide.domain.entity.MyNode;
+import fr.epita.assistants.myide.domain.aspect.AnyAspect;
+import fr.epita.assistants.myide.domain.aspect.MavenAspect;
 import fr.epita.assistants.myide.domain.entity.Feature;
+import fr.epita.assistants.myide.domain.entity.MyProject;
 import fr.epita.assistants.myide.domain.entity.Project;
-import fr.epita.assistants.myide.domain.service.NodeService;
-import fr.epita.assistants.myide.domain.service.ProjectService;
 
 import java.nio.file.Path;
 
