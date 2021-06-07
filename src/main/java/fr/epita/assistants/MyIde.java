@@ -1,5 +1,6 @@
 package fr.epita.assistants;
 
+import fr.epita.assistants.myide.domain.service.MyProjectService;
 import fr.epita.assistants.myide.domain.service.ProjectService;
 import fr.epita.assistants.utils.Given;
 
@@ -18,7 +19,9 @@ public class MyIde {
      * @return An implementation of {@link ProjectService}.
      */
     public static ProjectService init(final Configuration configuration) {
-        throw new UnsupportedOperationException("FIXME");
+        MyProjectService projectService = new MyProjectService();
+        //FIXME: Configuration
+        return projectService;
     }
 
     /**
