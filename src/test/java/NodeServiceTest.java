@@ -225,6 +225,81 @@ public class NodeServiceTest {
         assertEquals("yoHello world!", res);
     }
 
+    @SneakyThrows
+    @Test
+    public void updateInsertEnd()
+    {
+        File file = new File(rootPath + "/tmp.txt");
+        file.createNewFile();
+        Node node = new MyNode(file.toPath());
+
+        String text = "Hello world!";
+        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, bytes.length, bytes);
+
+        String toInsert = "yo";
+        final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, bytes.length, bytes.length + bytesToInsert.length, bytesToInsert);
+
+        String res;
+        try (FileInputStream inputStream = new FileInputStream(file))
+        {
+            var read = inputStream.readAllBytes();
+            res = new String(read);
+        }
+        assertEquals("Hello world!yo", res);
+    }
+
+    @SneakyThrows
+    @Test
+    public void updateInsertMiddle()
+    {
+        File file = new File(rootPath + "/tmp.txt");
+        file.createNewFile();
+        Node node = new MyNode(file.toPath());
+
+        String text = "Hello world!";
+        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, bytes.length, bytes);
+
+        String toInsert = " yo";
+        final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 5, 5 + bytesToInsert.length, bytesToInsert);
+
+        String res;
+        try (FileInputStream inputStream = new FileInputStream(file))
+        {
+            var read = inputStream.readAllBytes();
+            res = new String(read);
+        }
+        assertEquals("Hello yo world!", res);
+    }
+
+    @SneakyThrows
+    @Test
+    public void updateReplaceAll()
+    {
+        File file = new File(rootPath + "/tmp.txt");
+        file.createNewFile();
+        Node node = new MyNode(file.toPath());
+
+        String text = "Hello world!";
+        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, bytes.length, bytes);
+
+        String toInsert = "yo";
+        final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, bytesToInsert.length + bytes.length, bytesToInsert);
+
+        String res;
+        try (FileInputStream inputStream = new FileInputStream(file))
+        {
+            var read = inputStream.readAllBytes();
+            res = new String(read);
+        }
+        assertEquals("yo", res);
+    }
+
     /*
     @SneakyThrows
     @Test

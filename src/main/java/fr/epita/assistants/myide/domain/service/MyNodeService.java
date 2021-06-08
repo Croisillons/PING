@@ -39,8 +39,10 @@ public class MyNodeService implements NodeService {
         }
         try (FileOutputStream outputStream = new FileOutputStream(file))
         {
-            outputStream.write(content);
+            outputStream.write(content, 0, from);
             outputStream.write(insertedContent);
+            if (from < content.length && to < content.length + insertedContent.length)
+                outputStream.write(content, from, content.length - from);
         }
         return node;
     }
