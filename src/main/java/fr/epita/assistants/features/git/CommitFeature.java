@@ -21,10 +21,8 @@ public class CommitFeature implements Feature {
         }
 
         try {
-            CommitCommand commit = git.commit();
-            if (params.length > 0)
-                commit.setMessage((String) params[0]);
-            commit.call();
+            String message = (params.length > 0) ? (String) params[0] : "no message";
+            git.commit().setMessage(message).call();
         } catch (GitAPIException e) {
             e.printStackTrace();
             return () -> false;

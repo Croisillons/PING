@@ -2,17 +2,13 @@ package fr.epita.assistants.myide.domain.entity;
 
 import fr.epita.assistants.features.any.CleanupFeature;
 import fr.epita.assistants.features.any.DistFeature;
+import fr.epita.assistants.features.any.SearchFeature;
 import fr.epita.assistants.features.git.AddFeature;
 import fr.epita.assistants.features.git.CommitFeature;
 import fr.epita.assistants.features.git.PullFeature;
 import fr.epita.assistants.features.git.PushFeature;
-import fr.epita.assistants.myide.domain.entity.Aspect;
-import fr.epita.assistants.myide.domain.entity.Feature;
-import fr.epita.assistants.myide.domain.entity.Node;
-import fr.epita.assistants.myide.domain.entity.Project;
-import org.apache.commons.lang3.NotImplementedException;
+import fr.epita.assistants.features.maven.*;
 
-import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -61,7 +57,7 @@ public class MyProject implements Project {
         else if (Mandatory.Features.Any.DIST.equals(featureType))
             return Optional.of(new DistFeature());
         else if (Mandatory.Features.Any.SEARCH.equals(featureType))
-            throw new NotImplementedException("blb");
+            return Optional.of(new SearchFeature());
 
         if (aspects.stream().anyMatch(aspect -> aspect.getType().equals(Mandatory.Aspects.GIT)))
         {
@@ -78,19 +74,19 @@ public class MyProject implements Project {
         if (aspects.stream().anyMatch(aspect -> aspect.getType().equals(Mandatory.Aspects.MAVEN)))
         {
             if (Mandatory.Features.Maven.COMPILE.equals(featureType))
-                throw new NotImplementedException("blb");
+                return Optional.of(new CompileFeature());
             else if (Mandatory.Features.Maven.CLEAN.equals(featureType))
-                throw new NotImplementedException("blb");
+                return Optional.of(new CleanFeature());
             else if (Mandatory.Features.Maven.TEST.equals(featureType))
-                throw new NotImplementedException("blb");
+                return Optional.of(new TestFeature());
             else if (Mandatory.Features.Maven.PACKAGE.equals(featureType))
-                throw new NotImplementedException("blb");
+                return Optional.of(new PackageFeature());
             else if (Mandatory.Features.Maven.INSTALL.equals(featureType))
-                throw new NotImplementedException("blb");
+                return Optional.of(new InstallFeature());
             else if (Mandatory.Features.Maven.EXEC.equals(featureType))
-                throw new NotImplementedException("blb");
+                return Optional.of(new ExecFeature());
             else if (Mandatory.Features.Maven.TREE.equals(featureType))
-                throw new NotImplementedException("blb");
+                return Optional.of(new TreeFeature());
         }
 
         return Optional.empty();
