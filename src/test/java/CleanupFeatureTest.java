@@ -1,6 +1,6 @@
-import fr.epita.assistants.MyProjectService;
 import fr.epita.assistants.features.any.CleanupFeature;
 import fr.epita.assistants.myide.domain.entity.Project;
+import fr.epita.assistants.myide.domain.service.MyProjectService;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
