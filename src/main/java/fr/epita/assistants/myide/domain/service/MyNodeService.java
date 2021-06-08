@@ -49,7 +49,7 @@ public class MyNodeService implements NodeService {
         File[] files = dir.listFiles();
         if (files != null) {
             for (final File file : files)
-                return deleteDir(file);
+                deleteDir(file);
         }
         return dir.delete();
     }

@@ -130,4 +130,61 @@ public class NodeServiceTest {
 
         assertEquals(Node.Types.FOLDER, dstNode.getType());
     }
+
+    @SneakyThrows
+    @Test
+    public void deleteFile()
+    {
+        File file = new File(rootPath + "/test.txt");
+        file.createNewFile();
+        Node node = new MyNode(file.toPath());
+
+        boolean res = nodeService.delete(node);
+        assertTrue(res);
+
+        assertTrue(!file.exists());
+    }
+
+    @SneakyThrows
+    @Test
+    public void deleteFolder()
+    {
+        File file = new File(rootPath + "/test");
+        file.mkdir();
+        Node node = new MyNode(file.toPath());
+
+        boolean res = nodeService.delete(node);
+        assertTrue(res);
+
+        assertTrue(!file.exists());
+    }
+
+    @SneakyThrows
+    @Test
+    public void deleteFolderContainingFile()
+    {
+        File folder = new File(rootPath + "/test");
+        File file = new File(rootPath + "/test/tmp.txt");
+        folder.mkdir();
+        file.createNewFile();
+        Node node = new MyNode(folder.toPath());
+
+        boolean res = nodeService.delete(node);
+        assertTrue(res);
+
+        assertTrue(!folder.exists());
+        assertTrue(!file.exists());
+    }
+
+    /*
+    @SneakyThrows
+    @Test
+    public void deleteInvalidPath()
+    {
+        Node node = new MyNode(Path.of("/path/to/invalid/file"));
+
+        assertThrows(Exception.class, () -> nodeService.delete(node));
+    }
+
+     */
 }
