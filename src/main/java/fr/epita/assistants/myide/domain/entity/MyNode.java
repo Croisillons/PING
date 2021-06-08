@@ -51,7 +51,7 @@ public class MyNode implements Node {
     {
         List<Node> children = new ArrayList<>();
         if (!isFolder())
-            throw new IllegalStateException("Cannot load children of a file.");
+            return children;
 
         // Load all nodes
         File[] files = path.toFile().listFiles();

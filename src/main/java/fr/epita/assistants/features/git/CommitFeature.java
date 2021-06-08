@@ -3,6 +3,7 @@ package fr.epita.assistants.features.git;
 import fr.epita.assistants.myide.domain.entity.Feature;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Project;
+import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
@@ -19,11 +20,11 @@ public class CommitFeature implements Feature {
             return () -> false;
         }
 
-        if (params.length < 1)
-            return () -> false;
-
         try {
-            git.commit().setMessage((String) params[0]).setAllowEmpty(false).call();
+            CommitCommand commit = git.commit();
+            if (params.length > 0)
+                commit.setMessage((String) params[0]);
+            commit.call();
         } catch (GitAPIException e) {
             e.printStackTrace();
             return () -> false;
