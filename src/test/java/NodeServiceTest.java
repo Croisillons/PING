@@ -210,11 +210,11 @@ public class NodeServiceTest {
 
         String text = "Hello world!";
         final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
-        nodeService.update(node, 0, bytes.length, bytes);
+        nodeService.update(node, 0, 0, bytes);
 
         String toInsert = "yo";
         final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
-        nodeService.update(node, 0, bytesToInsert.length, bytesToInsert);
+        nodeService.update(node, 0, 0, bytesToInsert);
 
         String res;
         try (FileInputStream inputStream = new FileInputStream(file))
@@ -260,11 +260,11 @@ public class NodeServiceTest {
 
         String text = "Hello world!";
         final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
-        nodeService.update(node, 0, bytes.length, bytes);
+        nodeService.update(node, 0, 0, bytes);
 
         String toInsert = " yo";
         final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
-        nodeService.update(node, 5, 5 + bytesToInsert.length, bytesToInsert);
+        nodeService.update(node, 5, 5, bytesToInsert);
 
         String res;
         try (FileInputStream inputStream = new FileInputStream(file))
@@ -289,7 +289,7 @@ public class NodeServiceTest {
 
         String toInsert = "yo";
         final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
-        nodeService.update(node, 0, bytesToInsert.length + bytes.length, bytesToInsert);
+        nodeService.update(node, 0, bytes.length, bytesToInsert);
 
         String res;
         try (FileInputStream inputStream = new FileInputStream(file))
