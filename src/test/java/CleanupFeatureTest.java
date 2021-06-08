@@ -175,7 +175,7 @@ class CleanupFeatureTest {
         File subfile2 = new File("src/test/testFiles/tmp/folder2/file2");
         try {
             myIdeIgnore.createNewFile();
-            writeToFile(myIdeIgnore, "file*");
+            writeToFile(myIdeIgnore, "file.*");
 
             subfolder1.mkdir();
             subfolder2.mkdir();

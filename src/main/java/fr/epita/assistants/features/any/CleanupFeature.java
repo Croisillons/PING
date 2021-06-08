@@ -34,6 +34,8 @@ public class CleanupFeature implements Feature {
     }
 
     private void cleanup(Node node, List<String> toIgnore) {
+        if (node.getType() == Node.Types.FILE)
+            return;
         // Use fori because we will remove children during cleanup
         for (int i = node.getChildren().size() - 1; i >= 0; i--) {
             Node child = node.getChildren().get(i);

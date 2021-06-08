@@ -1,7 +1,6 @@
-import fr.epita.assistants.MyProjectService;
-import fr.epita.assistants.features.any.CleanupFeature;
 import fr.epita.assistants.features.git.AddFeature;
 import fr.epita.assistants.myide.domain.entity.Project;
+import fr.epita.assistants.myide.domain.service.MyProjectService;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;

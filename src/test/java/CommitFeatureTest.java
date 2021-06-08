@@ -1,7 +1,7 @@
-import fr.epita.assistants.MyProjectService;
 import fr.epita.assistants.features.git.CommitFeature;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Project;
+import fr.epita.assistants.myide.domain.service.MyProjectService;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;

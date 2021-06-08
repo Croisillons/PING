@@ -23,7 +23,7 @@ public class CommitFeature implements Feature {
             return () -> false;
 
         try {
-            git.commit().setMessage((String) params[0]).call();
+            git.commit().setMessage((String) params[0]).setAllowEmpty(false).call();
         } catch (GitAPIException e) {
             e.printStackTrace();
             return () -> false;

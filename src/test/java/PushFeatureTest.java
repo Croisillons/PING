@@ -1,6 +1,6 @@
-import fr.epita.assistants.MyProjectService;
 import fr.epita.assistants.features.git.PushFeature;
 import fr.epita.assistants.myide.domain.entity.Project;
+import fr.epita.assistants.myide.domain.service.MyProjectService;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.AfterEach;
