@@ -26,9 +26,9 @@ public class DistFeature implements Feature {
         String zipName = rootPath.toString() + ".zip";
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipName))) {
-            Files.walkFileTree(rootPath.getParent(), new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    zos.putNextEntry(new ZipEntry(rootPath.relativize(file).toString()));
+                    zos.putNextEntry(new ZipEntry(rootPath.getParent().relativize(file).toString()));
                     Files.copy(file, zos);
                     zos.closeEntry();
                     return FileVisitResult.CONTINUE;
