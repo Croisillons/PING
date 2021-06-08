@@ -300,6 +300,31 @@ public class NodeServiceTest {
         assertEquals("yo", res);
     }
 
+    @SneakyThrows
+    @Test
+    public void updateReplaceFirstWord()
+    {
+        File file = new File(rootPath + "/tmp.txt");
+        file.createNewFile();
+        Node node = new MyNode(file.toPath());
+
+        String text = "Hello world!";
+        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, 0, bytes);
+
+        String toInsert = "yo";
+        final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, 5, bytesToInsert);
+
+        String res;
+        try (FileInputStream inputStream = new FileInputStream(file))
+        {
+            var read = inputStream.readAllBytes();
+            res = new String(read);
+        }
+        assertEquals("yo world!", res);
+    }
+
     /*
     @SneakyThrows
     @Test

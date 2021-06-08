@@ -39,11 +39,6 @@ public class MyNodeService implements NodeService {
         }
         try (FileOutputStream outputStream = new FileOutputStream(file))
         {
-            // Hello world!   "coucou"
-            // Hello
-            // update(file, 0, 1, "heyyyyyyyy")
-            // Hellocoucouworld!
-            // update(file, 0, len(str), array)
             if (from != 0)
                 outputStream.write(content, 0, from);
             outputStream.write(insertedContent);
