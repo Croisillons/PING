@@ -8,6 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -174,6 +177,52 @@ public class NodeServiceTest {
 
         assertTrue(!folder.exists());
         assertTrue(!file.exists());
+    }
+
+    @SneakyThrows
+    @Test
+    public void updateInsertIntoEmpty()
+    {
+        File file = new File(rootPath + "/tmp.txt");
+        file.createNewFile();
+        Node node = new MyNode(file.toPath());
+
+        String text = "Hello world!";
+        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, bytes.length, bytes);
+
+        String res;
+        try (FileInputStream inputStream = new FileInputStream(file))
+        {
+            var read = inputStream.readAllBytes();
+            res = new String(read);
+        }
+        assertEquals(text, res);
+    }
+
+    @SneakyThrows
+    @Test
+    public void updateInsertBegin()
+    {
+        File file = new File(rootPath + "/tmp.txt");
+        file.createNewFile();
+        Node node = new MyNode(file.toPath());
+
+        String text = "Hello world!";
+        final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, bytes.length, bytes);
+
+        String toInsert = "yo";
+        final byte[] bytesToInsert = toInsert.getBytes(StandardCharsets.UTF_8);
+        nodeService.update(node, 0, bytesToInsert.length, bytesToInsert);
+
+        String res;
+        try (FileInputStream inputStream = new FileInputStream(file))
+        {
+            var read = inputStream.readAllBytes();
+            res = new String(read);
+        }
+        assertEquals("yoHello world!", res);
     }
 
     /*
