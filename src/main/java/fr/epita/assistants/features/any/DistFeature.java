@@ -23,10 +23,10 @@ public class DistFeature implements Feature {
 
         // Create a zip file
         Path rootPath = project.getRootNode().getPath();
-        String zipName = rootPath.toString() + ".zip";
+        String zipName = rootPath.getFileName().toString() + ".zip";
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipName))) {
-            Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(rootPath.getParent(), new SimpleFileVisitor<Path>() {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     zos.putNextEntry(new ZipEntry(rootPath.relativize(file).toString()));
                     Files.copy(file, zos);
