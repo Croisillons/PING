@@ -2,10 +2,10 @@ package fr.epita.assistants.myide.domain.service;
 
 import fr.epita.assistants.myide.domain.entity.MyNode;
 import fr.epita.assistants.myide.domain.entity.Node;
+import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,10 +22,27 @@ public class MyNodeService implements NodeService {
      * @return The node that has been updated.
      * @throws Exception upon update failure.
      */
+    @SneakyThrows
     @Override
     public Node update(final Node node, final int from, final int to,
-                       final byte[] insertedContent) {
-        return null;
+                       final byte[] insertedContent)
+    {
+        if (node.getType() == Node.Types.FOLDER)
+            throw new IllegalArgumentException("Cannot update content of a folder");
+        if (from > to)
+            throw new IllegalArgumentException("to must be greater than from");
+        File file = node.getPath().toFile();
+        final byte[] content;
+        try (FileInputStream inputStream = new FileInputStream(file))
+        {
+            content = inputStream.readAllBytes();
+        }
+        try (FileOutputStream outputStream = new FileOutputStream(file))
+        {
+            outputStream.write(content);
+            outputStream.write(insertedContent);
+        }
+        return node;
     }
 
     /**
@@ -49,7 +66,7 @@ public class MyNodeService implements NodeService {
         File[] files = dir.listFiles();
         if (files != null) {
             for (final File file : files)
-                return deleteDir(file);
+                deleteDir(file);
         }
         return dir.delete();
     }
