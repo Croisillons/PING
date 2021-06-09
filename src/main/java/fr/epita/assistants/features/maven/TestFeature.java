@@ -4,6 +4,8 @@ import fr.epita.assistants.myide.domain.entity.Feature;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Project;
 
+import java.io.IOException;
+
 public class TestFeature implements Feature {
     /**
      * @param project {@link Project} on which the feature is executed.
@@ -14,7 +16,23 @@ public class TestFeature implements Feature {
     @Override
     public ExecutionReport execute(final Project project, final Object... params)
     {
-        return null;
+        ProcessBuilder builder = new ProcessBuilder("mvn", "test")
+                .directory(project.getRootNode().getPath().toFile());
+        try {
+            Process process = builder.start();
+            process.waitFor();
+            int res = process.exitValue();
+            var output = process.getInputStream();
+            var bytes = output.readAllBytes();
+            // System.out.println("Exit value: " + res);
+            // System.out.println(new String(bytes));
+
+        } catch (IOException | InterruptedException e) {
+            // e.printStackTrace();
+            return () -> false;
+        }
+
+        return () -> true;
     }
 
     /**
