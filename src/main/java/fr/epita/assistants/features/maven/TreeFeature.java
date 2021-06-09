@@ -4,6 +4,8 @@ import fr.epita.assistants.myide.domain.entity.Feature;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Project;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class TreeFeature implements Feature {
@@ -16,11 +18,18 @@ public class TreeFeature implements Feature {
     @Override
     public ExecutionReport execute(final Project project, final Object... params)
     {
-        ProcessBuilder builder = new ProcessBuilder("mvn", "tree")
+        ProcessBuilder builder = new ProcessBuilder("mvn", "dependency:tree")
                 .directory(project.getRootNode().getPath().toFile());
         try {
             Process process = builder.start();
             process.waitFor();
+            var output = process.getInputStream();
+            var bytes = output.readAllBytes();
+            System.out.println(new String(bytes));
+            try (FileOutputStream fileOutputStream = new FileOutputStream("tree_output.txt"))
+            {
+                fileOutputStream.write(bytes);
+            }
 
         } catch (IOException | InterruptedException e) {
             // e.printStackTrace();
