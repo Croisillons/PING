@@ -25,8 +25,7 @@ public class TreeFeature implements Feature {
             process.waitFor();
             var output = process.getInputStream();
             var bytes = output.readAllBytes();
-            System.out.println(new String(bytes));
-            try (FileOutputStream fileOutputStream = new FileOutputStream("tree_output.txt"))
+            try (FileOutputStream fileOutputStream = new FileOutputStream(project.getRootNode().getPath().toString() + "/tree_output.txt"))
             {
                 fileOutputStream.write(bytes);
             }
