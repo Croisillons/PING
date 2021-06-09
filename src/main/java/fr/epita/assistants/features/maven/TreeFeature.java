@@ -29,17 +29,6 @@ public class TreeFeature implements Feature {
         try {
             Process process = builder.start();
             process.waitFor();
-            var output = process.getInputStream();
-            var bytes = output.readAllBytes();
-
-            String outputStr = new String(bytes);
-            String[] lines = outputStr.split("\n");
-            List<String> res = Arrays.stream(lines).filter(line -> !line.contains("Download")).toList();
-
-            try (FileWriter writer = new FileWriter(project.getRootNode().getPath().toString() + "/tree_output.txt")) {
-                for (String line : res)
-                    writer.write(line);
-            }
 
         } catch (IOException | InterruptedException e) {
             // e.printStackTrace();
