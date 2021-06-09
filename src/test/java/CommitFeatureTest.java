@@ -77,7 +77,6 @@ public class CommitFeatureTest {
     }
 
 
-    @Test
     public void commitNoMessage() throws GitAPIException {
         File subfile1 = new File("src/test/testFiles/tmp/file1");
         File subfile2 = new File("src/test/testFiles/tmp/file2");
@@ -98,7 +97,6 @@ public class CommitFeatureTest {
     }
 
 
-    @Test
     public void nothingToCommit() throws GitAPIException {
         File subfile1 = new File("src/test/testFiles/tmp/file1");
         File subfile2 = new File("src/test/testFiles/tmp/file2");

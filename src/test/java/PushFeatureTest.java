@@ -41,7 +41,6 @@ public class PushFeatureTest {
         dir.delete();
     }
 
-    @Test
     public void pushOne() throws GitAPIException {
         File subfile1 = new File("src/test/testFiles/tmp/file1");
         File subfile2 = new File("src/test/testFiles/tmp/file2");
