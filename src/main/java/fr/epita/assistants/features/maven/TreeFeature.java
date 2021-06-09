@@ -6,7 +6,11 @@ import fr.epita.assistants.myide.domain.entity.Project;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TreeFeature implements Feature {
     /**
@@ -25,9 +29,14 @@ public class TreeFeature implements Feature {
             process.waitFor();
             var output = process.getInputStream();
             var bytes = output.readAllBytes();
-            try (FileOutputStream fileOutputStream = new FileOutputStream(project.getRootNode().getPath().toString() + "/tree_output.txt"))
-            {
-                fileOutputStream.write(bytes);
+
+            String outputStr = new String(bytes);
+            String[] lines = outputStr.split("\n");
+            List<String> res = Arrays.stream(lines).filter(line -> !line.contains("Download")).toList();
+
+            try (FileWriter writer = new FileWriter(project.getRootNode().getPath().toString() + "/tree_output.txt")) {
+                for (String line : res)
+                    writer.write(line);
             }
 
         } catch (IOException | InterruptedException e) {
