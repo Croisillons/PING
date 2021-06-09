@@ -22,7 +22,9 @@ public class TreeFeature implements Feature {
     @Override
     public ExecutionReport execute(final Project project, final Object... params)
     {
-        ProcessBuilder builder = new ProcessBuilder("mvn", "dependency:tree")
+        if (params.length < 1)
+            return () -> false;
+        ProcessBuilder builder = new ProcessBuilder("mvn", "dependency:tree", params[0].toString())
                 .directory(project.getRootNode().getPath().toFile());
         try {
             Process process = builder.start();
