@@ -6,6 +6,7 @@ import fr.epita.assistants.myide.domain.entity.Project;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 
 public class CompileFeature implements Feature {
@@ -18,24 +19,22 @@ public class CompileFeature implements Feature {
     @Override
     public ExecutionReport execute(final Project project, final Object... params)
     {
-        Path path = project.getRootNode().getPath();
-        try
-        {
-            Process proc = Runtime.getRuntime().exec("cd " + path + " && mvn compile");
-            var ret = proc.waitFor();
+        ProcessBuilder builder = new ProcessBuilder("mvn", "compile")
+                .directory(project.getRootNode().getPath().toFile());
+        try {
+            Process process = builder.start();
+            process.waitFor();
+            int res = process.exitValue();
+            var output = process.getInputStream();
+            var bytes = output.readAllBytes();
+            // System.out.println("Exit value: " + res);
+            // System.out.println(new String(bytes));
 
-            if (ret != 0)
-                return () -> false;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException | InterruptedException e) {
+            // e.printStackTrace();
             return () -> false;
         }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            return () -> false;
-        }
+
         return () -> true;
     }
 
