@@ -4,6 +4,5 @@ target/
 javadoc/
 *.swp
 *.iml
-gradle/
 build/
 .gradle/
