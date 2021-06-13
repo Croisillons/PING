@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +45,14 @@ public class ProjectServiceTest {
     public void any()
     {
         File subfile = new File("src/test/testFiles/tmp/blbl.txt");
-        subfile.createNewFile();
+        try
+        {
+            subfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            fail();
+        }
 
         MyProjectService projectService = new MyProjectService();
         var project = projectService.load(file.toPath());
@@ -57,7 +65,14 @@ public class ProjectServiceTest {
     public void maven()
     {
         File subfile = new File("src/test/testFiles/tmp/pom.xml");
-        subfile.createNewFile();
+        try
+        {
+            subfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            fail();
+        }
 
         MyProjectService projectService = new MyProjectService();
         var project = projectService.load(file.toPath());
@@ -71,7 +86,14 @@ public class ProjectServiceTest {
     {
         new File("src/test/testFiles/tmp/truc").mkdirs();
         File subfile = new File("src/test/testFiles/tmp/truc/pom.xml");
-        subfile.createNewFile();
+        try
+        {
+            subfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            fail();
+        }
 
         MyProjectService projectService = new MyProjectService();
         var project = projectService.load(file.toPath());
@@ -99,7 +121,14 @@ public class ProjectServiceTest {
         File subfolder = new File("src/test/testFiles/tmp/.git");
         subfolder.mkdirs();
         File subfile = new File("src/test/testFiles/tmp/pom.xml");
-        subfile.createNewFile();
+        try
+        {
+            subfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            fail();
+        }
 
         MyProjectService projectService = new MyProjectService();
         var project = projectService.load(file.toPath());

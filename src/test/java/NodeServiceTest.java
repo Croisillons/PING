@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
@@ -49,7 +50,7 @@ public class NodeServiceTest {
     }
 
     @Test
-    public void createFile() {
+    public void createFile() throws IOException {
         assertEquals(1, testFolder.getChildren().size());
         nodeService.create(testFolder, "test.txt", Node.Types.FILE);
 
@@ -61,7 +62,7 @@ public class NodeServiceTest {
     }
 
     @Test
-    public void createFolder() {
+    public void createFolder() throws IOException {
         assertEquals(1, testFolder.getChildren().size());
         nodeService.create(testFolder, "folder", Node.Types.FOLDER);
 
@@ -82,7 +83,8 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void moveFile() {
+    public void moveFile() throws IOException
+    {
         new File(rootPath + "/test.txt").delete();
         new File(rootPath + "/tmp/test.txt").delete();
         new File(rootPath + "/test.txt").createNewFile();
@@ -100,7 +102,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void moveFolder() {
+    public void moveFolder() throws IOException {
         new File(rootPath + "/wsh").mkdir();
         Node srcNode = new MyNode(Path.of(rootPath + "/wsh"));
 
@@ -117,7 +119,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void moveFolderWithContent() {
+    public void moveFolderWithContent() throws IOException{
         new File(rootPath + "/wsh").mkdirs();
         new File(rootPath + "/wsh/alors").createNewFile();
         Node srcNode = new MyNode(Path.of(rootPath + "/wsh"));
@@ -136,7 +138,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void deleteFile()
+    public void deleteFile() throws IOException
     {
         File file = new File(rootPath + "/test.txt");
         file.createNewFile();
@@ -150,7 +152,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void deleteFolder()
+    public void deleteFolder() throws IOException
     {
         File file = new File(rootPath + "/test");
         file.mkdir();
@@ -164,7 +166,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void deleteFolderContainingFile()
+    public void deleteFolderContainingFile() throws IOException
     {
         File folder = new File(rootPath + "/test");
         File file = new File(rootPath + "/test/tmp.txt");
@@ -181,7 +183,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void updateInsertIntoEmpty()
+    public void updateInsertIntoEmpty() throws IOException
     {
         File file = new File(rootPath + "/tmp.txt");
         file.createNewFile();
@@ -202,7 +204,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void updateInsertBegin()
+    public void updateInsertBegin() throws IOException
     {
         File file = new File(rootPath + "/tmp.txt");
         file.createNewFile();
@@ -227,7 +229,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void updateInsertEnd()
+    public void updateInsertEnd() throws IOException
     {
         File file = new File(rootPath + "/tmp.txt");
         file.createNewFile();
@@ -252,7 +254,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void updateInsertMiddle()
+    public void updateInsertMiddle() throws IOException
     {
         File file = new File(rootPath + "/tmp.txt");
         file.createNewFile();
@@ -277,7 +279,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void updateReplaceAll()
+    public void updateReplaceAll() throws IOException
     {
         File file = new File(rootPath + "/tmp.txt");
         file.createNewFile();
@@ -302,7 +304,7 @@ public class NodeServiceTest {
 
     @SneakyThrows
     @Test
-    public void updateReplaceFirstWord()
+    public void updateReplaceFirstWord() throws IOException
     {
         File file = new File(rootPath + "/tmp.txt");
         file.createNewFile();

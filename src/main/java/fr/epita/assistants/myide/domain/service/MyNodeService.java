@@ -37,6 +37,11 @@ public class MyNodeService implements NodeService {
         {
             content = inputStream.readAllBytes();
         }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
         try (FileOutputStream outputStream = new FileOutputStream(file))
         {
             if (from != 0)
@@ -44,6 +49,11 @@ public class MyNodeService implements NodeService {
             outputStream.write(insertedContent);
             if (to < content.length)
                 outputStream.write(content, to, content.length - to);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
         }
         return node;
     }
