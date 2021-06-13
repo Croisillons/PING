@@ -12,11 +12,20 @@ plugins {
     id("org.jetbrains.compose") version "0.4.0"
 }
 
+val ENV = System.getenv()
+
 
 repositories {
     mavenLocal()
     maven {
         url = uri("https://gitlab.cri.epita.fr/api/v4/groups/3042/-/packages/maven/")
+        credentials(HttpHeaderCredentials::class) {
+            name = "Private-Token"
+            value = ENV["ACCESS_TOKEN"]
+        }
+        authentication {
+            create<HttpHeaderAuthentication>("header")
+        }
     }
 
     maven {
