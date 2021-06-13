@@ -20,18 +20,6 @@ repositories {
     }
 
     maven {
-        url = uri("https://maven.pkg.github.com/TesseractFR/TesseractLib")
-    }
-
-    maven {
-        url = uri("https://maven.pkg.github.com/BananaPuncher714/Cartographer2")
-    }
-
-    maven {
-        url = uri("https://maven.pkg.github.com/TesseractFR/ElytraRace")
-    }
-
-    maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
     mavenCentral()
