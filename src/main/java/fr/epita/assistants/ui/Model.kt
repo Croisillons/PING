@@ -28,14 +28,14 @@ class ProjectStore(val project: MyProject) {
     /**
      * Open a file to a tab and select it
      */
-    fun openFileToEditor(node: Node) {
-        var editor: OpenFileStore = OpenFileStore(node, this)
+    fun openFileEditor(node: Node) {
+        var editor: OpenFileStore? = openFiles.firstOrNull { it.node == node}
 
-        if (openFiles.none { it.node == node }) {
+        if (editor == null) {
+            editor = OpenFileStore(node, this)
             openFiles.add(editor)
-        } else {
-            editor = openFiles.first { it.node == node }
         }
+
         selectOpenFile(editor)
     }
 
