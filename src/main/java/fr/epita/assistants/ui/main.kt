@@ -1,6 +1,7 @@
 package fr.epita.assistants.ui
 
 import androidx.compose.desktop.Window
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.MaterialTheme
@@ -32,7 +33,7 @@ fun main() {
 
 @Composable
 fun IdeView(ideStore: IdeStore) {
-    Column {
+    Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         Row(modifier = Modifier.weight(0.7f)) {
             TreeView(ideStore.project)
             OpenFilesView(ideStore.project)

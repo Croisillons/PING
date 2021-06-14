@@ -6,15 +6,14 @@ import androidx.compose.ui.window.v1.MenuBar
 import androidx.compose.ui.window.v1.MenuItem
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.IdeTheme
-import fr.epita.assistants.ui.store.SettingStore
 
-fun IdeMenu(ideStore: IdeStore) : MenuBar {
+fun IdeMenu(ideStore: IdeStore): MenuBar {
     return MenuBar(
         Menu(
             name = "File",
             MenuItem(
                 name = "Open Project",
-                onClick = {  },
+                onClick = { },
 //                shortcut = KeyStroke(Key.I)
             ),
             MenuItem(
@@ -35,15 +34,15 @@ fun IdeMenu(ideStore: IdeStore) : MenuBar {
             ),
             MenuItem(
                 name = "Pink",
-                onClick = {  }
+                onClick = { ideStore.setting.setTheme(IdeTheme.PINK) }
             ),
             MenuItem(
                 name = "Blue",
-                onClick = {  }
+                onClick = { ideStore.setting.setTheme(IdeTheme.BLUE) }
             ),
             MenuItem(
                 name = "Green",
-                onClick = {  }
+                onClick = { ideStore.setting.setTheme(IdeTheme.GREEN) }
             ),
         )
     )

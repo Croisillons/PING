@@ -1,12 +1,10 @@
 package fr.epita.assistants.ui.view.tree
 
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -30,7 +28,7 @@ import fr.epita.assistants.ui.store.ProjectStore
 @Composable
 fun TreeView(projectStore: ProjectStore) {
     val tree: MutableState<Tree> = remember { mutableStateOf(Tree(projectStore)) }
-    Column(modifier = Modifier.width(300.dp)) {
+    Column(modifier = Modifier.width(300.dp).background(MaterialTheme.colors.primary)) {
         TreeTopBarView(projectStore.project.rootNode.path.fileName.toString(), {})
         HierarchyView(tree.value)
     }
@@ -39,7 +37,7 @@ fun TreeView(projectStore: ProjectStore) {
 @Composable
 fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.background),
+        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primary),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -72,29 +70,38 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
 @Composable
 fun HierarchyView(tree: Tree) {
     Box(
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(8.dp).fillMaxWidth().background(MaterialTheme.colors.primary)
     ) {
         val verticalScrollState = rememberLazyListState()
+        val horizontalScrollState = rememberLazyListState()
 
-        LazyColumn(
+        LazyRow(
             Modifier.fillMaxSize().padding(end = 12.dp),
-            verticalScrollState,
+            horizontalScrollState,
         ) {
-            items(tree.items.size) { idx ->
-                HierarchyItemView(tree.items[idx])
-                Spacer(modifier = Modifier.height(5.dp))
+            item {
+                LazyColumn(
+                    Modifier.fillMaxSize().padding(end = 12.dp),
+                    verticalScrollState,
+                ) {
+                    items(tree.items.size) { idx ->
+                        HierarchyItemView(tree.items[idx])
+                        Spacer(modifier = Modifier.height(5.dp))
+                    }
+                }
             }
         }
         VerticalScrollbar(
             adapter = rememberScrollbarAdapter(verticalScrollState),
             modifier = Modifier.align(Alignment.CenterEnd)
-                .fillMaxHeight()
-        )/*
+                .fillMaxHeight(),
+        )
         HorizontalScrollbar(
             adapter = rememberScrollbarAdapter(horizontalScrollState),
-            modifier = Modifier.align(Alignment.CenterEnd)
+            modifier = Modifier.align(Alignment.BottomCenter)
                 .fillMaxWidth()
-        )*/
+                .padding(end = 12.dp)
+        )
     }
 }
 
@@ -108,7 +115,7 @@ fun HierarchyItemView(node: Tree.TreeItem) {
             .padding(start = 24.dp * node.depth)
             .clickable { node.open() }
             .background(
-                if (hoverState.value) Color.LightGray else Color(135, 135, 135, 40),
+                if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
                 RoundedCornerShape(4.dp)
             )
             .pointerMoveFilter(
@@ -126,9 +133,11 @@ fun HierarchyItemView(node: Tree.TreeItem) {
         HierarchyItemIconView(node)
         Text(
             text = node.name,
+            color = MaterialTheme.colors.onSecondary,
             softWrap = true,
             overflow = TextOverflow.Ellipsis,
-            maxLines = 1
+            maxLines = 1,
+            modifier = Modifier.padding(end = 8.dp)
         )
     }
 
@@ -138,11 +147,23 @@ fun HierarchyItemView(node: Tree.TreeItem) {
 fun HierarchyItemIconView(node: Tree.TreeItem) {
     if (node.isFolder) {
         when {
-            !node.canExpand -> Icon(Icons.Default.Folder, contentDescription = node.name)
-            node.isExpanded -> Icon(Icons.Default.KeyboardArrowDown, contentDescription = node.name)
-            else -> Icon(Icons.Default.KeyboardArrowRight, contentDescription = node.name)
+            !node.canExpand -> Icon(
+                Icons.Default.Folder,
+                contentDescription = node.name,
+                tint = MaterialTheme.colors.onSecondary
+            )
+            node.isExpanded -> Icon(
+                Icons.Default.KeyboardArrowDown,
+                contentDescription = node.name,
+                tint = MaterialTheme.colors.onSecondary
+            )
+            else -> Icon(
+                Icons.Default.KeyboardArrowRight,
+                contentDescription = node.name,
+                tint = MaterialTheme.colors.onSecondary
+            )
         }
     } else {
-        Icon(Icons.Outlined.Description, contentDescription = node.name)
+        Icon(Icons.Outlined.Description, contentDescription = node.name, tint = MaterialTheme.colors.onSecondary)
     }
 }

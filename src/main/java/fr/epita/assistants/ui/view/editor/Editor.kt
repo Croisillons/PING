@@ -1,5 +1,6 @@
 package fr.epita.assistants.ui.view.editor
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -17,13 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
 
 @Composable
 fun OpenFilesView(projectStore: ProjectStore) {
-    Column {
+    Column (modifier = Modifier.background(MaterialTheme.colors.background)) {
         OpenFileTabsView(projectStore)
         if (projectStore.selectedOpenFile.value != null) {
             EditorView(
@@ -50,7 +52,7 @@ fun OpenFileTabsView(projectStore: ProjectStore) {
 fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -> Unit) {
     val hoverState = remember { mutableStateOf(false) }
     Surface(
-        color = if (hoverState.value or openFileStore.selected) Color.LightGray else Color.Transparent,
+        color = if (hoverState.value or openFileStore.selected) MaterialTheme.colors.onSurface else Color.Transparent,
         shape = RoundedCornerShape(4.dp),
         modifier = Modifier
             .pointerMoveFilter(
@@ -70,10 +72,13 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
             modifier = Modifier.padding(8.dp, 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = openFileStore.filename)
+            Text(
+                text = openFileStore.filename,
+                color = MaterialTheme.colors.onPrimary
+            )
             Icon(
                 Icons.Default.Close,
-                tint = if (hoverState.value) LocalContentColor.current else Color.Transparent,
+                tint = if (hoverState.value) MaterialTheme.colors.onPrimary else Color.Transparent,
                 contentDescription = "Close Tab",
                 modifier = Modifier
                     .size(24.dp)
@@ -88,12 +93,13 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
 fun EditorView(content: String, onValueChange: (String) -> Unit) {
     SelectionContainer {
         Surface(
-            color = MaterialTheme.colors.background,
+            color = MaterialTheme.colors.secondary,
             modifier = Modifier.fillMaxWidth()
         ) {
             BasicTextField(
                 value = content,
                 onValueChange = onValueChange,
+                textStyle = TextStyle(MaterialTheme.colors.onPrimary),
                 modifier = Modifier.padding(horizontal = 8.dp)
                     .fillMaxHeight(),
             )
