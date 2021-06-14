@@ -5,8 +5,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import fr.epita.assistants.myide.domain.entity.MyProject
 import fr.epita.assistants.myide.domain.entity.Node
+import fr.epita.assistants.myide.domain.entity.Project
 
-class ProjectStore(val project: MyProject) {
+class ProjectStore(val project: Project) {
     /**
      * List of tab displaying a file content
      */
