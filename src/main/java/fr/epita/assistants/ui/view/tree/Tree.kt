@@ -3,6 +3,7 @@ package fr.epita.assistants.ui.view.tree
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -126,7 +127,12 @@ fun HierarchyView(tree: Tree) {
             adapter = rememberScrollbarAdapter(verticalScrollState),
             modifier = Modifier.align(Alignment.CenterEnd)
                 .fillMaxHeight()
-        )
+        )/*
+        HorizontalScrollbar(
+            adapter = rememberScrollbarAdapter(horizontalScrollState),
+            modifier = Modifier.align(Alignment.CenterEnd)
+                .fillMaxWidth()
+        )*/
     }
 }
 
@@ -175,8 +181,6 @@ fun HierarchyItemIconView(node: Tree.TreeItem) {
             else -> Icon(Icons.Default.KeyboardArrowRight, contentDescription = node.name)
         }
     } else {
-
-
         Icon(Icons.Outlined.Description, contentDescription = node.name)
     }
 }

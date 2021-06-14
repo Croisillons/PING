@@ -10,6 +10,8 @@ import fr.epita.assistants.myide.domain.entity.MyProject
 import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.ProjectStore
+import fr.epita.assistants.ui.view.editor.EditorView
+import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
 import java.nio.file.Path
@@ -32,7 +34,7 @@ fun IdeView(ideStore: IdeStore) {
     Column {
         Row(modifier = Modifier.weight(0.7f)) {
             TreeView(ideStore.project)
-//            Editor()
+            OpenFilesView(ideStore.project)
         }
         Row(modifier = Modifier.weight(0.3f)) {
 //            Tools()
