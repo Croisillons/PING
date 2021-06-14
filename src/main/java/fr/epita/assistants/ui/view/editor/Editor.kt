@@ -7,10 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
@@ -91,7 +88,7 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
 fun EditorView(content: String, onValueChange: (String) -> Unit) {
     SelectionContainer {
         Surface(
-            color = Color.LightGray,
+            color = MaterialTheme.colors.background,
             modifier = Modifier.fillMaxWidth()
         ) {
             BasicTextField(

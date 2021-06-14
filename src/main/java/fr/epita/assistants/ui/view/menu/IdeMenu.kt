@@ -4,8 +4,11 @@ import androidx.compose.desktop.AppManager
 import androidx.compose.ui.window.v1.Menu
 import androidx.compose.ui.window.v1.MenuBar
 import androidx.compose.ui.window.v1.MenuItem
+import fr.epita.assistants.ui.store.IdeStore
+import fr.epita.assistants.ui.store.IdeTheme
+import fr.epita.assistants.ui.store.SettingStore
 
-fun IdeMenu() : MenuBar {
+fun IdeMenu(ideStore: IdeStore) : MenuBar {
     return MenuBar(
         Menu(
             name = "File",
@@ -24,11 +27,11 @@ fun IdeMenu() : MenuBar {
             name = "Theme",
             MenuItem(
                 name = "Light",
-                onClick = {  }
+                onClick = { ideStore.setting.setTheme(IdeTheme.LIGHT) }
             ),
             MenuItem(
                 name = "Dark",
-                onClick = {  }
+                onClick = { ideStore.setting.setTheme(IdeTheme.DARK) }
             ),
             MenuItem(
                 name = "Pink",

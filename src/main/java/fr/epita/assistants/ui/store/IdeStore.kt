@@ -4,7 +4,7 @@ import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.Settings
 import java.nio.file.Path
 
-class IdeStore(val projectService: MyProjectService, val setting: Settings) {
+class IdeStore(val projectService: MyProjectService, val setting: SettingStore) {
     lateinit var project: ProjectStore
 
     fun loadProject(path: String) {

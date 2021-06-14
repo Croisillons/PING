@@ -1,94 +1,56 @@
 package fr.epita.assistants.ui.view.tree
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Description
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.epita.assistants.myide.domain.entity.Node
+import fr.epita.assistants.ui.model.Tree
 import fr.epita.assistants.ui.store.ProjectStore
-
-class ExpandableNode(val node: Node, val depth: Int) {
-    var displayedChildren: List<ExpandableNode> by mutableStateOf(emptyList())
-    fun toggleExpand() {
-        if (displayedChildren.isEmpty()) {
-            displayedChildren = node.children.map { ExpandableNode(it, depth + 1) }
-                .sortedWith(compareBy({ it.node.isFolder }, { it.node.path.fileName.toString() }))
-                .sortedBy { !it.node.isFolder }
-        } else {
-            displayedChildren = emptyList()
-        }
-    }
-
-}
-
-class Tree(val projectStore: ProjectStore) {
-    inner class TreeItem(private val node: ExpandableNode) {
-        val name: String get() = node.node.path.fileName.toString()
-        val depth: Int get() = node.depth
-        val isFolder: Boolean get() = node.node.isFolder
-        val canExpand: Boolean get() = node.node.children.isNotEmpty()
-        val isExpanded: Boolean get() = node.displayedChildren.isNotEmpty()
-        val extension: String get() = node.node.path.fileName.toString().substringAfterLast(".").lowercase()
-        fun open() = if (isFolder) node.toggleExpand() else projectStore.openFileEditor(this.node.node)
-    }
-
-    val rootNode: ExpandableNode = ExpandableNode(projectStore.project.rootNode, 0)
-    val items: List<TreeItem> get() = rootNode.toItems()
-
-    fun ExpandableNode.toItems(): List<TreeItem> {
-        val list = mutableListOf<TreeItem>()
-        fun ExpandableNode.recAdd(list: MutableList<TreeItem>) {
-            list.add(TreeItem(this))
-            for (child in displayedChildren) {
-                child.recAdd(list)
-            }
-        }
-
-        recAdd(list)
-        return list
-    }
-}
 
 @Composable
 fun TreeView(projectStore: ProjectStore) {
+    val tree: MutableState<Tree> = remember { mutableStateOf(Tree(projectStore)) }
     Column(modifier = Modifier.width(300.dp)) {
         TreeTopBarView(projectStore.project.rootNode.path.fileName.toString(), {})
-        HierarchyView(Tree(projectStore))
+        HierarchyView(tree.value)
     }
 }
 
 @Composable
 fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.background),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = projectName
+            text = projectName,
+            color = MaterialTheme.colors.onPrimary
         )
 
         Icon(
             Icons.Default.Refresh,
-            tint = LocalContentColor.current,
+            tint = MaterialTheme.colors.onPrimary,
             contentDescription = "Refresh project tree",
             modifier = Modifier
                 .size(24.dp)
@@ -97,7 +59,7 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
         )
         Icon(
             Icons.Default.Add,
-            tint = LocalContentColor.current,
+            tint = MaterialTheme.colors.onPrimary,
             contentDescription = "New Project",
             modifier = Modifier
                 .size(24.dp)
@@ -176,7 +138,7 @@ fun HierarchyItemView(node: Tree.TreeItem) {
 fun HierarchyItemIconView(node: Tree.TreeItem) {
     if (node.isFolder) {
         when {
-            !node.canExpand -> Unit
+            !node.canExpand -> Icon(Icons.Default.Folder, contentDescription = node.name)
             node.isExpanded -> Icon(Icons.Default.KeyboardArrowDown, contentDescription = node.name)
             else -> Icon(Icons.Default.KeyboardArrowRight, contentDescription = node.name)
         }

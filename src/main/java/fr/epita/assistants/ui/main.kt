@@ -6,26 +6,27 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import fr.epita.assistants.myide.domain.entity.MyProject
 import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
-import fr.epita.assistants.ui.store.ProjectStore
-import fr.epita.assistants.ui.view.editor.EditorView
+import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
-import java.nio.file.Path
 
-fun main() = Window(
-    title = "IDE",
-    menuBar = IdeMenu()
-) {
+fun main() {
     val myProjectService: MyProjectService = MyProjectService()
-    val ideStore: IdeStore = IdeStore(myProjectService, Settings())
+    val ideStore: IdeStore = IdeStore(myProjectService, SettingStore())
     ideStore.loadProject("./src/")
 
-    MaterialTheme {
-        IdeView(ideStore)
+    Window(
+        title = "IDE",
+        menuBar = IdeMenu(ideStore)
+    ) {
+        MaterialTheme(
+            colors = ideStore.setting.theme.value.colors
+        ) {
+            IdeView(ideStore)
+        }
     }
 }
 
