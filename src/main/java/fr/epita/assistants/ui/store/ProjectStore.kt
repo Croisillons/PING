@@ -8,6 +8,7 @@ import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.myide.domain.entity.Project
 
 class ProjectStore(val project: Project) {
+    val treeStore: MutableState<TreeStore> = mutableStateOf(TreeStore(this))
     /**
      * List of tab displaying a file content
      */

@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,15 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import fr.epita.assistants.ui.model.Tree
+import androidx.compose.ui.unit.sp
+import fr.epita.assistants.ui.store.TreeStore
 import fr.epita.assistants.ui.store.ProjectStore
 
 @Composable
 fun TreeView(projectStore: ProjectStore) {
-    val tree: MutableState<Tree> = remember { mutableStateOf(Tree(projectStore)) }
     Column(modifier = Modifier.width(300.dp).background(MaterialTheme.colors.primary)) {
         TreeTopBarView(projectStore.project.rootNode.path.fileName.toString(), {})
-        HierarchyView(tree.value)
+        HierarchyView(projectStore.treeStore.value)
     }
 }
 
@@ -45,6 +44,7 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
         Text(
             modifier = Modifier.padding(start = 8.dp),
             text = projectName,
+            fontSize = 20.sp,
             color = MaterialTheme.colors.onSecondary
         )
 
@@ -53,8 +53,8 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
             tint = MaterialTheme.colors.onSecondary,
             contentDescription = "Refresh project tree",
             modifier = Modifier
-                .size(24.dp)
-                .padding(4.dp)
+                .size(26.dp)
+                .padding(horizontal = 4.dp)
                 .clickable {}
         )
         Icon(
@@ -62,15 +62,15 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
             tint = MaterialTheme.colors.onSecondary,
             contentDescription = "New Project",
             modifier = Modifier
-                .size(24.dp)
-                .padding(4.dp)
+                .size(26.dp)
+                .padding(horizontal = 4.dp)
                 .clickable {}
         )
     }
 }
 
 @Composable
-fun HierarchyView(tree: Tree) {
+fun HierarchyView(treeStore: TreeStore) {
     Box(
         modifier = Modifier.padding(8.dp).fillMaxWidth().background(MaterialTheme.colors.primary)
     ) {
@@ -86,8 +86,8 @@ fun HierarchyView(tree: Tree) {
                     Modifier.fillMaxSize().padding(end = 12.dp),
                     verticalScrollState,
                 ) {
-                    items(tree.items.size) { idx ->
-                        HierarchyItemView(tree.items[idx])
+                    items(treeStore.items.size) { idx ->
+                        HierarchyItemView(treeStore.items[idx])
                         Spacer(modifier = Modifier.height(5.dp))
                     }
                 }
@@ -108,7 +108,7 @@ fun HierarchyView(tree: Tree) {
 }
 
 @Composable
-fun HierarchyItemView(node: Tree.TreeItem) {
+fun HierarchyItemView(node: TreeStore.TreeItem) {
     val hoverState = remember { mutableStateOf(false) }
 
     Row(
@@ -146,7 +146,7 @@ fun HierarchyItemView(node: Tree.TreeItem) {
 }
 
 @Composable
-fun HierarchyItemIconView(node: Tree.TreeItem) {
+fun HierarchyItemIconView(node: TreeStore.TreeItem) {
     if (node.isFolder) {
         when {
             !node.canExpand -> Icon(

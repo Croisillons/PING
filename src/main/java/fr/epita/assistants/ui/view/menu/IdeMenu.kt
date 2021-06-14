@@ -13,7 +13,7 @@ fun IdeMenu(ideStore: IdeStore): MenuBar {
             name = "File",
             MenuItem(
                 name = "Open Project",
-                onClick = { },
+                onClick = { ideStore.openProject() },
 //                shortcut = KeyStroke(Key.I)
             ),
             MenuItem(

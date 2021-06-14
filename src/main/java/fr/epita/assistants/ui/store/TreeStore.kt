@@ -1,8 +1,8 @@
-package fr.epita.assistants.ui.model
+package fr.epita.assistants.ui.store
 
-import fr.epita.assistants.ui.store.ProjectStore
+import fr.epita.assistants.ui.model.ExpandableNode
 
-class Tree(val projectStore: ProjectStore) {
+class TreeStore(val projectStore: ProjectStore) {
     inner class TreeItem(private val node: ExpandableNode) {
         val name: String get() = node.node.path.fileName.toString()
         val depth: Int get() = node.depth
