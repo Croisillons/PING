@@ -39,8 +39,10 @@ fun OpenFilesView(projectStore: ProjectStore) {
 @Composable
 fun OpenFileTabsView(projectStore: ProjectStore) {
     Row(
-        modifier = Modifier.padding(4.dp)
-            .horizontalScroll(rememberScrollState())
+        modifier = Modifier
+            .height(44.dp)
+            .horizontalScroll(rememberScrollState()),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         for (openFileStore in projectStore.openFiles) {
             OpenFileTab(openFileStore, { projectStore.selectOpenFile(openFileStore) }) { openFileStore.close() }
@@ -74,11 +76,11 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
         ) {
             Text(
                 text = openFileStore.filename,
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colors.onSecondary
             )
             Icon(
                 Icons.Default.Close,
-                tint = if (hoverState.value) MaterialTheme.colors.onPrimary else Color.Transparent,
+                tint = if (hoverState.value) MaterialTheme.colors.onSecondary else Color.Transparent,
                 contentDescription = "Close Tab",
                 modifier = Modifier
                     .size(24.dp)
@@ -99,7 +101,7 @@ fun EditorView(content: String, onValueChange: (String) -> Unit) {
             BasicTextField(
                 value = content,
                 onValueChange = onValueChange,
-                textStyle = TextStyle(MaterialTheme.colors.onPrimary),
+                textStyle = TextStyle(MaterialTheme.colors.onSecondary),
                 modifier = Modifier.padding(horizontal = 8.dp)
                     .fillMaxHeight(),
             )

@@ -11,18 +11,18 @@ enum class IdeTheme(val colors: Colors) {
     LIGHT (
         lightColors(
             onPrimary = Color(56, 63, 81),
-            primary = Color(244,247,245),
+            primary = Color(235,235,235),
             onSecondary = Color(87,90,94),
-            secondary = Color(244,247,245),
+            secondary = Color(218,220,221),
             background = Color(244,247,245),
             onSurface = Color(175,175,175,50)
         )
     ),
     DARK(
         darkColors(
-            onPrimary = Color(255, 255, 255),
-            primary = Color(33,37,43),
-            onSecondary = Color(171,178,191),
+            onPrimary = Color(171,178,191),
+            primary = Color(65,72,85),
+            onSecondary = Color(255, 255, 255),
             secondary = Color(40, 44, 52), // Color(50,56,68),
             background = Color(33,37,43),
             onSurface = Color(175,175,175,50)
@@ -30,31 +30,31 @@ enum class IdeTheme(val colors: Colors) {
     ),
     PINK(
         lightColors(
-            onPrimary = Color(241, 228, 243),
-            primary = Color(254,93,159),
-            onSecondary = Color(244,187,211),
-            secondary = Color(246,134,189),
-            background = Color(254,93,159),
+            onPrimary = Color(56, 63, 81),
+            primary = Color(244,180,204),
+            onSecondary = Color(87,90,94),
+            secondary = Color(252,234,241),
+            background = Color(255,235,235),
             onSurface = Color(254,93,159,50)
         )
     ),
     BLUE(
         lightColors(
-            onPrimary = Color(242,242, 242),
-            primary = Color(3,33, 102),
-            onSecondary = Color(217,217,217),
-            secondary = Color(6,47,79),
-            background = Color(3,33, 102),
+            onPrimary = Color(56, 63, 81),
+            primary = Color(238,238,238),
+            onSecondary = Color(255, 255, 255),
+            secondary = Color(44,62,80),
+            background = Color(0, 122,204),
             onSurface = Color(3,85,102,50)
         )
     ),
     GREEN(
         lightColors(
             onPrimary = Color(232,232,232),
-            primary = Color(35,128,130),
+            primary = Color(0,179,151),
             onSecondary = Color(200,200,200),
-            secondary = Color(3,85,102),
-            background = Color(35,128,130),
+            secondary = Color(10,73,85),
+            background = Color(0, 43,55),
             onSurface = Color(87,90,94,50)
         )
     ),

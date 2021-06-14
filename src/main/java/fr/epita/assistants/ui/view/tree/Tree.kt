@@ -37,18 +37,20 @@ fun TreeView(projectStore: ProjectStore) {
 @Composable
 fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.primary),
+        modifier = Modifier.fillMaxWidth()
+            .height(44.dp)
+            .background(MaterialTheme.colors.background),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier.padding(start = 8.dp),
             text = projectName,
-            color = MaterialTheme.colors.onPrimary
+            color = MaterialTheme.colors.onSecondary
         )
 
         Icon(
             Icons.Default.Refresh,
-            tint = MaterialTheme.colors.onPrimary,
+            tint = MaterialTheme.colors.onSecondary,
             contentDescription = "Refresh project tree",
             modifier = Modifier
                 .size(24.dp)
@@ -57,7 +59,7 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
         )
         Icon(
             Icons.Default.Add,
-            tint = MaterialTheme.colors.onPrimary,
+            tint = MaterialTheme.colors.onSecondary,
             contentDescription = "New Project",
             modifier = Modifier
                 .size(24.dp)
@@ -133,7 +135,7 @@ fun HierarchyItemView(node: Tree.TreeItem) {
         HierarchyItemIconView(node)
         Text(
             text = node.name,
-            color = MaterialTheme.colors.onSecondary,
+            color = MaterialTheme.colors.onPrimary,
             softWrap = true,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -150,20 +152,20 @@ fun HierarchyItemIconView(node: Tree.TreeItem) {
             !node.canExpand -> Icon(
                 Icons.Default.Folder,
                 contentDescription = node.name,
-                tint = MaterialTheme.colors.onSecondary
+                tint = MaterialTheme.colors.onPrimary
             )
             node.isExpanded -> Icon(
                 Icons.Default.KeyboardArrowDown,
                 contentDescription = node.name,
-                tint = MaterialTheme.colors.onSecondary
+                tint = MaterialTheme.colors.onPrimary
             )
             else -> Icon(
                 Icons.Default.KeyboardArrowRight,
                 contentDescription = node.name,
-                tint = MaterialTheme.colors.onSecondary
+                tint = MaterialTheme.colors.onPrimary
             )
         }
     } else {
-        Icon(Icons.Outlined.Description, contentDescription = node.name, tint = MaterialTheme.colors.onSecondary)
+        Icon(Icons.Outlined.Description, contentDescription = node.name, tint = MaterialTheme.colors.onPrimary)
     }
 }
