@@ -3,6 +3,8 @@ package fr.epita.assistants.ui.store
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.myide.domain.entity.Project
 
@@ -21,6 +23,18 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * Currently viewed file tab
      */
     var selectedOpenFile: MutableState<OpenFileStore?> = mutableStateOf(null)
+
+    val treeWidth: MutableState<Dp> = mutableStateOf(300.dp)
+    val filesHeight: MutableState<Dp> = mutableStateOf(400.dp)
+
+    fun incrementTreeWidth(x: Dp) {
+        treeWidth.value = treeWidth.value.plus(x)
+    }
+
+    fun incrementFilesHeight(x: Dp)
+    {
+        filesHeight.value = filesHeight.value.plus(x)
+    }
 
     /**
      * Select an open file tab

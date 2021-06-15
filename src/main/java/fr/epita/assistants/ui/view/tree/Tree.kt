@@ -27,7 +27,7 @@ import fr.epita.assistants.ui.store.TreeStore
 
 @Composable
 fun TreeView(projectStore: ProjectStore) {
-    Column(modifier = Modifier.width(300.dp).background(MaterialTheme.colors.primary)) {
+    Column(modifier = Modifier.width(projectStore.treeWidth.value).background(MaterialTheme.colors.primary)) {
         TreeTopBarView(projectStore.getTruncatedProjectName(), {})
         HierarchyView(projectStore.tree.value)
     }

@@ -2,6 +2,9 @@ package fr.epita.assistants.ui
 
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -10,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.service.MyProjectService
@@ -42,11 +46,23 @@ fun main() {
 @Composable
 fun IdeView(ideStore: IdeStore) {
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
-        Row(modifier = Modifier.weight(0.7f)) {
+        Row(modifier = Modifier.height(ideStore.project.value?.filesHeight!!.value)) {
             TreeView(ideStore.project.value!!)
+            Box(
+                    Modifier.width(5.dp)
+                            .fillMaxHeight()
+                            .draggable(orientation = Orientation.Horizontal,
+                                    state = rememberDraggableState { ideStore.project.value!!.incrementTreeWidth(it.dp) })
+            )
             OpenFilesView(ideStore.project.value!!)
         }
-        Row(modifier = Modifier.weight(0.3f)) {
+        Box(
+                Modifier.height(5.dp)
+                        .fillMaxWidth()
+                        .draggable(orientation = Orientation.Vertical,
+                                state = rememberDraggableState { ideStore.project.value!!.incrementFilesHeight(it.dp) })
+        )
+        Row(modifier = Modifier.fillMaxHeight()) {
 //            Tools()
         }
     }
