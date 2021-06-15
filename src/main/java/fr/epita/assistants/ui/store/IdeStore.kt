@@ -28,7 +28,7 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
      * Load Project
      */
     fun loadProject(path: String) {
-        project.value = ProjectStore(projectService.load(Path.of(path)))
+        project.value = ProjectStore(this, projectService.load(Path.of(path)))
     }
 
     /**

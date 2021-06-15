@@ -21,6 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -37,7 +41,10 @@ fun OpenFilesView(projectStore: ProjectStore) {
                 projectStore.selectedOpenFile.value!!.hasChanged.value = true
                 projectStore.selectedOpenFile.value!!.content.value = it
             }
-            EditorView(projectStore.selectedOpenFile.value!!.content.value, onValueChange)
+            EditorView(
+                projectStore.selectedOpenFile.value!!.content.value,
+                onValueChange
+            ) { projectStore.saveFile() }
         } else {
             NoOpenFileView()
         }
@@ -104,7 +111,7 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
 }
 
 @Composable
-fun EditorView(content: String, onValueChange: (String) -> Unit) {
+fun EditorView(content: String, onValueChange: (String) -> Unit, onSave: () -> Unit) {
     SelectionContainer {
         Surface(
             color = MaterialTheme.colors.secondary,
@@ -115,7 +122,17 @@ fun EditorView(content: String, onValueChange: (String) -> Unit) {
                 onValueChange = onValueChange,
                 textStyle = TextStyle(MaterialTheme.colors.onSecondary),
                 modifier = Modifier.padding(horizontal = 8.dp)
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
+                    .onPreviewKeyEvent {
+                        when {
+                            (it.isCtrlPressed && it.key == Key.S) -> {
+                                onSave()
+                                true
+                            }
+                            else -> false
+                        }
+                    },
+//                visualTransformation =  // TODO: Highlighted syntax : take a look at visualTransformation
             )
         }
     }

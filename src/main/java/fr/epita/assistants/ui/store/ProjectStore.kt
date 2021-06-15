@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.myide.domain.entity.Project
 
-class ProjectStore(val project: Project) {
+class ProjectStore(val ideStore: IdeStore, val project: Project) {
     /**
      * List of files of the project
      */
@@ -63,5 +63,17 @@ class ProjectStore(val project: Project) {
         if (projectName.length > 20)
             projectName = projectName.take(20) + "..."
         return projectName
+    }
+
+    /**
+     * Save selected file
+     */
+    fun saveFile() {
+        val node = selectedOpenFile.value!!.node
+        val content = selectedOpenFile.value!!.content.value
+
+        ideStore.projectService.nodeService.update(node, 0, Int.MAX_VALUE, content.toByteArray())
+
+        selectedOpenFile.value!!.hasChanged.value = false
     }
 }
