@@ -8,7 +8,10 @@ import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.myide.domain.entity.Project
 
 class ProjectStore(val project: Project) {
-    val treeStore: MutableState<TreeStore> = mutableStateOf(TreeStore(this))
+    /**
+     * List of files of the project
+     */
+    val tree: MutableState<TreeStore> = mutableStateOf(TreeStore(this))
     /**
      * List of tab displaying a file content
      */
@@ -47,5 +50,15 @@ class ProjectStore(val project: Project) {
         val index = openFiles.indexOf(editor)
         openFiles.remove(editor)
         selectOpenFile(openFiles.getOrNull(index.coerceAtMost(openFiles.lastIndex)))
+    }
+
+    /**
+     * Get Project Name Truncated to 20 char
+     */
+    fun getTruncatedProjectName(): String {
+        var projectName = project.rootNode.path.fileName.toString()
+        if (projectName.length > 20)
+            projectName = projectName.take(20) + "..."
+        return projectName
     }
 }

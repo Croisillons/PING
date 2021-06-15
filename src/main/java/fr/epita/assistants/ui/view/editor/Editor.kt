@@ -18,8 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
 
@@ -31,6 +33,8 @@ fun OpenFilesView(projectStore: ProjectStore) {
             EditorView(
                 projectStore.selectedOpenFile.value!!.content.value
             ) { projectStore.selectedOpenFile.value!!.content.value = it }
+        } else {
+            NoOpenFileView()
         }
     }
 }
@@ -106,5 +110,21 @@ fun EditorView(content: String, onValueChange: (String) -> Unit) {
                     .fillMaxHeight(),
             )
         }
+    }
+}
+
+@Composable
+fun NoOpenFileView() {
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.colors.secondary),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Open a file",
+            color = MaterialTheme.colors.onSecondary,
+            fontSize = 20.sp,
+        )
     }
 }

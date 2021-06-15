@@ -10,11 +10,19 @@ import fr.epita.assistants.ui.store.IdeTheme
 fun IdeMenu(ideStore: IdeStore): MenuBar {
     return MenuBar(
         Menu(
-            name = "File",
+            name = "Project",
             MenuItem(
                 name = "Open Project",
                 onClick = { ideStore.openProject() },
 //                shortcut = KeyStroke(Key.I)
+            ),
+            MenuItem(
+                name = "Clean Project",
+                onClick = { ideStore.cleanProject() },
+            ),
+            MenuItem(
+                name = "Export Project",
+                onClick = { ideStore.exportProject() },
             ),
             MenuItem(
                 name = "Exit",
@@ -43,6 +51,48 @@ fun IdeMenu(ideStore: IdeStore): MenuBar {
             MenuItem(
                 name = "Green",
                 onClick = { ideStore.setting.setTheme(IdeTheme.GREEN) }
+            ),
+        ),
+        Menu(
+            name = "Maven",
+            MenuItem(
+                name = "Install",
+                onClick = {}
+            ),
+            MenuItem(
+                name = "Compile",
+                onClick = {}
+            ),
+            MenuItem(
+                name = "Exec",
+                onClick = {}
+            ),
+            MenuItem(
+                name = "Clean",
+                onClick = {}
+            ),
+            MenuItem(
+                name = "Package",
+                onClick = {}
+            ),
+            MenuItem(
+                name = "Test",
+                onClick = {}
+            ),
+            MenuItem(
+                name = "Tree",
+                onClick = {}
+            ),
+        ),
+        Menu(
+            name = "Git",
+            MenuItem(
+                name = "Pull",
+                onClick = {}
+            ),
+            MenuItem(
+                name = "Push",
+                onClick = {}
             ),
         )
     )

@@ -5,6 +5,7 @@ import androidx.compose.desktop.AppWindow
 import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.Settings
 import java.awt.FileDialog
@@ -15,6 +16,9 @@ import javax.swing.JPanel
 class IdeStore(val projectService: MyProjectService, val setting: SettingStore) : JPanel() {
     var project: MutableState<ProjectStore?> = mutableStateOf(null)
 
+    /**
+     * Open Project
+     */
     fun openProject() {
         val jChooser = JFileChooser()
         jChooser.dialogTitle = "Open Project Folder"
@@ -25,8 +29,28 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
         }
     }
 
-
+    /**
+     * Load Project
+     */
     fun loadProject(path: String) {
         project.value = ProjectStore(projectService.load(Path.of(path)))
+    }
+
+    /**
+     * Clean Project
+     */
+    fun cleanProject() {
+        if (project.value != null) {
+            projectService.execute(project.value!!.project, Mandatory.Features.Any.CLEANUP)
+        }
+    }
+
+    /**
+     * Export Project
+     */
+    fun exportProject() {
+        if (project.value != null) {
+            projectService.execute(project.value!!.project, Mandatory.Features.Any.DIST)
+        }
     }
 }

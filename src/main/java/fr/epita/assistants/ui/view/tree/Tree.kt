@@ -28,8 +28,8 @@ import fr.epita.assistants.ui.store.ProjectStore
 @Composable
 fun TreeView(projectStore: ProjectStore) {
     Column(modifier = Modifier.width(300.dp).background(MaterialTheme.colors.primary)) {
-        TreeTopBarView(projectStore.project.rootNode.path.fileName.toString(), {})
-        HierarchyView(projectStore.treeStore.value)
+        TreeTopBarView(projectStore.getTruncatedProjectName(), {})
+        HierarchyView(projectStore.tree.value)
     }
 }
 
@@ -45,6 +45,8 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
             modifier = Modifier.padding(start = 8.dp),
             text = projectName,
             fontSize = 20.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colors.onSecondary
         )
 
