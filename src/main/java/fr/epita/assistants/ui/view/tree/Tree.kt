@@ -39,7 +39,8 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
         modifier = Modifier.fillMaxWidth()
             .height(44.dp)
             .background(MaterialTheme.colors.background),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             modifier = Modifier.padding(start = 8.dp),
@@ -50,24 +51,29 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
             color = MaterialTheme.colors.onSecondary
         )
 
-        Icon(
-            Icons.Default.Refresh,
-            tint = MaterialTheme.colors.onSecondary,
-            contentDescription = "Refresh project tree",
-            modifier = Modifier
-                .size(26.dp)
-                .padding(horizontal = 4.dp)
-                .clickable {}
-        )
-        Icon(
-            Icons.Default.Add,
-            tint = MaterialTheme.colors.onSecondary,
-            contentDescription = "New Project",
-            modifier = Modifier
-                .size(26.dp)
-                .padding(horizontal = 4.dp)
-                .clickable {}
-        )
+        Row {
+            Icon(
+                Icons.Default.Refresh,
+                tint = MaterialTheme.colors.onSecondary,
+                contentDescription = "Refresh project tree",
+                modifier = Modifier
+                    .size(26.dp)
+                    .padding(horizontal = 4.dp)
+                    .defaultMinSize(minWidth = 26.dp)
+                    .clickable {}
+            )
+            Icon(
+                Icons.Default.Add,
+                tint = MaterialTheme.colors.onSecondary,
+                contentDescription = "New Project",
+                modifier = Modifier
+                    .size(26.dp)
+                    .padding(horizontal = 4.dp)
+                    .defaultMinSize(minWidth = 26.dp)
+                    .clickable {}
+            )
+        }
+
     }
 }
 

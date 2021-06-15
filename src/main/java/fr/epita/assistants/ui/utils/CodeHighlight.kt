@@ -1,7 +1,6 @@
 package fr.epita.assistants.ui.utils
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -12,7 +11,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 
 
-class CodeHighlight() : VisualTransformation {
+class CodeHighlight(val colors: Colors) : VisualTransformation {
     val offsetMapping = object : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int {
             return offset
@@ -28,66 +27,76 @@ class CodeHighlight() : VisualTransformation {
         return TransformedText(codeString(text.toString()), offsetMapping)
     }
 
-}
+    private fun codeString(str: String) = buildAnnotatedString {
+        withStyle(SpanStyle(colors.onSecondary)) {
+            val strFormatted = str.replace("\t", "    ")
+            append(strFormatted)
+            addStyle(colors.primaryVariant, strFormatted, ":")
+            addStyle(colors.primaryVariant, strFormatted, "=")
+            addStyle(colors.primaryVariant, strFormatted, "\"")
+            addStyle(colors.primaryVariant, strFormatted, "[")
+            addStyle(colors.primaryVariant, strFormatted, "]")
+            addStyle(colors.primaryVariant, strFormatted, "{")
+            addStyle(colors.primaryVariant, strFormatted, "}")
+            addStyle(colors.primaryVariant, strFormatted, "(")
+            addStyle(colors.primaryVariant, strFormatted, ")")
+            addStyle(colors.primaryVariant, strFormatted, ",")
+            addStyle(colors.primaryVariant, strFormatted, "static ")
+            addStyle(colors.primaryVariant, strFormatted, "if ")
+            addStyle(colors.primaryVariant, strFormatted, "for ")
+            addStyle(colors.primaryVariant, strFormatted, "try ")
+            addStyle(colors.primaryVariant, strFormatted, "catch ")
+            addStyle(colors.primaryVariant, strFormatted, "new ")
 
-private fun codeString(str: String) = buildAnnotatedString {
-    withStyle(AppTheme.code.simple) {
-        val strFormatted = str.replace("\t", "    ")
-        append(strFormatted)
-        addStyle(AppTheme.code.punctuation, strFormatted, ":")
-        addStyle(AppTheme.code.punctuation, strFormatted, "=")
-        addStyle(AppTheme.code.punctuation, strFormatted, "\"")
-        addStyle(AppTheme.code.punctuation, strFormatted, "[")
-        addStyle(AppTheme.code.punctuation, strFormatted, "]")
-        addStyle(AppTheme.code.punctuation, strFormatted, "{")
-        addStyle(AppTheme.code.punctuation, strFormatted, "}")
-        addStyle(AppTheme.code.punctuation, strFormatted, "(")
-        addStyle(AppTheme.code.punctuation, strFormatted, ")")
-        addStyle(AppTheme.code.punctuation, strFormatted, ",")
-        addStyle(AppTheme.code.keyword, strFormatted, "fun ")
-        addStyle(AppTheme.code.keyword, strFormatted, "val ")
-        addStyle(AppTheme.code.keyword, strFormatted, "var ")
-        addStyle(AppTheme.code.keyword, strFormatted, "private ")
-        addStyle(AppTheme.code.keyword, strFormatted, "internal ")
-        addStyle(AppTheme.code.keyword, strFormatted, "for ")
-        addStyle(AppTheme.code.keyword, strFormatted, "expect ")
-        addStyle(AppTheme.code.keyword, strFormatted, "actual ")
-        addStyle(AppTheme.code.keyword, strFormatted, "import ")
-        addStyle(AppTheme.code.keyword, strFormatted, "package ")
-        addStyle(AppTheme.code.value, strFormatted, "true")
-        addStyle(AppTheme.code.value, strFormatted, "false")
-        addStyle(AppTheme.code.value, strFormatted, Regex("[0-9]*"))
-        addStyle(AppTheme.code.annotation, strFormatted, Regex("^@[a-zA-Z_]*"))
-        addStyle(AppTheme.code.comment, strFormatted, Regex("^\\s*//.*"))
-        // TODO:
-        // java keyword: public return ->
-        // java type: primitive type
-        // annotation: @
-        // comment: //
-        // inside string: "" or ''
+            addStyle(colors.secondaryVariant, strFormatted, "fun ")
+            addStyle(colors.secondaryVariant, strFormatted, "final ")
+            addStyle(colors.secondaryVariant, strFormatted, "val ")
+            addStyle(colors.secondaryVariant, strFormatted, "var ")
+            addStyle(colors.secondaryVariant, strFormatted, "private ")
+            addStyle(colors.secondaryVariant, strFormatted, "internal ")
+            addStyle(colors.secondaryVariant, strFormatted, "expect ")
+            addStyle(colors.secondaryVariant, strFormatted, "actual ")
+            addStyle(colors.secondaryVariant, strFormatted, "import ")
+            addStyle(colors.secondaryVariant, strFormatted, "package ")
 
+            addStyle(colors.onBackground, strFormatted, "true")
+            addStyle(colors.onBackground, strFormatted, "false")
+            addStyle(colors.onBackground, strFormatted, Regex(" [0-9]*"))
+            addStyle(colors.onBackground, strFormatted, Regex("@[a-zA-Z_]*"))
+            addStyle(colors.onBackground, strFormatted, Regex(" +//.*"))
+
+            addStyle(colors.onBackground, strFormatted, "public ")
+            addStyle(colors.onBackground, strFormatted, "return ")
+            addStyle(colors.onBackground, strFormatted, "-> ")
+
+            addStyle(colors.onBackground, strFormatted, Regex(" int "))
+            addStyle(colors.onBackground, strFormatted, Regex(" boolean "))
+            addStyle(colors.onBackground, strFormatted, Regex(" float "))
+            addStyle(colors.onBackground, strFormatted, Regex(" long "))
+            addStyle(colors.onBackground, strFormatted, Regex(" byte "))
+            addStyle(colors.onBackground, strFormatted, Regex(" short "))
+            addStyle(colors.onBackground, strFormatted, Regex(" double "))
+            addStyle(colors.onBackground, strFormatted, Regex(" char "))
+
+            addStyle(colors.onBackground, strFormatted, Regex("Integer "))
+            addStyle(colors.onBackground, strFormatted, Regex("String "))
+            addStyle(colors.onBackground, strFormatted, Regex("Boolean "))
+            addStyle(colors.onBackground, strFormatted, Regex("Float "))
+            addStyle(colors.onBackground, strFormatted, Regex("Long "))
+            addStyle(colors.onBackground, strFormatted, Regex("Double "))
+            addStyle(colors.onBackground, strFormatted, Regex("Char "))
+            addStyle(colors.onBackground, strFormatted, Regex("Short "))
+            addStyle(colors.onBackground, strFormatted, Regex("Byte "))
+        }
     }
-}
 
-private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, regexp: String) {
-    addStyle(style, text, Regex.fromLiteral(regexp))
-}
-
-private fun AnnotatedString.Builder.addStyle(style: SpanStyle, text: String, regexp: Regex) {
-    for (result in regexp.findAll(text)) {
-        addStyle(style, result.range.first, result.range.last + 1)
+    private fun AnnotatedString.Builder.addStyle(style: Color, text: String, regexp: String) {
+        addStyle(style, text, Regex.fromLiteral(regexp))
     }
-}
 
-object AppTheme {
-    val code: Code = Code()
-
-    class Code(
-        val simple: SpanStyle = SpanStyle(Color(0xFFA9B7C6)),
-        val value: SpanStyle = SpanStyle(Color(0xFF6897BB)),
-        val keyword: SpanStyle = SpanStyle(Color(0xFFCC7832)),
-        val punctuation: SpanStyle = SpanStyle(Color(0xFFA1C17E)),
-        val annotation: SpanStyle = SpanStyle(Color(0xFFBBB529)),
-        val comment: SpanStyle = SpanStyle(Color(0xFF808080))
-    )
+    private fun AnnotatedString.Builder.addStyle(style: Color, text: String, regexp: Regex) {
+        for (result in regexp.findAll(text)) {
+            addStyle(SpanStyle(style), result.range.first, result.range.last + 1)
+        }
+    }
 }

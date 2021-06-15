@@ -26,7 +26,8 @@ import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.OpenFileStore
@@ -135,7 +136,7 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boo
             BasicTextField(
                 value = content,
                 onValueChange = onValueChange,
-                textStyle = TextStyle(MaterialTheme.colors.onSecondary),
+                textStyle = TextStyle(MaterialTheme.colors.onSecondary, fontWeight = FontWeight(600)),
                 modifier = Modifier.padding(horizontal = 8.dp)
                     .fillMaxHeight()
                     .onPreviewKeyEvent {
@@ -151,7 +152,7 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boo
                             else -> false
                         }
                     },
-                visualTransformation = CodeHighlight() // TODO: Highlighted syntax : take a look at visualTransformation
+                visualTransformation = CodeHighlight(MaterialTheme.colors)
             )
         }
     }

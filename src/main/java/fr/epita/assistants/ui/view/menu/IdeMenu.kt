@@ -5,7 +5,7 @@ import androidx.compose.ui.window.v1.Menu
 import androidx.compose.ui.window.v1.MenuBar
 import androidx.compose.ui.window.v1.MenuItem
 import fr.epita.assistants.ui.store.IdeStore
-import fr.epita.assistants.ui.store.IdeTheme
+import fr.epita.assistants.ui.model.IdeTheme
 
 fun IdeMenu(ideStore: IdeStore): MenuBar {
     return MenuBar(
