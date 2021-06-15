@@ -14,12 +14,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Sed() {
+fun Sed(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit) {
     val from: MutableState<String> = remember { mutableStateOf("") }
     val to: MutableState<String> = remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = {
-
+            onReplace(false)
         },
         title = {
         },
@@ -43,13 +43,14 @@ fun Sed() {
         confirmButton = {
             Button(
                 onClick = {
-
+                    onValueChange(content.replace(from.value, to.value))
+                    onReplace(false)
                 },
-                enabled = from.value != "" && to.value != ""
+                enabled = from.value != ""//  && to.value != ""
             ) {
                 Text(text = "Replace")
             }
         },
-        backgroundColor = MaterialTheme.colors.background
+        backgroundColor = MaterialTheme.colors.background,
     )
 }

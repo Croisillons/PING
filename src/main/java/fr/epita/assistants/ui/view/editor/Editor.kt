@@ -31,9 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
+import fr.epita.assistants.ui.view.dialog.Sed
 
 @Composable
 fun OpenFilesView(projectStore: ProjectStore) {
+    val sedState = remember { mutableStateOf(false) }
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         OpenFileTabsView(projectStore)
         if (projectStore.selectedOpenFile.value != null) {
@@ -41,10 +43,21 @@ fun OpenFilesView(projectStore: ProjectStore) {
                 projectStore.selectedOpenFile.value!!.hasChanged.value = true
                 projectStore.selectedOpenFile.value!!.content.value = it
             }
+
+            val onReplace: (it: Boolean) -> Unit = {
+                sedState.value = it
+            }
+
             EditorView(
                 projectStore.selectedOpenFile.value!!.content.value,
-                onValueChange
+                onValueChange,
+                onReplace,
             ) { projectStore.saveFile() }
+
+            if (sedState.value) {
+                Sed(projectStore.selectedOpenFile.value!!.content.value, onValueChange, onReplace)
+            }
+
         } else {
             NoOpenFileView()
         }
@@ -111,7 +124,7 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
 }
 
 @Composable
-fun EditorView(content: String, onValueChange: (String) -> Unit, onSave: () -> Unit) {
+fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit, onSave: () -> Unit) {
     SelectionContainer {
         Surface(
             color = MaterialTheme.colors.secondary,
@@ -127,6 +140,10 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onSave: () -> U
                         when {
                             (it.isCtrlPressed && it.key == Key.S) -> {
                                 onSave()
+                                true
+                            }
+                            (it.isCtrlPressed && it.key == Key.F) -> {
+                                onReplace(true)
                                 true
                             }
                             else -> false
