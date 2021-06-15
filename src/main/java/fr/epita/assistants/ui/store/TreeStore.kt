@@ -16,6 +16,9 @@ class TreeStore(val projectStore: ProjectStore) {
     val rootNode: ExpandableNode = ExpandableNode(projectStore.project.rootNode, 0)
     val items: List<TreeItem> get() = rootNode.toItems()
 
+    /**
+     * List all tree into a list or TreeItem
+     */
     fun ExpandableNode.toItems(): List<TreeItem> {
         val list = mutableListOf<TreeItem>()
         fun ExpandableNode.recAdd(list: MutableList<TreeItem>) {

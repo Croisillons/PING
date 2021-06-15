@@ -1,14 +1,9 @@
 package fr.epita.assistants.ui.store
 
-import androidx.compose.desktop.AppManager
-import androidx.compose.desktop.AppWindow
-import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.service.MyProjectService
-import fr.epita.assistants.ui.Settings
-import java.awt.FileDialog
 import java.nio.file.Path
 import javax.swing.JFileChooser
 import javax.swing.JPanel

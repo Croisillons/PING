@@ -15,6 +15,9 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) {
             return projectStore.selectedOpenFile.value == this
         }
 
+    /**
+     * Close the file editor
+     */
     fun close() {
         projectStore.closeEditor(this)
     }
@@ -23,6 +26,9 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) {
         loadFileContent()
     }
 
+    /**
+     * Open and read file content in a Coroutine Scope
+     */
     fun loadFileContent() {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {

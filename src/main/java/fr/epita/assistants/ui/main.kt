@@ -3,7 +3,10 @@ package fr.epita.assistants.ui
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,7 +15,6 @@ import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.SettingStore
-import fr.epita.assistants.ui.view.dialog.Sed
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
@@ -60,7 +62,7 @@ fun OpenProjectView(onClick: () -> Unit) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text ="Hello World!",
+            text = "Hello World!",
             color = MaterialTheme.colors.onPrimary,
             fontSize = 42.sp,
             modifier = Modifier.padding(bottom = 16.dp)

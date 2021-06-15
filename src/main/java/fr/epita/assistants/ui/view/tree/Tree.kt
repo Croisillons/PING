@@ -22,8 +22,8 @@ import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.epita.assistants.ui.store.TreeStore
 import fr.epita.assistants.ui.store.ProjectStore
+import fr.epita.assistants.ui.store.TreeStore
 
 @Composable
 fun TreeView(projectStore: ProjectStore) {

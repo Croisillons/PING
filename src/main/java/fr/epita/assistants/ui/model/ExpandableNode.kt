@@ -7,6 +7,10 @@ import fr.epita.assistants.myide.domain.entity.Node
 
 class ExpandableNode(val node: Node, val depth: Int) {
     var displayedChildren: List<ExpandableNode> by mutableStateOf(emptyList())
+
+    /**
+     * Display or hide folder's children
+     */
     fun toggleExpand() {
         if (displayedChildren.isEmpty()) {
             displayedChildren = node.children.map { ExpandableNode(it, depth + 1) }

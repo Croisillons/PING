@@ -15,7 +15,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.DonutSmall
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +33,7 @@ fun OpenFilesView(projectStore: ProjectStore) {
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         OpenFileTabsView(projectStore)
         if (projectStore.selectedOpenFile.value != null) {
-            val onValueChange: (it: String) -> Unit = { 
+            val onValueChange: (it: String) -> Unit = {
                 projectStore.selectedOpenFile.value!!.hasChanged.value = true
                 projectStore.selectedOpenFile.value!!.content.value = it
             }

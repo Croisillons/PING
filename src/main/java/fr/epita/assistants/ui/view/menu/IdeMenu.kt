@@ -1,10 +1,6 @@
 package fr.epita.assistants.ui.view.menu
 
 import androidx.compose.desktop.AppManager
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.ui.window.v1.Menu
 import androidx.compose.ui.window.v1.MenuBar
 import androidx.compose.ui.window.v1.MenuItem
