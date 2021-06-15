@@ -26,22 +26,24 @@ import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
+import fr.epita.assistants.ui.utils.CodeHighlight
 import fr.epita.assistants.ui.view.dialog.Sed
 
 @Composable
 fun OpenFilesView(projectStore: ProjectStore) {
     val sedState = remember { mutableStateOf(false) }
+    val file = projectStore.selectedOpenFile.value
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         OpenFileTabsView(projectStore)
-        if (projectStore.selectedOpenFile.value != null) {
+        if (file != null) {
             val onValueChange: (it: String) -> Unit = {
-                projectStore.selectedOpenFile.value!!.hasChanged.value = true
-                projectStore.selectedOpenFile.value!!.content.value = it
+                file.hasChanged.value = true
+                file.content.value = it
             }
 
             val onReplace: (it: Boolean) -> Unit = {
@@ -49,13 +51,13 @@ fun OpenFilesView(projectStore: ProjectStore) {
             }
 
             EditorView(
-                projectStore.selectedOpenFile.value!!.content.value,
+                file.content.value,
                 onValueChange,
                 onReplace,
             ) { projectStore.saveFile() }
 
             if (sedState.value) {
-                Sed(projectStore.selectedOpenFile.value!!.content.value, onValueChange, onReplace)
+                Sed(file.content.value, onValueChange, onReplace)
             }
 
         } else {
@@ -149,7 +151,7 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boo
                             else -> false
                         }
                     },
-//                visualTransformation =  // TODO: Highlighted syntax : take a look at visualTransformation
+                visualTransformation = CodeHighlight() // TODO: Highlighted syntax : take a look at visualTransformation
             )
         }
     }
