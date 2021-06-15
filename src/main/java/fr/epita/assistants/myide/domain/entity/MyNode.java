@@ -1,6 +1,9 @@
 package fr.epita.assistants.myide.domain.entity;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,5 +69,18 @@ public class MyNode implements Node {
             }
         }
         return children;
+    }
+
+    @Override
+    public String getContent() {
+        final byte[] content;
+        try (FileInputStream inputStream = new FileInputStream(this.path.toFile()))
+        {
+            content = inputStream.readAllBytes();
+            return new String(content, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

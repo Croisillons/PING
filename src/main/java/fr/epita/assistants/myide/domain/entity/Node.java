@@ -27,6 +27,8 @@ public interface Node {
      */
     @NotNull List<@NotNull Node> getChildren();
 
+    String getContent();
+
     default boolean isFile() {
         return getType().equals(Types.FILE);
     }
