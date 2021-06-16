@@ -55,7 +55,9 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
         }
     }
 
-
+    /**
+     * Compile Project
+     */
     fun compileProject() {
         project.value?.let {
             val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)

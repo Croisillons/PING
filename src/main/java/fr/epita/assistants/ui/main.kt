@@ -64,7 +64,7 @@ fun IdeView(ideStore: IdeStore) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
         ) {
-            ActionsView()
+            ActionsView(ideStore)
         }
         Row(modifier = Modifier.height(ideStore.project.value?.filesHeight!!.value)) {
             TreeView(ideStore.project.value!!)

@@ -12,29 +12,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import fr.epita.assistants.ui.store.IdeStore
 
 @Composable
-fun ActionsView()
-{
+fun ActionsView(ideStore: IdeStore) {
     Icon(
-            Icons.Default.Coffee,
-            tint = MaterialTheme.colors.onSecondary,
-            contentDescription = "Build Project",
-            modifier = Modifier.padding(horizontal = 5.dp)
-                    .clickable {  }
+        Icons.Default.Coffee,
+        tint = MaterialTheme.colors.onSecondary,
+        contentDescription = "Build Project",
+        modifier = Modifier.padding(horizontal = 5.dp)
+            .clickable { ideStore.compileProject() }
     )
     Icon(
-            Icons.Default.PlayArrow,
-            tint = MaterialTheme.colors.onSecondary,
-            contentDescription = "Run Project",
-            modifier = Modifier.padding(horizontal = 5.dp)
-                    .clickable {  }
+        Icons.Default.PlayArrow,
+        tint = MaterialTheme.colors.onSecondary,
+        contentDescription = "Run Project",
+        modifier = Modifier.padding(horizontal = 5.dp)
+            .clickable { }
     )
     Icon(
-            Icons.Default.Stop,
-            tint = Color(red = 199, green = 84, blue = 80, alpha = 255),
-            contentDescription = "Stop Project",
-            modifier = Modifier.padding(horizontal = 5.dp)
-                    .clickable {  }
+        Icons.Default.Stop,
+        tint = Color(red = 199, green = 84, blue = 80, alpha = 255),
+        contentDescription = "Stop Project",
+        modifier = Modifier.padding(horizontal = 5.dp)
+            .clickable { }
     )
 }
