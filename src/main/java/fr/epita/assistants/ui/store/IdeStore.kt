@@ -2,14 +2,15 @@ package fr.epita.assistants.ui.store
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.imageFromResource
 import fr.epita.assistants.myide.domain.entity.Feature
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.service.MyProjectService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.nio.file.Path
+import javax.sound.sampled.AudioSystem
 import javax.swing.JFileChooser
 import javax.swing.JPanel
 
@@ -62,22 +63,35 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
         project.value?.let {
             val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
             coroutineScope.launch {
-                val result: Feature.ExecutionReport = projectService.execute(project.value!!.project, Mandatory.Features.Maven.COMPILE)
+                val result: Feature.ExecutionReport =
+                    projectService.execute(project.value!!.project, Mandatory.Features.Maven.COMPILE)
                 launch(Dispatchers.Main) {
                     if (result.isSuccess) {
                         // Display happy cowboy and Hiyaa
                         snackBar.title.value = "Compilation succeed."
                         snackBar.image.value = snackBar.successImage
-                    }
-                    else {
+                        launch(Dispatchers.IO) {
+                            makeSound(File("src/main/resources/yiha-success.wav").absoluteFile)
+                        }
+                    } else {
                         // Display sad cowboy and Hiyaa
                         snackBar.title.value = "Compilation failed."
                         snackBar.image.value = snackBar.failImage
+                        launch(Dispatchers.IO) {
+                            makeSound(File("src/main/resources/yiha-success.wav").absoluteFile)
+                        }
                     }
                     snackBar.launchSnackBar()
                 }
             }
 
         }
+    }
+
+    fun makeSound(file: File) {
+        val audioInputStream = AudioSystem.getAudioInputStream(file)
+        val clip = AudioSystem.getClip()
+        clip.open(audioInputStream)
+        clip.start()
     }
 }
