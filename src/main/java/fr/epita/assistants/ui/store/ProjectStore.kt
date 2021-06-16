@@ -24,6 +24,9 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      */
     var selectedOpenFile: MutableState<OpenFileStore?> = mutableStateOf(null)
 
+    /**
+     * Resize the views
+     */
     val treeWidth: MutableState<Dp> = mutableStateOf(300.dp)
     val filesHeight: MutableState<Dp> = mutableStateOf(400.dp)
 

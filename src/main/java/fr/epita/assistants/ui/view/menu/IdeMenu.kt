@@ -61,7 +61,7 @@ fun IdeMenu(ideStore: IdeStore): MenuBar {
             ),
             MenuItem(
                 name = "Compile",
-                onClick = {}
+                onClick = { ideStore.compileProject() }
             ),
             MenuItem(
                 name = "Exec",
