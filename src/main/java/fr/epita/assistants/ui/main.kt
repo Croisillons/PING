@@ -3,14 +3,23 @@ package fr.epita.assistants.ui
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Coffee
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RunCircle
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -18,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.SettingStore
+import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
@@ -47,6 +57,15 @@ fun main() {
 @Composable
 fun IdeView(ideStore: IdeStore) {
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
+        Row(
+                modifier = Modifier.height(Dp(35f))
+                        .background(MaterialTheme.colors.background)
+                        .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+        ) {
+            ActionsView()
+        }
         Row(modifier = Modifier.height(ideStore.project.value?.filesHeight!!.value)) {
             TreeView(ideStore.project.value!!)
             Box(
