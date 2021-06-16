@@ -21,11 +21,15 @@ import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
+import fr.epita.assistants.ui.view.tools.Tools
 import fr.epita.assistants.ui.view.tree.TreeView
+import org.apache.log4j.BasicConfigurator
 
 fun main() {
     val myProjectService: MyProjectService = MyProjectService()
     val ideStore: IdeStore = IdeStore(myProjectService, SettingStore())
+
+    BasicConfigurator.configure();
 
     Window(
         title = "IDE",
@@ -63,7 +67,7 @@ fun IdeView(ideStore: IdeStore) {
                                 state = rememberDraggableState { ideStore.project.value!!.incrementFilesHeight(it.dp) })
         )
         Row(modifier = Modifier.fillMaxHeight()) {
-//            Tools()
+            Tools()
         }
     }
 }

@@ -31,6 +31,7 @@ repositories {
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
+    jcenter()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
@@ -46,6 +47,9 @@ dependencies {
     implementation("org.apache.maven:maven-compat:3.6.3")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.1")
     implementation("org.assertj:assertj-core:3.19.0")
+    implementation("org.jetbrains.jediterm:jediterm-pty:2.42")
+    implementation("log4j:log4j:1.2.17")
+    implementation("org.jetbrains.pty4j:pty4j:0.8.6")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 
