@@ -17,8 +17,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.v1.DialogProperties
+import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
 import java.io.File
+import java.nio.file.Path
 import javax.print.attribute.standard.DateTimeAtCreation
 import javax.swing.JFileChooser
 
@@ -56,40 +58,11 @@ fun createFile() {
     jChooser.isAcceptAllFileFilterUsed = false
     if (jChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
         jChooser.selectedFile.createNewFile()
-
+        val file = jChooser.selectedFile
+        if (jChooser.selectedFile.toString().contains(".java")) {
+            File("src/main/java/fr/epita/assistants/ui/utils/toto.java").copyTo(File(file.toString()), true)
+            file.writeText(file.readText().replace("toto", jChooser.selectedFile.name.removeSuffix(".java")))
+        }
     }
 }
-
-/*@Composable
-fun createFile(projectStore: ProjectStore) {
-    val fileName: MutableState<String> = remember { mutableStateOf("") }
-    val isFileCreated: MutableState<Boolean> = remember { mutableStateOf(false) }
-    if (!isFileCreated.value) {
-        AlertDialog(
-                onDismissRequest = {
-                    projectStore.creatingFile.value = false
-
-                },
-                title = { "New File" },
-                text = {
-                    TextField(
-                            value = fileName.value,
-                            onValueChange = { fileName.value = it },
-                            label = { "Path of your file" }
-                    )
-                },
-                confirmButton = {
-                    Button(
-                            onClick = {
-                                isFileCreated.value = File(fileName.value).createNewFile()
-                            },
-                            enabled = fileName.value != ""//  && to.value != ""
-                    ) {
-                        Text(text = "Create file")
-                    }
-                },
-                backgroundColor = MaterialTheme.colors.background,
-        )
-    }
-}*/
 
