@@ -24,17 +24,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.TreeStore
+import fr.epita.assistants.ui.view.dialog.FileActions
 
 @Composable
 fun TreeView(projectStore: ProjectStore) {
     Column(modifier = Modifier.width(projectStore.treeWidth.value).background(MaterialTheme.colors.primary)) {
-        TreeTopBarView(projectStore.getTruncatedProjectName(), {})
+        TreeTopBarView(projectStore, projectStore.getTruncatedProjectName(), {})
         HierarchyView(projectStore.tree.value)
     }
 }
 
 @Composable
-fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
+fun TreeTopBarView(projectStore: ProjectStore, projectName: String, onRefresh: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth()
             .height(44.dp)
@@ -70,10 +71,10 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
                     .size(26.dp)
                     .padding(horizontal = 4.dp)
                     .defaultMinSize(minWidth = 26.dp)
-                    .clickable {}
+                    .clickable {projectStore.showFileActions.value = true}
             )
+            FileActions(projectStore.showFileActions)
         }
-
     }
 }
 

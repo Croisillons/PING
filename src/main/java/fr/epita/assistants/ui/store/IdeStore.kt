@@ -94,4 +94,8 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
         clip.open(audioInputStream)
         clip.start()
     }
+
+    /*fun createFile(file: String) {
+
+    }*/
 }

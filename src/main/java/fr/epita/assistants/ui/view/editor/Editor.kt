@@ -27,6 +27,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -136,7 +137,7 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boo
             BasicTextField(
                 value = content,
                 onValueChange = onValueChange,
-                textStyle = TextStyle(MaterialTheme.colors.onSecondary, fontWeight = FontWeight(600)),
+                textStyle = TextStyle(MaterialTheme.colors.onSecondary, fontWeight = FontWeight(600), fontFamily = FontFamily.Monospace),
                 modifier = Modifier.padding(horizontal = 8.dp)
                     .fillMaxHeight()
                     .onPreviewKeyEvent {

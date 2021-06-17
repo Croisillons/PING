@@ -40,6 +40,13 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     }
 
     /**
+     *
+     */
+    val showFileActions: MutableState<Boolean> = mutableStateOf(false)
+    //val creatingFile: MutableState<Boolean> = mutableStateOf(false)
+
+
+    /**
      * Select an open file tab
      * @param openFile: file to open
      */
