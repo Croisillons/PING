@@ -8,7 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -18,10 +18,13 @@ import fr.epita.assistants.ui.store.IdeStore
 fun ActionsView(ideStore: IdeStore) {
     Icon(
         Icons.Default.Coffee,
-        tint = MaterialTheme.colors.onSecondary,
+        tint = if (ideStore.compiling.value) Color.DarkGray else MaterialTheme.colors.onSecondary,
         contentDescription = "Build Project",
         modifier = Modifier.padding(horizontal = 5.dp)
-            .clickable { ideStore.compileProject() }
+            .clickable {
+                if (!ideStore.compiling.value)
+                    ideStore.compileProject()
+            }
     )
     Icon(
         Icons.Default.PlayArrow,
