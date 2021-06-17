@@ -2,6 +2,7 @@ package fr.epita.assistants.ui.store
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import fr.epita.assistants.myide.domain.entity.Feature
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.service.MyProjectService
@@ -17,6 +18,7 @@ import javax.swing.JPanel
 class IdeStore(val projectService: MyProjectService, val setting: SettingStore) : JPanel() {
     var project: MutableState<ProjectStore?> = mutableStateOf(null)
     val snackBar: SnackBarStore = SnackBarStore()
+    var compiling = mutableStateOf(false)
 
     /**
      * Open Project
@@ -60,12 +62,14 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
      * Compile Project
      */
     fun compileProject() {
+        compiling.value = true
         project.value?.let {
             val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
             coroutineScope.launch {
                 val result: Feature.ExecutionReport =
                     projectService.execute(project.value!!.project, Mandatory.Features.Maven.COMPILE)
                 launch(Dispatchers.Main) {
+                    compiling.value = false
                     if (result.isSuccess) {
                         // Display happy cowboy and Hiyaa
                         snackBar.title.value = "Compilation succeed."
