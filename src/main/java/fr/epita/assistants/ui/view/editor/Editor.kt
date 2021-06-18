@@ -36,6 +36,9 @@ import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.utils.CodeHighlight
 import fr.epita.assistants.ui.view.dialog.Sed
 
+/**
+ * Display the selected file
+ */
 @Composable
 fun OpenFilesView(projectStore: ProjectStore) {
     val sedState = remember { mutableStateOf(false) }
@@ -68,7 +71,9 @@ fun OpenFilesView(projectStore: ProjectStore) {
     }
 }
 
-
+/**
+ * Display the tab list of open files
+ */
 @Composable
 fun OpenFileTabsView(projectStore: ProjectStore) {
     Row(

@@ -2,6 +2,9 @@ package fr.epita.assistants.ui.store
 
 import fr.epita.assistants.ui.model.ExpandableNode
 
+/**
+ * Store for the file tree
+ */
 class TreeStore(val projectStore: ProjectStore) {
     inner class TreeItem(private val node: ExpandableNode) {
         val name: String get() = node.node.path.fileName.toString()

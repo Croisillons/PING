@@ -15,6 +15,12 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.sound.sampled.AudioSystem
 
+/**
+ * Class used to store all the state of the project.
+ *
+ * @property ideStore stores the IDE loading this project
+ * @property project stores the current project and its files
+ */
 class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var compiling = mutableStateOf(false)
     val snackBar: SnackBarStore = SnackBarStore()
@@ -40,10 +46,18 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     val treeWidth: MutableState<Dp> = mutableStateOf(300.dp)
     val filesHeight: MutableState<Dp> = mutableStateOf(400.dp)
 
+    /**
+     * Increments the width of the file tree composable
+     * @param x the value to add to treeWidth
+     */
     fun incrementTreeWidth(x: Dp) {
         treeWidth.value = treeWidth.value.plus(x)
     }
 
+    /**
+     * Increments the height of the file tree and editor composables
+     * @param x the value to add to filesHeight
+     */
     fun incrementFilesHeight(x: Dp)
     {
         filesHeight.value = filesHeight.value.plus(x)
@@ -91,10 +105,9 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     }
 
     /**
-     *
+     * If true, expands the dropDownMenu of file actions
      */
     val showFileActions: MutableState<Boolean> = mutableStateOf(false)
-    //val creatingFile: MutableState<Boolean> = mutableStateOf(false)
 
 
     /**

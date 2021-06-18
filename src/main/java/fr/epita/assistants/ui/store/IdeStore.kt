@@ -15,11 +15,14 @@ import javax.sound.sampled.AudioSystem
 import javax.swing.JFileChooser
 import javax.swing.JPanel
 
+/**
+ * Stores a ProjectService. Adapter from frontend to backend
+ */
 class IdeStore(val projectService: MyProjectService, val setting: SettingStore) : JPanel() {
     var project: MutableState<ProjectStore?> = mutableStateOf(null)
 
     /**
-     * Open Project
+     * Open a project by showing a file explorer and loading the chosen project
      */
     fun openProject() {
         val jChooser = JFileChooser()
@@ -32,14 +35,15 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
     }
 
     /**
-     * Load Project
+     * Load a project from a path
+     * @param path Path to the project root
      */
     fun loadProject(path: String) {
         project.value = ProjectStore(this, projectService.load(Path.of(path)))
     }
 
     /**
-     * Clean Project
+     * Clean a project, deleteting all files specified in .myideignore
      */
     fun cleanProject() {
         project.value?.let {
@@ -48,16 +52,11 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
     }
 
     /**
-     * Export Project
+     * Clean the project and export it to a zip file
      */
     fun exportProject() {
         project.value?.let {
             projectService.execute(project.value!!.project, Mandatory.Features.Any.DIST)
         }
     }
-
-
-    /*fun createFile(file: String) {
-
-    }*/
 }

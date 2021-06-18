@@ -6,6 +6,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.imageFromResource
 import kotlinx.coroutines.*
 
+/**
+ * Store for the compilation result popup
+ */
 class SnackBarStore {
     val isVisible: MutableState<Boolean> = mutableStateOf(false)
     val title: MutableState<String> = mutableStateOf("")
@@ -13,6 +16,9 @@ class SnackBarStore {
     val failImage = imageFromResource("compilation-fail.png")
     val image: MutableState<ImageBitmap> = mutableStateOf(successImage)
 
+    /**
+     * Display the popup
+     */
     fun launchSnackBar() {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
         coroutineScope.launch {
