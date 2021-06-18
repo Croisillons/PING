@@ -16,21 +16,25 @@ import fr.epita.assistants.myide.domain.entity.Aspect
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.entity.Project
 import fr.epita.assistants.ui.store.IdeStore
+import fr.epita.assistants.ui.store.ProjectStore
 import javax.validation.constraints.NotNull
 
+/**
+ * Display action buttons, depending on the aspects of the project
+ * @param ideStore Instance of IdeStore
+ */
 @Composable
-fun ActionsView(ideStore: IdeStore) {
-    val project: Project = ideStore.project.value?.project !!
-    if (project.aspects.any { it.type == Mandatory.Aspects.MAVEN })
+fun ActionsView(projectStore: ProjectStore) {
+    if (projectStore.project.aspects.any { it.type == Mandatory.Aspects.MAVEN })
     {
         Icon(
             Icons.Default.Coffee,
-            tint = if (ideStore.compiling.value) Color.DarkGray else MaterialTheme.colors.onSecondary,
+            tint = if (projectStore.compiling.value) Color.DarkGray else MaterialTheme.colors.onSecondary,
             contentDescription = "Build Project",
             modifier = Modifier.padding(horizontal = 5.dp)
                 .clickable {
-                    if (!ideStore.compiling.value)
-                        ideStore.compileProject()
+                    if (!projectStore.compiling.value)
+                        projectStore.compileProject()
                 }
         )
         Icon(

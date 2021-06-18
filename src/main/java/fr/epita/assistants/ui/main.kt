@@ -3,29 +3,21 @@ package fr.epita.assistants.ui
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Coffee
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.RunCircle
-import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
+import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
@@ -45,17 +37,20 @@ fun main() {
             colors = ideStore.setting.theme.value.colors
         ) {
             if (ideStore.project.value != null) {
-                IdeView(ideStore)
+                ProjectView(ideStore.project.value!!)
+                SnackbarView(ideStore.project.value!!.snackBar)
             } else {
                 OpenProjectView { ideStore.openProject() }
             }
-            SnackbarDemo(ideStore.snackBar)
         }
     }
 }
 
+/**
+ *
+ */
 @Composable
-fun IdeView(ideStore: IdeStore) {
+fun ProjectView(projectStore: ProjectStore) {
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         Row(
                 modifier = Modifier.height(Dp(35f))
@@ -64,23 +59,23 @@ fun IdeView(ideStore: IdeStore) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
         ) {
-            ActionsView(ideStore)
+            ActionsView(projectStore)
         }
-        Row(modifier = Modifier.height(ideStore.project.value?.filesHeight!!.value)) {
-            TreeView(ideStore.project.value!!)
+        Row(modifier = Modifier.height(projectStore.filesHeight!!.value)) {
+            TreeView(projectStore)
             Box(
                 Modifier.width(5.dp)
                     .fillMaxHeight()
                     .draggable(orientation = Orientation.Horizontal,
-                        state = rememberDraggableState { ideStore.project.value!!.incrementTreeWidth(it.dp) })
+                        state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) })
             )
-            OpenFilesView(ideStore.project.value!!)
+            OpenFilesView(projectStore)
         }
         Box(
             Modifier.height(5.dp)
                 .fillMaxWidth()
                 .draggable(orientation = Orientation.Vertical,
-                    state = rememberDraggableState { ideStore.project.value!!.incrementFilesHeight(it.dp) })
+                    state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) })
         )
         Row(modifier = Modifier.fillMaxHeight()) {
 //            Tools()
@@ -113,7 +108,7 @@ fun OpenProjectView(onClick: () -> Unit) {
 }
 
 @Composable
-fun SnackbarDemo(snackBar: SnackBarStore) {
+fun SnackbarView(snackBar: SnackBarStore) {
     Column {
         if (snackBar.isVisible.value) {
             Snackbar(

@@ -13,6 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
+/**
+ * Dialog box to replace all occurrences of a word with an other
+ *
+ * @param content the whole content of the file
+ * @param onValueChange changes the value of the file (see OpenFilesView)
+ * @param onReplace indicates if a replacement has been done (see OpenFilesView)
+ */
+
 @Composable
 fun Sed(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit) {
     val from: MutableState<String> = remember { mutableStateOf("") }

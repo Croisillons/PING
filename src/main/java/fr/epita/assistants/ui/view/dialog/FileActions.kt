@@ -24,6 +24,12 @@ import java.nio.file.Path
 import javax.print.attribute.standard.DateTimeAtCreation
 import javax.swing.JFileChooser
 
+/**
+ * Dropdown menu for file and folder actions (creation, renaming, deletion)
+ *
+ * @param showFileActions if true, the dropDownMenu is expandeded
+ */
+
 @Composable
 fun FileActions(showFileActions: MutableState<Boolean>) {
     DropdownMenu(
@@ -51,6 +57,9 @@ fun FileActions(showFileActions: MutableState<Boolean>) {
     }
 }
 
+/**
+ * Create a new file. If this is a .java, create a snippet of code for the class.
+ */
 
 fun createFile() {
     val jChooser = JFileChooser()
@@ -58,6 +67,9 @@ fun createFile() {
     jChooser.isAcceptAllFileFilterUsed = false
     if (jChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
         jChooser.selectedFile.createNewFile()
+
+    }
+}
         val file = jChooser.selectedFile
         if (jChooser.selectedFile.toString().contains(".java")) {
             File("src/main/java/fr/epita/assistants/ui/utils/toto.java").copyTo(File(file.toString()), true)

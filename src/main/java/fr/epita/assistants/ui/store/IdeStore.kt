@@ -17,8 +17,6 @@ import javax.swing.JPanel
 
 class IdeStore(val projectService: MyProjectService, val setting: SettingStore) : JPanel() {
     var project: MutableState<ProjectStore?> = mutableStateOf(null)
-    val snackBar: SnackBarStore = SnackBarStore()
-    var compiling = mutableStateOf(false)
 
     /**
      * Open Project
@@ -58,46 +56,6 @@ class IdeStore(val projectService: MyProjectService, val setting: SettingStore) 
         }
     }
 
-    /**
-     * Compile Project
-     */
-    fun compileProject() {
-        compiling.value = true
-        project.value?.let {
-            val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
-            coroutineScope.launch {
-                val result: Feature.ExecutionReport =
-                    projectService.execute(project.value!!.project, Mandatory.Features.Maven.COMPILE)
-                launch(Dispatchers.Main) {
-                    compiling.value = false
-                    if (result.isSuccess) {
-                        // Display happy cowboy and Hiyaa
-                        snackBar.title.value = "Compilation succeed."
-                        snackBar.image.value = snackBar.successImage
-                        launch(Dispatchers.IO) {
-                            makeSound(File("src/main/resources/yiha-success.wav").absoluteFile)
-                        }
-                    } else {
-                        // Display sad cowboy and Hiyaa
-                        snackBar.title.value = "Compilation failed."
-                        snackBar.image.value = snackBar.failImage
-                        launch(Dispatchers.IO) {
-                            makeSound(File("src/main/resources/yiha-success.wav").absoluteFile)
-                        }
-                    }
-                    snackBar.launchSnackBar()
-                }
-            }
-
-        }
-    }
-
-    fun makeSound(file: File) {
-        val audioInputStream = AudioSystem.getAudioInputStream(file)
-        val clip = AudioSystem.getClip()
-        clip.open(audioInputStream)
-        clip.start()
-    }
 
     /*fun createFile(file: String) {
 
