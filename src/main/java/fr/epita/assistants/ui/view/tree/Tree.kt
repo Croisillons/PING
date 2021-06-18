@@ -26,6 +26,10 @@ import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.TreeStore
 import fr.epita.assistants.ui.view.dialog.FileActions
 
+/**
+ * TopBar and files tree
+ * @param projectStore stores the project
+ */
 @Composable
 fun TreeView(projectStore: ProjectStore) {
     Column(modifier = Modifier.width(projectStore.treeWidth.value).background(MaterialTheme.colors.primary)) {
@@ -34,6 +38,12 @@ fun TreeView(projectStore: ProjectStore) {
     }
 }
 
+/**
+ * TopBar with name of the project, refresh and files action button
+ * @param projectStore stores the project
+ * @param projectName name of the project
+ * @param onRefresh refreshes the files tree
+ */
 @Composable
 fun TreeTopBarView(projectStore: ProjectStore, projectName: String, onRefresh: () -> Unit) {
     Row(
@@ -78,6 +88,10 @@ fun TreeTopBarView(projectStore: ProjectStore, projectName: String, onRefresh: (
     }
 }
 
+/**
+ * Files tree
+ * @param treeStore stores the tree of files and folder
+ */
 @Composable
 fun HierarchyView(treeStore: TreeStore) {
     Box(
@@ -116,6 +130,9 @@ fun HierarchyView(treeStore: TreeStore) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun HierarchyItemView(node: TreeStore.TreeItem) {
     val hoverState = remember { mutableStateOf(false) }
@@ -154,6 +171,10 @@ fun HierarchyItemView(node: TreeStore.TreeItem) {
 
 }
 
+/**
+ * Icons of each item
+ * @param node file or folder
+ */
 @Composable
 fun HierarchyItemIconView(node: TreeStore.TreeItem) {
     if (node.isFolder) {
