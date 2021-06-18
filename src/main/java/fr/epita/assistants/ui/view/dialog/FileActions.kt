@@ -67,9 +67,6 @@ fun createFile() {
     jChooser.isAcceptAllFileFilterUsed = false
     if (jChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
         jChooser.selectedFile.createNewFile()
-
-    }
-}
         val file = jChooser.selectedFile
         if (jChooser.selectedFile.toString().contains(".java")) {
             File("src/main/java/fr/epita/assistants/ui/utils/toto.java").copyTo(File(file.toString()), true)
