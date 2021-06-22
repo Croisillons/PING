@@ -6,10 +6,12 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,17 +20,20 @@ import fr.epita.assistants.ui.utils.IdeCard
 import fr.epita.assistants.ui.utils.cursor
 import java.awt.Cursor
 
+
 @Composable
 fun CustomThemeCard(ideStore: IdeStore) {
-    val (onPrimary, setOnPrimary) = remember { mutableStateOf("") }
-    val (primary, setPrimary) = remember { mutableStateOf("") }
-    val (onSecondary, setOnSecondary) = remember { mutableStateOf("") }
-    val (secondary, setSecondary) = remember { mutableStateOf("") }
-    val (background, setBackground) = remember { mutableStateOf("") }
-    val (onBackground, setOnBackground) = remember { mutableStateOf("") }
-    val (onSurface, setOnSurface) = remember { mutableStateOf("") }
-    val (primaryVariant, setPrimaryVariant) = remember { mutableStateOf("") }
-    val (secondaryVariant, setSecondaryVariant) = remember { mutableStateOf("") }
+    val onPrimary = remember { mutableStateOf(Color.Green) }
+    val primary = remember { mutableStateOf(Color.Black) }
+    val onSecondary = remember { mutableStateOf(Color.Black) }
+    val secondary = remember { mutableStateOf(Color.Black) }
+    val background = remember { mutableStateOf(Color.Black) }
+    val onBackground = remember { mutableStateOf(Color.Black) }
+    val onSurface = remember { mutableStateOf(Color.Black) }
+    val primaryVariant = remember { mutableStateOf(Color.Black) }
+    val secondaryVariant = remember { mutableStateOf(Color.Black) }
+
+    val selectedItem: MutableState<MutableState<Color>> = remember { mutableStateOf(onPrimary) }
 
     IdeCard {
         Column(
@@ -57,31 +62,37 @@ fun CustomThemeCard(ideStore: IdeStore) {
                         modifier = Modifier.weight(0.5f),
                         verticalArrangement = Arrangement.Top
                     ) {
-                        ColorPickerItem("onPrimary", setOnPrimary)
-                        ColorPickerItem("Primary", setPrimary)
-                        ColorPickerItem("onSecondary", setOnSecondary)
-                        ColorPickerItem("Secondary", setSecondary)
-                        ColorPickerItem("onBackground", setOnBackground)
-                        ColorPickerItem("background", setBackground)
-                        ColorPickerItem("onSurface", setOnSurface)
-                        ColorPickerItem("PrimaryVariant", setPrimaryVariant)
-                        ColorPickerItem("SecondaryVariant", setSecondaryVariant)
+                        ColorPickerItem("onPrimary", onPrimary)
+                        ColorPickerItem("Primary", primary)
+                        ColorPickerItem("onSecondary", onSecondary)
+                        ColorPickerItem("Secondary", secondary)
+                        ColorPickerItem("onBackground", onBackground)
+                        ColorPickerItem("background", background)
+                        ColorPickerItem("onSurface", onSurface)
+                        ColorPickerItem("PrimaryVariant", primaryVariant)
+                        ColorPickerItem("SecondaryVariant", secondaryVariant)
+                    }
+
+                    Box(modifier = Modifier.weight(0.5f)) {
+                        ColorPicker(selectedItem.value)
                     }
                 }
             }
 
             Button(
-                onClick = { ideStore.setting.setCustomTheme(
-                    onPrimary,
-                    primary,
-                    onSecondary,
-                    secondary,
-                    onBackground,
-                    background,
-                    onSurface,
-                    primaryVariant,
-                    secondaryVariant,
-                )},
+                onClick = {
+                    ideStore.setting.setCustomTheme(
+                        onPrimary.value,
+                        primary.value,
+                        onSecondary.value,
+                        secondary.value,
+                        onBackground.value,
+                        background.value,
+                        onSurface.value,
+                        primaryVariant.value,
+                        secondaryVariant.value,
+                    )
+                },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary),
                 modifier = Modifier.cursor(Cursor.HAND_CURSOR)
                     .align(Alignment.CenterHorizontally)
@@ -98,7 +109,7 @@ fun CustomThemeCard(ideStore: IdeStore) {
 }
 
 @Composable
-fun ColorPickerItem(title: String, setColor: (String) -> Unit) {
+fun ColorPickerItem(title: String, color: MutableState<Color>) {
     Column {
         Text(
             text = title,
@@ -106,5 +117,88 @@ fun ColorPickerItem(title: String, setColor: (String) -> Unit) {
         )
 
         Spacer(modifier = Modifier.height(12.dp))
+    }
+}
+
+@Composable
+fun ColorPicker(selectedColor: MutableState<Color>) {
+    val hsb = java.awt.Color.RGBtoHSB(
+        selectedColor.value.red.toInt(),
+        selectedColor.value.green.toInt(),
+        selectedColor.value.blue.toInt(),
+        null
+    )
+
+    val hueState = remember { mutableStateOf(hsb[0]) }
+    val saturationState = remember { mutableStateOf(hsb[1]) }
+    val lightnessState = remember { mutableStateOf(1f - hsb[2]) }
+
+    val updateColor = {
+        selectedColor.value = Color(java.awt.Color.HSBtoRGB(hueState.value, saturationState.value, lightnessState.value))
+    }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Surface(
+            color = selectedColor.value,
+            modifier = Modifier.width(64.dp).height(64.dp)
+        ) {}
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Column {
+            Text(
+                text = "Hue"
+            )
+            Slider(
+                value = hueState.value,
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth(0.7f)
+                    .padding(8.dp),
+                onValueChange = { hue ->
+                    hueState.value = hue
+                    updateColor()
+                },
+                colors = SliderDefaults.colors(
+                    thumbColor = Color(java.awt.Color.HSBtoRGB(hueState.value, 0.8f, 0.8f)),
+                    activeTrackColor = Color(java.awt.Color.HSBtoRGB(hueState.value, 0.8f, 0.8f)),
+                )
+            )
+
+            Text(
+                text = "Saturation"
+            )
+            Slider(
+                value = saturationState.value,
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth(0.7f)
+                    .padding(8.dp),
+                onValueChange = { hue ->
+                    saturationState.value = hue
+                    updateColor()
+                },
+                colors = SliderDefaults.colors(
+                    thumbColor = Color(java.awt.Color.HSBtoRGB(hueState.value, saturationState.value, 0.8f)),
+                    activeTrackColor = Color(java.awt.Color.HSBtoRGB(hueState.value, saturationState.value, 0.8f)),
+                )
+            )
+
+            Text(
+                text = "Lightness"
+            )
+            Slider(
+                value = lightnessState.value,
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth(0.7f)
+                    .padding(8.dp),
+                onValueChange = { hue ->
+                    lightnessState.value = hue
+                    updateColor()
+                },
+                colors = SliderDefaults.colors(
+                    thumbColor = Color(java.awt.Color.HSBtoRGB(hueState.value, 0.8f, lightnessState.value)),
+                    activeTrackColor = Color(java.awt.Color.HSBtoRGB(hueState.value, 0.8f, lightnessState.value)),
+                )
+            )
+        }
+
     }
 }

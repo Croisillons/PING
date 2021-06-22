@@ -2,6 +2,7 @@ package fr.epita.assistants.ui.store
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import fr.epita.assistants.ui.model.IdeTheme
 
 /**
@@ -30,7 +31,8 @@ class SettingStore {
         customThemeDialog.value = false
     }
 
-    fun setCustomTheme(onPrimary: String, primary: String, onSecondary: String, secondary: String, onBackground: String, background: String, onSurface: String, primaryVariant: String, secondaryVariant: String) {
-        customThemeDialog.value = false
+    fun setCustomTheme(value: Color, value1: Color, value2: Color, value3: Color, value4: Color, value5: Color, value6: Color, value7: Color, value8: Color) {
+
     }
+
 }
