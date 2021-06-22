@@ -8,6 +8,9 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -66,20 +69,34 @@ fun ProjectView(projectStore: ProjectStore) {
         }
         Row(modifier = Modifier.height(projectStore.filesHeight.value)) {
             TreeView(projectStore)
-            Box(
-                Modifier.width(5.dp)
+            Row(
+                Modifier.width(12.dp)
                     .fillMaxHeight()
                     .draggable(orientation = Orientation.Horizontal,
-                        state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) })
-            )
+                        state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) }),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Default.DragIndicator,
+                    contentDescription = "Resize View",
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
             OpenFilesView(projectStore)
         }
-        Box(
-            Modifier.height(5.dp)
+        Column(
+            Modifier.height(12.dp)
                 .fillMaxWidth()
                 .draggable(orientation = Orientation.Vertical,
-                    state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) })
-        )
+                    state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) }),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                Icons.Default.DragHandle,
+                contentDescription = "Resize View",
+                tint = MaterialTheme.colors.onPrimary
+            )
+        }
         Row(modifier = Modifier.fillMaxHeight()) {
 //            Tools()
         }
