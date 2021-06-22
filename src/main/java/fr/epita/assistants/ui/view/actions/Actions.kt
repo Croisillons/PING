@@ -17,6 +17,8 @@ import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.entity.Project
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.ProjectStore
+import fr.epita.assistants.ui.utils.cursor
+import java.awt.Cursor
 import javax.validation.constraints.NotNull
 
 /**
@@ -36,6 +38,7 @@ fun ActionsView(projectStore: ProjectStore) {
                     if (!projectStore.compiling.value)
                         projectStore.compileProject()
                 }
+                .cursor(Cursor.HAND_CURSOR)
         )
         Icon(
             Icons.Default.PlayArrow,
@@ -43,6 +46,7 @@ fun ActionsView(projectStore: ProjectStore) {
             contentDescription = "Run Project",
             modifier = Modifier.padding(horizontal = 5.dp)
                 .clickable { }
+                .cursor(Cursor.HAND_CURSOR)
         )
         Icon(
             Icons.Default.Stop,
@@ -50,6 +54,7 @@ fun ActionsView(projectStore: ProjectStore) {
             contentDescription = "Stop Project",
             modifier = Modifier.padding(horizontal = 5.dp)
                 .clickable { }
+                .cursor(Cursor.HAND_CURSOR)
         )
     }
 }

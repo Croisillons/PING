@@ -27,9 +27,11 @@ import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
+import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
+import java.awt.Cursor
 
 fun main() {
     val myProjectService: MyProjectService = MyProjectService()
@@ -73,7 +75,8 @@ fun ProjectView(projectStore: ProjectStore) {
                 Modifier.width(12.dp)
                     .fillMaxHeight()
                     .draggable(orientation = Orientation.Horizontal,
-                        state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) }),
+                        state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) })
+                    .cursor(Cursor.E_RESIZE_CURSOR),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -88,7 +91,8 @@ fun ProjectView(projectStore: ProjectStore) {
             Modifier.height(12.dp)
                 .fillMaxWidth()
                 .draggable(orientation = Orientation.Vertical,
-                    state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) }),
+                    state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) })
+                .cursor(Cursor.N_RESIZE_CURSOR),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
@@ -118,7 +122,11 @@ fun OpenProjectView(onClick: () -> Unit) {
             fontSize = 42.sp,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        Button(onClick = onClick, colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)) {
+        Button(
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
+            modifier = Modifier.cursor(Cursor.HAND_CURSOR)
+        ) {
             Text(
                 text = "Open a project",
                 fontSize = 20.sp
