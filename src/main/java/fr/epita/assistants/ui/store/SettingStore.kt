@@ -9,6 +9,7 @@ import fr.epita.assistants.ui.model.IdeTheme
  */
 class SettingStore {
     val theme: MutableState<IdeTheme> = mutableStateOf(IdeTheme.DARK)
+    val customThemeDialog: MutableState<Boolean> = mutableStateOf(false)
 
     /**
      * Set the theme
@@ -16,5 +17,20 @@ class SettingStore {
      */
     fun setTheme(ideTheme: IdeTheme) {
         theme.value = ideTheme
+    }
+
+    /**
+     * Open dialog to set custom theme
+     */
+    fun openCustomTheme() {
+        customThemeDialog.value = true
+    }
+
+    fun dimissCustomTheme() {
+        customThemeDialog.value = false
+    }
+
+    fun setCustomTheme(onPrimary: String, primary: String, onSecondary: String, secondary: String, onBackground: String, background: String, onSurface: String, primaryVariant: String, secondaryVariant: String) {
+        customThemeDialog.value = false
     }
 }

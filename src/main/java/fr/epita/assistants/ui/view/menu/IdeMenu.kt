@@ -52,6 +52,12 @@ fun IdeMenu(ideStore: IdeStore): MenuBar {
                 name = "Green",
                 onClick = { ideStore.setting.setTheme(IdeTheme.GREEN) }
             ),
+            MenuItem(
+                name = "Custom Theme",
+                onClick = {
+                    ideStore.setting.openCustomTheme()
+                }
+            )
         ),
         Menu(
             name = "Maven",

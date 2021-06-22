@@ -29,6 +29,7 @@ import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
 import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.view.dialog.CustomThemeCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
@@ -52,6 +53,10 @@ fun main() {
                 SnackbarView(ideStore.project.value!!.snackBar)
             } else {
                 OpenProjectView { ideStore.openProject() }
+            }
+
+            if (ideStore.setting.customThemeDialog.value) {
+                CustomThemeCard(ideStore)
             }
         }
     }
@@ -132,7 +137,8 @@ fun OpenProjectView(onClick: () -> Unit) {
         ) {
             Text(
                 text = "Open a project",
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = MaterialTheme.colors.onSecondary
             )
         }
     }
