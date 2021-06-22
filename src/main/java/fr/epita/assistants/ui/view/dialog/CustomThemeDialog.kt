@@ -26,7 +26,7 @@ import java.awt.Cursor
 
 @Composable
 fun CustomThemeCard(ideStore: IdeStore) {
-    val onPrimaryColor = MaterialTheme.colors.onPrimary
+    val onPrimaryColor = MaterialTheme.colors.onBackground
     val primaryColor = MaterialTheme.colors.primary
     val onSecondaryColor = MaterialTheme.colors.onSecondary
     val secondaryColor = MaterialTheme.colors.secondary
@@ -48,6 +48,7 @@ fun CustomThemeCard(ideStore: IdeStore) {
     val secondaryVariant = remember { mutableStateOf(secondaryVariantColor) }
 
     val (selectedColorTheme, setSelectedColorTheme) = remember { mutableStateOf(onPrimary) }
+
 
     IdeCard {
         Column(
@@ -124,7 +125,12 @@ fun CustomThemeCard(ideStore: IdeStore) {
 }
 
 @Composable
-fun ColorPickerItem(title: String, color: MutableState<Color>, selectedColor: MutableState<Color>, onClick: (MutableState<Color>) -> Unit) {
+fun ColorPickerItem(
+    title: String,
+    color: MutableState<Color>,
+    selectedColor: MutableState<Color>,
+    onClick: (MutableState<Color>) -> Unit
+) {
     val (hoverState, setHoverState) = remember { mutableStateOf(false) }
 
     Row(
@@ -151,7 +157,7 @@ fun ColorPickerItem(title: String, color: MutableState<Color>, selectedColor: Mu
         Text(
             text = title,
             color = MaterialTheme.colors.onSecondary,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
 
         Box(
@@ -165,21 +171,21 @@ fun ColorPickerItem(title: String, color: MutableState<Color>, selectedColor: Mu
             ) {}
         }
     }
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 }
 
 @Composable
 fun ColorPicker(selectedColor: MutableState<Color>) {
     val hsb = java.awt.Color.RGBtoHSB(
-        selectedColor.value.red.toInt(),
-        selectedColor.value.green.toInt(),
-        selectedColor.value.blue.toInt(),
+        (selectedColor.value.red * 255f).toInt(),
+        (selectedColor.value.green * 255f).toInt(),
+        (selectedColor.value.blue * 255f).toInt(),
         null
     )
 
-    val hueState = remember { mutableStateOf(hsb[0]) }
-    val saturationState = remember { mutableStateOf(hsb[1]) }
-    val lightnessState = remember { mutableStateOf(1f - hsb[2]) }
+    val hueState = mutableStateOf(hsb[0])
+    val saturationState = mutableStateOf(hsb[1])
+    val lightnessState = mutableStateOf(hsb[2])
 
     val updateColor = {
         selectedColor.value =
