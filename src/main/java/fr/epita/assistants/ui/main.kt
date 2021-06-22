@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.service.MyProjectService
@@ -39,7 +40,9 @@ fun main() {
 
     Window(
         title = "IDE",
-        menuBar = IdeMenu(ideStore)
+        menuBar = IdeMenu(ideStore),
+        size = IntSize(1400, 800),
+        centered = true
     ) {
         MaterialTheme(
             colors = ideStore.setting.theme.value.colors
