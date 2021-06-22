@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
@@ -34,7 +35,9 @@ import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.utils.CodeHighlight
+import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.view.dialog.Sed
+import java.awt.Cursor
 
 /**
  * Display the selected file
@@ -126,6 +129,7 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
                     .padding(start = 4.dp)
                     .clickable(onClick = onClose)
                     .align(Alignment.CenterVertically)
+                    .cursor(Cursor.HAND_CURSOR)
             )
 
         }

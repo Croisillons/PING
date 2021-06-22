@@ -8,6 +8,9 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.service.MyProjectService
@@ -24,9 +28,12 @@ import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
+import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.view.dialog.CustomThemeCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
+import java.awt.Cursor
 
 fun main() {
     val myProjectService: MyProjectService = MyProjectService()
@@ -34,7 +41,9 @@ fun main() {
 
     Window(
         title = "IDE",
-        menuBar = IdeMenu(ideStore)
+        menuBar = IdeMenu(ideStore),
+        size = IntSize(1400, 800),
+        centered = true
     ) {
         MaterialTheme(
             colors = ideStore.setting.theme.value.colors
@@ -44,6 +53,10 @@ fun main() {
                 SnackbarView(ideStore.project.value!!.snackBar)
             } else {
                 OpenProjectView { ideStore.openProject() }
+            }
+
+            if (ideStore.setting.customThemeDialog.value) {
+                CustomThemeCard(ideStore)
             }
         }
     }
@@ -66,20 +79,36 @@ fun ProjectView(projectStore: ProjectStore) {
         }
         Row(modifier = Modifier.height(projectStore.filesHeight.value)) {
             TreeView(projectStore)
-            Box(
-                Modifier.width(5.dp)
+            Row(
+                Modifier.width(12.dp)
                     .fillMaxHeight()
                     .draggable(orientation = Orientation.Horizontal,
                         state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) })
-            )
+                    .cursor(Cursor.E_RESIZE_CURSOR),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Default.DragIndicator,
+                    contentDescription = "Resize View",
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
             OpenFilesView(projectStore)
         }
-        Box(
-            Modifier.height(5.dp)
+        Column(
+            Modifier.height(12.dp)
                 .fillMaxWidth()
                 .draggable(orientation = Orientation.Vertical,
                     state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) })
-        )
+                .cursor(Cursor.N_RESIZE_CURSOR),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                Icons.Default.DragHandle,
+                contentDescription = "Resize View",
+                tint = MaterialTheme.colors.onPrimary
+            )
+        }
         Row(modifier = Modifier.fillMaxHeight()) {
 //            Tools()
         }
@@ -101,10 +130,15 @@ fun OpenProjectView(onClick: () -> Unit) {
             fontSize = 42.sp,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        Button(onClick = onClick, colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)) {
+        Button(
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
+            modifier = Modifier.cursor(Cursor.HAND_CURSOR)
+        ) {
             Text(
                 text = "Open a project",
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = MaterialTheme.colors.onSecondary
             )
         }
     }

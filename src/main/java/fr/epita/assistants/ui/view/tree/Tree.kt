@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.TreeStore
+import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.view.dialog.FileActions
+import java.awt.Cursor
 
 /**
  * TopBar and files tree
@@ -155,7 +157,8 @@ fun HierarchyItemView(node: TreeStore.TreeItem) {
                     hoverState.value = false
                     false
                 }
-            ),
+            )
+            .cursor(Cursor.HAND_CURSOR),
         verticalAlignment = Alignment.CenterVertically
     ) {
         HierarchyItemIconView(node)
