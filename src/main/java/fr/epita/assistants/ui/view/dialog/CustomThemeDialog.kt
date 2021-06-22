@@ -1,7 +1,9 @@
 package fr.epita.assistants.ui.view.dialog
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -12,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,17 +26,28 @@ import java.awt.Cursor
 
 @Composable
 fun CustomThemeCard(ideStore: IdeStore) {
-    val onPrimary = remember { mutableStateOf(Color.Green) }
-    val primary = remember { mutableStateOf(Color.Black) }
-    val onSecondary = remember { mutableStateOf(Color.Black) }
-    val secondary = remember { mutableStateOf(Color.Black) }
-    val background = remember { mutableStateOf(Color.Black) }
-    val onBackground = remember { mutableStateOf(Color.Black) }
-    val onSurface = remember { mutableStateOf(Color.Black) }
-    val primaryVariant = remember { mutableStateOf(Color.Black) }
-    val secondaryVariant = remember { mutableStateOf(Color.Black) }
+    val onPrimaryColor = MaterialTheme.colors.onPrimary
+    val primaryColor = MaterialTheme.colors.primary
+    val onSecondaryColor = MaterialTheme.colors.onSecondary
+    val secondaryColor = MaterialTheme.colors.secondary
+    val onBackgroundColor = MaterialTheme.colors.onBackground
+    val backgroundColor = MaterialTheme.colors.background
+    val onSurfaceColor = MaterialTheme.colors.onSurface
+    val primaryVariantColor = MaterialTheme.colors.primaryVariant
+    val secondaryVariantColor = MaterialTheme.colors.secondaryVariant
 
-    val selectedItem: MutableState<MutableState<Color>> = remember { mutableStateOf(onPrimary) }
+
+    val onPrimary = remember { mutableStateOf(onPrimaryColor) }
+    val primary = remember { mutableStateOf(primaryColor) }
+    val onSecondary = remember { mutableStateOf(onSecondaryColor) }
+    val secondary = remember { mutableStateOf(secondaryColor) }
+    val background = remember { mutableStateOf(backgroundColor) }
+    val onBackground = remember { mutableStateOf(onBackgroundColor) }
+    val onSurface = remember { mutableStateOf(onSurfaceColor) }
+    val primaryVariant = remember { mutableStateOf(primaryVariantColor) }
+    val secondaryVariant = remember { mutableStateOf(secondaryVariantColor) }
+
+    val (selectedColorTheme, setSelectedColorTheme) = remember { mutableStateOf(onPrimary) }
 
     IdeCard {
         Column(
@@ -60,21 +74,22 @@ fun CustomThemeCard(ideStore: IdeStore) {
                 Row {
                     Column(
                         modifier = Modifier.weight(0.5f),
-                        verticalArrangement = Arrangement.Top
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        ColorPickerItem("onPrimary", onPrimary)
-                        ColorPickerItem("Primary", primary)
-                        ColorPickerItem("onSecondary", onSecondary)
-                        ColorPickerItem("Secondary", secondary)
-                        ColorPickerItem("onBackground", onBackground)
-                        ColorPickerItem("background", background)
-                        ColorPickerItem("onSurface", onSurface)
-                        ColorPickerItem("PrimaryVariant", primaryVariant)
-                        ColorPickerItem("SecondaryVariant", secondaryVariant)
+                        ColorPickerItem("onPrimary", onPrimary, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("Primary", primary, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("onSecondary", onSecondary, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("Secondary", secondary, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("onBackground", onBackground, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("background", background, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("onSurface", onSurface, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("PrimaryVariant", primaryVariant, selectedColorTheme, setSelectedColorTheme)
+                        ColorPickerItem("SecondaryVariant", secondaryVariant, selectedColorTheme, setSelectedColorTheme)
                     }
 
                     Box(modifier = Modifier.weight(0.5f)) {
-                        ColorPicker(selectedItem.value)
+                        ColorPicker(selectedColorTheme)
                     }
                 }
             }
@@ -109,15 +124,48 @@ fun CustomThemeCard(ideStore: IdeStore) {
 }
 
 @Composable
-fun ColorPickerItem(title: String, color: MutableState<Color>) {
-    Column {
+fun ColorPickerItem(title: String, color: MutableState<Color>, selectedColor: MutableState<Color>, onClick: (MutableState<Color>) -> Unit) {
+    val (hoverState, setHoverState) = remember { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(0.7f)
+            .clickable(onClick = { onClick(color) })
+            .background(
+                if (hoverState or (color == selectedColor)) MaterialTheme.colors.onSurface else Color.Transparent,
+                RoundedCornerShape(4.dp)
+            )
+            .pointerMoveFilter(
+                onEnter = {
+                    setHoverState(true)
+                    false
+                },
+                onExit = {
+                    setHoverState(false)
+                    false
+                }
+            )
+            .cursor(Cursor.HAND_CURSOR),
+    ) {
         Text(
             text = title,
-            color = MaterialTheme.colors.onSecondary
+            color = MaterialTheme.colors.onSecondary,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Box(
+            modifier = Modifier.width(28.dp)
+                .height(12.dp)
+                .padding(end = 16.dp)
+        ) {
+            Surface(
+                color = color.value,
+                modifier = Modifier.fillMaxSize()
+            ) {}
+        }
     }
+    Spacer(modifier = Modifier.height(12.dp))
 }
 
 @Composable
@@ -134,7 +182,8 @@ fun ColorPicker(selectedColor: MutableState<Color>) {
     val lightnessState = remember { mutableStateOf(1f - hsb[2]) }
 
     val updateColor = {
-        selectedColor.value = Color(java.awt.Color.HSBtoRGB(hueState.value, saturationState.value, lightnessState.value))
+        selectedColor.value =
+            Color(java.awt.Color.HSBtoRGB(hueState.value, saturationState.value, lightnessState.value))
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

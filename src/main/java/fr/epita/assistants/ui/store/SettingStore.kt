@@ -1,8 +1,10 @@
 package fr.epita.assistants.ui.store
 
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import com.sun.security.auth.NTSidPrimaryGroupPrincipal
 import fr.epita.assistants.ui.model.IdeTheme
 
 /**
@@ -31,8 +33,22 @@ class SettingStore {
         customThemeDialog.value = false
     }
 
-    fun setCustomTheme(value: Color, value1: Color, value2: Color, value3: Color, value4: Color, value5: Color, value6: Color, value7: Color, value8: Color) {
+    fun setCustomTheme(onPrimary: Color, primary: Color, onSecondary: Color, secondary: Color, onBackground: Color, background: Color, onSurface: Color, primaryVariant: Color, secondaryVariant: Color) {
+        IdeTheme.CUSTOM.colors = lightColors(
+            onPrimary = onPrimary,
+            primary = primary,
+            onSecondary = onSecondary,
+            secondary = secondary,
+            onBackground = onBackground,
+            background = background,
+            onSurface = onSurface,
+            primaryVariant = primaryVariant,
+            secondaryVariant = secondaryVariant
+        )
+        // Trick to trigger recomposition, the clean way is to make colors a mutable state
+        setTheme(IdeTheme.LIGHT)
 
+        setTheme(IdeTheme.CUSTOM)
     }
 
 }

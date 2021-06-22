@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 /**
  * Enum of the all the themes
  */
-enum class IdeTheme(val colors: Colors) {
+enum class IdeTheme(var colors: Colors) {
     LIGHT(
         lightColors(
             onPrimary = Color(87, 90, 94),
@@ -84,4 +84,19 @@ enum class IdeTheme(val colors: Colors) {
             onBackground = Color(247,255,246),
         )
     ),
+    CUSTOM(
+        darkColors(
+            onPrimary = Color(255, 255, 255),
+            primary = Color(40, 44, 52),
+            onSecondary = Color(171, 178, 191),
+            secondary = Color(65, 72, 85),// Color(50,56,68),
+            background = Color(33, 37, 43),
+            onSurface = Color(175, 175, 175, 50),
+
+            // use for highlight syntax
+            primaryVariant = Color(132,76,192),
+            secondaryVariant = Color(238,88,108),
+            onBackground = Color(96,174,228)
+        )
+    );
 }
