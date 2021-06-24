@@ -42,6 +42,7 @@ class IdeStore(val projectService: MyProjectService) {
      */
     fun loadProject(path: String) {
         project.value = ProjectStore(this, projectService.load(Path.of(path)))
+        saveConfig()
     }
 
     /**
@@ -87,13 +88,12 @@ class IdeStore(val projectService: MyProjectService) {
                     prop.setProperty("theme.primaryVariant", colors.primaryVariant.toArgb().toString())
                     prop.setProperty("theme.secondaryVariant", colors.secondaryVariant.toArgb().toString())
 
-
                     // save properties to project root folder
                     prop.store(output, null)
-                    println(prop)
+                    println("Configuration saved : $prop")
                 }
             } catch (io: IOException) {
-                println("No config.properties")
+                println("Failed to save configuration")
             }
         }
     }
