@@ -5,8 +5,8 @@ import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Project;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.util.function.Consumer;
 
 
 public class CompileFeature implements Feature {
@@ -23,14 +23,12 @@ public class CompileFeature implements Feature {
                 .directory(project.getRootNode().getPath().toFile());
         try {
             Process process = builder.start();
-            process.waitFor();
-            int res = process.exitValue();
-            var output = process.getInputStream();
-            var bytes = output.readAllBytes();
-            // System.out.println("Exit value: " + res);
-            // System.out.println(new String(bytes));
-
-        } catch (IOException | InterruptedException e) {
+            if (params.length == 1)
+            {
+                Consumer<InputStream> callback = (Consumer<InputStream>) params[0];
+                callback.accept(process.getInputStream());
+            }
+        } catch (IOException e) {
             // e.printStackTrace();
             return () -> false;
         }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.InputStream
 import javax.sound.sampled.AudioSystem
 
 /**
@@ -23,6 +24,7 @@ import javax.sound.sampled.AudioSystem
  */
 class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var compiling = mutableStateOf(false)
+    var compilationOutput: MutableState<InputStream?> = mutableStateOf(null)
     val snackBar: SnackBarStore = SnackBarStore()
 
     /**
@@ -71,7 +73,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
             val result: Feature.ExecutionReport =
-                    ideStore.projectService.execute(project, Mandatory.Features.Maven.COMPILE)
+                    ideStore.projectService.execute(project, Mandatory.Features.Maven.COMPILE, { output: InputStream -> compilationOutput.value = output})
             launch(Dispatchers.Main) {
                 compiling.value = false
                 if (result.isSuccess) {
