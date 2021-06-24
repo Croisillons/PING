@@ -19,7 +19,7 @@ fun loadConfig(): IdeStore {
             prop.load(input)
 
             // get the property value and print it out
-            val projectPath = prop.getProperty("project.path")?.let { path ->
+            prop.getProperty("project.path")?.let { path ->
                 ideStore.loadProject(path)
                 ideStore.project.value?.let { project ->
                     project.treeWidth.value = Dp(prop.getProperty("ide.width", "300").toFloat())

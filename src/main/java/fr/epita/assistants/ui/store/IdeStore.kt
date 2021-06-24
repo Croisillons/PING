@@ -90,7 +90,7 @@ class IdeStore(val projectService: MyProjectService) {
 
                     // save properties to project root folder
                     prop.store(output, null)
-                    println("Configuration saved : $prop")
+                    // println("Configuration saved : $prop")
                 }
             } catch (io: IOException) {
                 println("Failed to save configuration")
