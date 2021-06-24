@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.service.MyProjectService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.file.Path
@@ -60,35 +63,38 @@ class IdeStore(val projectService: MyProjectService) {
     }
 
     fun saveConfig() {
-        try {
-            FileOutputStream("./config.properties").use { output ->
-                val prop = Properties()
+        val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope.launch {
+            try {
+                FileOutputStream("./config.properties").use { output ->
+                    val prop = Properties()
 
-                // set the properties value
-                project.value?.let {
-                    prop.setProperty("project.path", project.value!!.project.rootNode.path.toString())
-                    prop.setProperty("ide.width", project.value!!.treeWidth.value.value.toString())
-                    prop.setProperty("ide.height", project.value!!.filesHeight.value.value.toString())
+                    // set the properties value
+                    project.value?.let {
+                        prop.setProperty("project.path", project.value!!.project.rootNode.path.toString())
+                        prop.setProperty("ide.width", project.value!!.treeWidth.value.value.toString())
+                        prop.setProperty("ide.height", project.value!!.filesHeight.value.value.toString())
+                    }
+
+                    val colors = setting.theme.value.colors
+                    prop.setProperty("theme.onPrimary", colors.onPrimary.toArgb().toString())
+                    prop.setProperty("theme.primary", colors.primary.toArgb().toString())
+                    prop.setProperty("theme.onSecondary", colors.onSecondary.toArgb().toString())
+                    prop.setProperty("theme.secondary", colors.secondary.toArgb().toString())
+                    prop.setProperty("theme.onBackground", colors.onBackground.toArgb().toString())
+                    prop.setProperty("theme.background", colors.background.toArgb().toString())
+                    prop.setProperty("theme.onSurface", colors.onSurface.toArgb().toString())
+                    prop.setProperty("theme.primaryVariant", colors.primaryVariant.toArgb().toString())
+                    prop.setProperty("theme.secondaryVariant", colors.secondaryVariant.toArgb().toString())
+
+
+                    // save properties to project root folder
+                    prop.store(output, null)
+                    println(prop)
                 }
-
-                val colors = setting.theme.value.colors
-                prop.setProperty("theme.onPrimary", colors.onPrimary.toArgb().toString())
-                prop.setProperty("theme.primary", colors.primary.toArgb().toString())
-                prop.setProperty("theme.onSecondary", colors.onSecondary.toArgb().toString())
-                prop.setProperty("theme.secondary", colors.secondary.toArgb().toString())
-                prop.setProperty("theme.onBackground", colors.onBackground.toArgb().toString())
-                prop.setProperty("theme.background", colors.background.toArgb().toString())
-                prop.setProperty("theme.onSurface", colors.onSurface.toArgb().toString())
-                prop.setProperty("theme.primaryVariant", colors.primaryVariant.toArgb().toString())
-                prop.setProperty("theme.secondaryVariant", colors.secondaryVariant.toArgb().toString())
-
-
-                // save properties to project root folder
-                prop.store(output, null)
-                println(prop)
+            } catch (io: IOException) {
+                println("No config.properties")
             }
-        } catch (io: IOException) {
-            println("No config.properties")
         }
     }
 }
