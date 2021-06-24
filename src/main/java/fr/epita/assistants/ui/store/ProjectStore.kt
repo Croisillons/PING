@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import fr.epita.assistants.features.maven.CompileFeature
 import fr.epita.assistants.myide.domain.entity.Feature
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.entity.Node
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.InputStream
+import java.util.function.Consumer
 import javax.sound.sampled.AudioSystem
 
 /**
@@ -72,8 +74,11 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         compiling.value = true
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
+            // val callback: (InputStream) -> Unit = { output: InputStream -> compilationOutput.value = output }
             val result: Feature.ExecutionReport =
-                    ideStore.projectService.execute(project, Mandatory.Features.Maven.COMPILE, { output: InputStream -> compilationOutput.value = output})
+                    ideStore.projectService.execute(project, Mandatory.Features.Maven.COMPILE, CompileFeature.Callback { output: InputStream ->
+                        compilationOutput.value = output
+                    })
             launch(Dispatchers.Main) {
                 compiling.value = false
                 if (result.isSuccess) {
