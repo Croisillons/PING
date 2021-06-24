@@ -1,6 +1,7 @@
 package fr.epita.assistants.ui.view.dialog
 
 import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -41,18 +42,19 @@ fun FileActions(showFileActions: MutableState<Boolean>) {
                         false
                     }
             )
+                .background(MaterialTheme.colors.primary)
     ) {
         DropdownMenuItem(
                 onClick = { createFile() },
                 modifier = Modifier.fillMaxWidth()
         ) {
-            Text("New file")
+            Text("New file", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {}
         ) {
-            Text("New Repository")
+            Text("New Repository", color = MaterialTheme.colors.onPrimary)
         }
     }
 }

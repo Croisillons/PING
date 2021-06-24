@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.service.MyProjectService
+import fr.epita.assistants.ui.utils.MenuBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ import javax.swing.JPanel
 class IdeStore(val projectService: MyProjectService) {
     val setting: SettingStore = SettingStore(this)
     var project: MutableState<ProjectStore?> = mutableStateOf(null)
+    val menuBarState: MutableState<MenuBar?> = mutableStateOf(null)
 
     /**
      * Open a project by showing a file explorer and loading the chosen project
