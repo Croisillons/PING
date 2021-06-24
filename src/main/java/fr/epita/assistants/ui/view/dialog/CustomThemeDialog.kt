@@ -18,15 +18,18 @@ import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.utils.IdeCard
 import fr.epita.assistants.ui.utils.cursor
 import java.awt.Cursor
+import java.io.File
 
 
 @Composable
 fun CustomThemeCard(ideStore: IdeStore) {
-    val onPrimaryColor = MaterialTheme.colors.onBackground
+    val onPrimaryColor = MaterialTheme.colors.onPrimary
     val primaryColor = MaterialTheme.colors.primary
     val onSecondaryColor = MaterialTheme.colors.onSecondary
     val secondaryColor = MaterialTheme.colors.secondary

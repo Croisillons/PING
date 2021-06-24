@@ -12,13 +12,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,18 +24,58 @@ import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.SettingStore
-import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
 import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.view.dialog.CustomThemeCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
 import java.awt.Cursor
+import java.io.FileInputStream
+import java.io.IOException
+import java.util.*
+
+
+fun loadConfig() : IdeStore {
+    val myProjectService: MyProjectService = MyProjectService()
+    val ideStore: IdeStore = IdeStore(myProjectService)
+    try {
+        FileInputStream("./config.properties").use { input ->
+            val prop = Properties()
+
+            // load a properties file
+            prop.load(input)
+
+            // get the property value and print it out
+            val projectPath = prop.getProperty("project.path")?.let { path ->
+                ideStore.loadProject(path)
+                ideStore.project.value?.let { project ->
+                    project.treeWidth.value = Dp(prop.getProperty("ide.width", "300").toFloat())
+                    project.filesHeight.value = Dp(prop.getProperty("ide.height", "400").toFloat())
+                }
+            }
+
+            ideStore.setting.setCustomTheme(
+                Color(Integer.parseInt(prop.getProperty("theme.onPrimary"))),
+                Color(Integer.parseInt(prop.getProperty("theme.primary"))),
+                Color(Integer.parseInt(prop.getProperty("theme.onSecondary"))),
+                Color(Integer.parseInt(prop.getProperty("theme.secondary"))),
+                Color(Integer.parseInt(prop.getProperty("theme.onBackground"))),
+                Color(Integer.parseInt(prop.getProperty("theme.background"))),
+                Color(Integer.parseInt(prop.getProperty("theme.onSurface"))),
+                Color(Integer.parseInt(prop.getProperty("theme.primaryVariant"))),
+                Color(Integer.parseInt(prop.getProperty("theme.secondaryVariant"))),
+            )
+        }
+    } catch (ex: IOException) {
+        ex.printStackTrace()
+    }
+    return ideStore
+}
 
 fun main() {
-    val myProjectService: MyProjectService = MyProjectService()
-    val ideStore: IdeStore = IdeStore(myProjectService, SettingStore())
+    val ideStore: IdeStore = loadConfig()
 
     Window(
         title = "IDE",
