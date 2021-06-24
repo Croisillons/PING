@@ -52,6 +52,9 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      */
     fun incrementTreeWidth(x: Dp) {
         treeWidth.value = treeWidth.value.plus(x)
+
+        // TODO: optimize it
+        ideStore.saveConfig()
     }
 
     /**
@@ -61,6 +64,9 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     fun incrementFilesHeight(x: Dp)
     {
         filesHeight.value = filesHeight.value.plus(x)
+
+        // TODO: optimize it
+        ideStore.saveConfig()
     }
 
     /**

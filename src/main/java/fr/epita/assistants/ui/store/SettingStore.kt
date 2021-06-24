@@ -10,7 +10,7 @@ import fr.epita.assistants.ui.model.IdeTheme
 /**
  * Settings of the IDE
  */
-class SettingStore {
+class SettingStore(val ideStore: IdeStore) {
     val theme: MutableState<IdeTheme> = mutableStateOf(IdeTheme.DARK)
     val customThemeDialog: MutableState<Boolean> = mutableStateOf(false)
 
@@ -20,6 +20,7 @@ class SettingStore {
      */
     fun setTheme(ideTheme: IdeTheme) {
         theme.value = ideTheme
+        ideStore.saveConfig()
     }
 
     /**

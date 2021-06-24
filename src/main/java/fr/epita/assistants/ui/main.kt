@@ -12,13 +12,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,18 +24,21 @@ import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.SettingStore
-import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
 import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.utils.loadConfig
+import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.view.dialog.CustomThemeCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
 import java.awt.Cursor
+import java.io.FileInputStream
+import java.io.IOException
+import java.util.*
 
 fun main() {
-    val myProjectService: MyProjectService = MyProjectService()
-    val ideStore: IdeStore = IdeStore(myProjectService, SettingStore())
+    val ideStore: IdeStore = loadConfig()
 
     Window(
         title = "IDE",
