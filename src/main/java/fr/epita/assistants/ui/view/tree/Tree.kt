@@ -17,6 +17,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,7 +36,7 @@ import java.awt.Cursor
  */
 @Composable
 fun TreeView(projectStore: ProjectStore) {
-    Column(modifier = Modifier.width(projectStore.treeWidth.value).background(MaterialTheme.colors.primary)) {
+    Column(modifier = Modifier.width(projectStore.treeWidth.value).padding(start = 8.dp)) {
         TreeTopBarView(projectStore, projectStore.getTruncatedProjectName(), {})
         HierarchyView(projectStore.tree.value)
     }
@@ -97,13 +99,16 @@ fun TreeTopBarView(projectStore: ProjectStore, projectName: String, onRefresh: (
 @Composable
 fun HierarchyView(treeStore: TreeStore) {
     Box(
-        modifier = Modifier.padding(8.dp).fillMaxWidth().background(MaterialTheme.colors.primary)
+        modifier = Modifier
+            .shadow(8.dp, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colors.primary, RoundedCornerShape(12.dp))
+            .fillMaxWidth()
     ) {
         val verticalScrollState = rememberLazyListState()
         val horizontalScrollState = rememberLazyListState()
 
         LazyRow(
-            Modifier.fillMaxSize().padding(end = 12.dp),
+            Modifier.fillMaxSize().padding(12.dp),
             horizontalScrollState,
         ) {
             item {
