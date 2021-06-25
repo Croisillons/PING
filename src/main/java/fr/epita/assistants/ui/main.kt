@@ -67,14 +67,14 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
         Row(
             modifier = Modifier.height(Dp(35f))
                 .background(MaterialTheme.colors.background)
-                .fillMaxWidth()
-                .border(BorderStroke(0.5.dp, MaterialTheme.colors.secondary)),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IdeMenu(ideStore)
             ActionsView(projectStore)
         }
+        Divider(color = MaterialTheme.colors.secondary, thickness = 0.5.dp)
         Row(modifier = Modifier.height(projectStore.filesHeight.value)) {
             TreeView(projectStore)
             Row(

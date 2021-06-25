@@ -9,7 +9,9 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
 import fr.epita.assistants.myide.domain.entity.Mandatory
@@ -20,52 +22,71 @@ import fr.epita.assistants.ui.utils.MenuBar
 @Composable
 fun IdeMenu(ideStore: IdeStore) {
     Row(
-        modifier = Modifier.padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Box {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .background(if (ideStore.menuBarState.value == MenuBar.PROJECT) MaterialTheme.colors.primary else Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 "Project",
                 color = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.clickable { ideStore.menuBarState.value = MenuBar.PROJECT }
+                modifier = Modifier.padding(horizontal = 8.dp)
+                    .clickable { ideStore.menuBarState.value = MenuBar.PROJECT }
             )
             ProjectMenu(ideStore)
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Box {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .background(if (ideStore.menuBarState.value == MenuBar.THEME) MaterialTheme.colors.primary else Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 "Theme",
                 color = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.clickable { ideStore.menuBarState.value = MenuBar.THEME }
+                modifier = Modifier.padding(horizontal = 8.dp)
+                    .clickable { ideStore.menuBarState.value = MenuBar.THEME }
             )
 
             ThemeMenu(ideStore)
         }
-        Spacer(modifier = Modifier.width(8.dp))
 
         if (ideStore.project.value?.project?.aspects?.any { it -> it.type == Mandatory.Aspects.MAVEN } == true) {
-            Box {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .background(if (ideStore.menuBarState.value == MenuBar.MAVEN) MaterialTheme.colors.primary else Color.Transparent),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     "Maven",
                     color = MaterialTheme.colors.onPrimary,
-                    modifier = Modifier.clickable { ideStore.menuBarState.value = MenuBar.MAVEN }
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                        .clickable { ideStore.menuBarState.value = MenuBar.MAVEN }
                 )
                 MavenMenu(ideStore)
             }
-            Spacer(modifier = Modifier.width(8.dp))
         }
 
         if (ideStore.project.value?.project?.aspects?.any { it -> it.type == Mandatory.Aspects.GIT } == true) {
-            Box {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .background(if (ideStore.menuBarState.value == MenuBar.GIT) MaterialTheme.colors.primary else Color.Transparent),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
                     "Git",
                     color = MaterialTheme.colors.onPrimary,
-                    modifier = Modifier.clickable { ideStore.menuBarState.value = MenuBar.GIT }
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                        .clickable { ideStore.menuBarState.value = MenuBar.GIT }
                 )
                 GitMenu(ideStore)
             }
-            Spacer(modifier = Modifier.width(8.dp))
         }
     }
 }
