@@ -1,6 +1,8 @@
 package fr.epita.assistants.ui
 
+import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.desktop.Window
+import androidx.compose.desktop.WindowEvents
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,7 +37,6 @@ import java.awt.Cursor
 
 fun main() {
     val ideStore: IdeStore = loadConfig()
-
     Window(
         title = "IDE",
         size = IntSize(1400, 800),
@@ -44,6 +45,7 @@ fun main() {
         MaterialTheme(
             colors = ideStore.setting.theme.value.colors
         ) {
+            LocalAppWindow.current.maximize()
             if (ideStore.project.value != null) {
                 ProjectView(ideStore, ideStore.project.value!!)
                 SnackbarView(ideStore.project.value!!.snackBar)
