@@ -6,11 +6,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import com.sun.security.auth.NTSidPrimaryGroupPrincipal
 import fr.epita.assistants.ui.model.IdeTheme
+import fr.epita.assistants.ui.model.Shortcuts
 
 /**
  * Settings of the IDE
  */
 class SettingStore(val ideStore: IdeStore) {
+    val shortcuts: Shortcuts = Shortcuts()
+    val shortcutsDialog: MutableState<Boolean> = mutableStateOf(false)
+
+    /**
+     * Open shortcuts dialog
+     */
+    fun openShortcuts() {
+        shortcutsDialog.value = true
+    }
+
+    /**
+     * Close shortcuts dialog
+     */
+    fun dismissShortcuts() {
+        shortcutsDialog.value = false
+    }
+
     val theme: MutableState<IdeTheme> = mutableStateOf(IdeTheme.DARK)
     val customThemeDialog: MutableState<Boolean> = mutableStateOf(false)
 
@@ -30,7 +48,10 @@ class SettingStore(val ideStore: IdeStore) {
         customThemeDialog.value = true
     }
 
-    fun dimissCustomTheme() {
+    /**
+     * Close dialog to set custom theme
+     */
+    fun dismissCustomTheme() {
         customThemeDialog.value = false
     }
 

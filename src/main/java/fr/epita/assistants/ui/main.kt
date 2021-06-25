@@ -28,6 +28,7 @@ import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.utils.loadConfig
 import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.view.dialog.CustomThemeCard
+import fr.epita.assistants.ui.view.dialog.ShortcutsCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tree.TreeView
@@ -53,6 +54,9 @@ fun main() {
 
             if (ideStore.setting.customThemeDialog.value) {
                 CustomThemeCard(ideStore)
+            }
+            if (ideStore.setting.shortcutsDialog.value) {
+                ShortcutsCard(ideStore)
             }
         }
     }
@@ -91,7 +95,7 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
                     tint = MaterialTheme.colors.onPrimary
                 )
             }
-            OpenFilesView(projectStore)
+            OpenFilesView(projectStore, ideStore.setting)
         }
         Column(
             Modifier.height(12.dp)

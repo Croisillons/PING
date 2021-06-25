@@ -55,6 +55,19 @@ fun IdeMenu(ideStore: IdeStore) {
             ThemeMenu(ideStore)
         }
 
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "Shortcuts",
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(horizontal = 8.dp)
+                    .clickable { ideStore.setting.openShortcuts() }
+            )
+        }
+
         if (ideStore.project.value?.project?.aspects?.any { it -> it.type == Mandatory.Aspects.MAVEN } == true) {
             Box(
                 modifier = Modifier

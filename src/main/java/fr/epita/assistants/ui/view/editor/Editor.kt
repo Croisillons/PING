@@ -33,8 +33,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.epita.assistants.ui.model.Shortcuts
 import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
+import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.utils.CodeHighlight
 import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.view.dialog.Sed
@@ -44,7 +46,7 @@ import java.awt.Cursor
  * Display the selected file
  */
 @Composable
-fun OpenFilesView(projectStore: ProjectStore) {
+fun OpenFilesView(projectStore: ProjectStore, settingStore: SettingStore) {
     val sedState = remember { mutableStateOf(false) }
     val file = projectStore.selectedOpenFile.value
     Column(
@@ -64,6 +66,7 @@ fun OpenFilesView(projectStore: ProjectStore) {
 
             EditorView(
                 file.content.value,
+                settingStore.shortcuts,
                 onValueChange,
                 onReplace,
             ) { projectStore.saveFile() }
@@ -141,7 +144,7 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
 }
 
 @Composable
-fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit, onSave: () -> Unit) {
+fun EditorView(content: String, shortcuts: Shortcuts, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit, onSave: () -> Unit) {
     SelectionContainer {
         Box(
             modifier = Modifier
@@ -157,11 +160,11 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boo
                     .fillMaxHeight()
                     .onPreviewKeyEvent {
                         when {
-                            (it.isCtrlPressed && it.key == Key.S) -> {
+                            (shortcuts.save.isPressed(it)) -> {
                                 onSave()
                                 true
                             }
-                            (it.isCtrlPressed && it.key == Key.F) -> {
+                            (shortcuts.replace.isPressed(it)) -> {
                                 onReplace(true)
                                 true
                             }

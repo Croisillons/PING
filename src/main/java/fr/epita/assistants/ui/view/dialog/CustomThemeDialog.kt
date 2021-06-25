@@ -18,13 +18,10 @@ import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.utils.IdeCard
 import fr.epita.assistants.ui.utils.cursor
 import java.awt.Cursor
-import java.io.File
 
 
 @Composable
@@ -64,7 +61,7 @@ fun CustomThemeCard(ideStore: IdeStore) {
                     contentDescription = "Close",
                     tint = MaterialTheme.colors.onSecondary,
                     modifier = Modifier.align(Alignment.End)
-                        .clickable { ideStore.setting.dimissCustomTheme() }
+                        .clickable { ideStore.setting.dismissCustomTheme() }
                         .cursor(Cursor.HAND_CURSOR)
                 )
                 Text(
