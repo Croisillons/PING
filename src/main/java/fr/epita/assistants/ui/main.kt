@@ -32,6 +32,7 @@ import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.view.dialog.CustomThemeCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
+import fr.epita.assistants.ui.view.tools.Tools
 import fr.epita.assistants.ui.view.tree.TreeView
 import java.awt.Cursor
 
@@ -110,7 +111,7 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
             )
         }
         Row(modifier = Modifier.fillMaxHeight()) {
-//            Tools()
+            Tools()
         }
     }
 }
