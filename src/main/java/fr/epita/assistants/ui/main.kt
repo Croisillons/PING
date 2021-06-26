@@ -34,10 +34,12 @@ import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tools.Tools
 import fr.epita.assistants.ui.view.tree.TreeView
+import org.apache.log4j.BasicConfigurator
 import java.awt.Cursor
 
 fun main() {
     val ideStore: IdeStore = loadConfig()
+    BasicConfigurator.configure()
     Window(
         title = "IDE",
         size = IntSize(1400, 800),
