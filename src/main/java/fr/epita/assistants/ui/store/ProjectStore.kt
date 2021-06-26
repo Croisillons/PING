@@ -44,7 +44,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * Resize the views
      */
     val treeWidth: MutableState<Dp> = mutableStateOf(300.dp)
-    val filesHeight: MutableState<Dp> = mutableStateOf(800.dp)
+    val filesHeight: MutableState<Dp> = mutableStateOf(550.dp)
 
     /**
      * Increments the width of the file tree composable
