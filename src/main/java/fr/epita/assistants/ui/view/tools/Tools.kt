@@ -98,17 +98,9 @@ fun Tools() {
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(Color.Cyan)
-            .onSizeChanged {
-                state.panel.setSize(it.width, it.height)
-                state.widget.setSize(it.width, it.height)
-                state.widget.terminal.resize(Dimension(it.width, it.height), RequestOrigin.User)
-                println("resize")
-            }
     ) {
         SwingPanel(
             background = Color.Black,
-            modifier = Modifier.fillMaxSize(),
             factory = { state.panel },
         )
     }
