@@ -17,6 +17,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,17 +26,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.TreeStore
+import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.view.dialog.FileActions
+import java.awt.Cursor
 
+/**
+ * TopBar and files tree
+ * @param projectStore stores the project
+ */
 @Composable
 fun TreeView(projectStore: ProjectStore) {
-    Column(modifier = Modifier.width(projectStore.treeWidth.value).background(MaterialTheme.colors.primary)) {
-        TreeTopBarView(projectStore.getTruncatedProjectName(), {})
+    Column(modifier = Modifier.width(projectStore.treeWidth.value).padding(start = 8.dp)) {
+        TreeTopBarView(projectStore, projectStore.getTruncatedProjectName(), {})
         HierarchyView(projectStore.tree.value)
     }
 }
 
+/**
+ * TopBar with name of the project, refresh and files action button
+ * @param projectStore stores the project
+ * @param projectName name of the project
+ * @param onRefresh refreshes the files tree
+ */
 @Composable
-fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
+fun TreeTopBarView(projectStore: ProjectStore, projectName: String, onRefresh: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth()
             .height(44.dp)
@@ -70,23 +85,30 @@ fun TreeTopBarView(projectName: String, onRefresh: () -> Unit) {
                     .size(26.dp)
                     .padding(horizontal = 4.dp)
                     .defaultMinSize(minWidth = 26.dp)
-                    .clickable {}
+                    .clickable {projectStore.showFileActions.value = true}
             )
+            FileActions(projectStore.showFileActions)
         }
-
     }
 }
 
+/**
+ * Files tree
+ * @param treeStore stores the tree of files and folder
+ */
 @Composable
 fun HierarchyView(treeStore: TreeStore) {
     Box(
-        modifier = Modifier.padding(8.dp).fillMaxWidth().background(MaterialTheme.colors.primary)
+        modifier = Modifier
+            .shadow(8.dp, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colors.primary, RoundedCornerShape(12.dp))
+            .fillMaxWidth()
     ) {
         val verticalScrollState = rememberLazyListState()
         val horizontalScrollState = rememberLazyListState()
 
         LazyRow(
-            Modifier.fillMaxSize().padding(end = 12.dp),
+            Modifier.fillMaxSize().padding(12.dp),
             horizontalScrollState,
         ) {
             item {
@@ -115,6 +137,9 @@ fun HierarchyView(treeStore: TreeStore) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun HierarchyItemView(node: TreeStore.TreeItem) {
     val hoverState = remember { mutableStateOf(false) }
@@ -137,7 +162,8 @@ fun HierarchyItemView(node: TreeStore.TreeItem) {
                     hoverState.value = false
                     false
                 }
-            ),
+            )
+            .cursor(Cursor.HAND_CURSOR),
         verticalAlignment = Alignment.CenterVertically
     ) {
         HierarchyItemIconView(node)
@@ -153,6 +179,10 @@ fun HierarchyItemView(node: TreeStore.TreeItem) {
 
 }
 
+/**
+ * Icons of each item
+ * @param node file or folder
+ */
 @Composable
 fun HierarchyItemIconView(node: TreeStore.TreeItem) {
     if (node.isFolder) {

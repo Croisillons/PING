@@ -56,8 +56,6 @@ public class NodeServiceTest {
 
         assertTrue(new File(rootPath + "/test.txt").exists());
         assertEquals(2, testFolder.getChildren().size());
-        Node fileNode = testFolder.getChildren().get(0);
-        assertEquals(Node.Types.FILE, fileNode.getType());
         new File(rootPath + "/test.txt").delete();
     }
 

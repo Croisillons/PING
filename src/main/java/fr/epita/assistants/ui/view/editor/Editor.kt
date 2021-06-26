@@ -20,26 +20,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.utils.CodeHighlight
+import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.view.dialog.Sed
+import java.awt.Cursor
 
+/**
+ * Display the selected file
+ */
 @Composable
 fun OpenFilesView(projectStore: ProjectStore) {
     val sedState = remember { mutableStateOf(false) }
     val file = projectStore.selectedOpenFile.value
-    Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
+    Column(
+        modifier = Modifier.padding(end = 8.dp)
+            .background(MaterialTheme.colors.background)
+    ) {
         OpenFileTabsView(projectStore)
         if (file != null) {
             val onValueChange: (it: String) -> Unit = {
@@ -67,7 +78,9 @@ fun OpenFilesView(projectStore: ProjectStore) {
     }
 }
 
-
+/**
+ * Display the tab list of open files
+ */
 @Composable
 fun OpenFileTabsView(projectStore: ProjectStore) {
     Row(
@@ -120,6 +133,7 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
                     .padding(start = 4.dp)
                     .clickable(onClick = onClose)
                     .align(Alignment.CenterVertically)
+                    .cursor(Cursor.HAND_CURSOR)
             )
 
         }
@@ -129,14 +143,16 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
 @Composable
 fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit, onSave: () -> Unit) {
     SelectionContainer {
-        Surface(
-            color = MaterialTheme.colors.secondary,
-            modifier = Modifier.fillMaxWidth()
+        Box(
+            modifier = Modifier
+                .shadow(8.dp, RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colors.secondary, RoundedCornerShape(12.dp))
+                .fillMaxWidth()
         ) {
             BasicTextField(
                 value = content,
                 onValueChange = onValueChange,
-                textStyle = TextStyle(MaterialTheme.colors.onSecondary, fontWeight = FontWeight(600)),
+                textStyle = TextStyle(MaterialTheme.colors.onSecondary, fontWeight = FontWeight(600), fontFamily = FontFamily.Monospace),
                 modifier = Modifier.padding(horizontal = 8.dp)
                     .fillMaxHeight()
                     .onPreviewKeyEvent {
@@ -161,8 +177,10 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boo
 @Composable
 fun NoOpenFileView() {
     Column(
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colors.secondary),
+        modifier = Modifier
+            .shadow(8.dp, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colors.secondary, RoundedCornerShape(12.dp))
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

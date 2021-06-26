@@ -10,6 +10,7 @@ plugins {
     `maven-publish`
     kotlin("jvm") version "1.5.10"
     id("org.jetbrains.compose") version "0.4.0"
+    id("org.jetbrains.dokka") version "1.4.32"
 }
 
 val ENV = System.getenv()
@@ -52,7 +53,6 @@ dependencies {
     implementation("org.jetbrains.pty4j:pty4j:0.8.6")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
-
     implementation(compose.desktop.currentOs)
     api(compose.materialIconsExtended)
 }

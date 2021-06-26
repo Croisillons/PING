@@ -6,6 +6,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Store an open file
+ */
 class OpenFileStore(val node: Node, val projectStore: ProjectStore) {
     val filename: String = node.path.fileName.toString()
     val content = mutableStateOf("")
