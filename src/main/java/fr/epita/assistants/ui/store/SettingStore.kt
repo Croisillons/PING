@@ -1,18 +1,24 @@
 package fr.epita.assistants.ui.store
 
+import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
-import com.sun.security.auth.NTSidPrimaryGroupPrincipal
+import fr.epita.assistants.ui.model.CustomTheme
 import fr.epita.assistants.ui.model.IdeTheme
+import fr.epita.assistants.ui.model.IdeThemeEnum
 
 /**
  * Settings of the IDE
  */
 class SettingStore(val ideStore: IdeStore) {
-    val theme: MutableState<IdeTheme> = mutableStateOf(IdeTheme.DARK)
+    val theme: MutableState<IdeTheme> = mutableStateOf(IdeThemeEnum.DARK)
     val customThemeDialog: MutableState<Boolean> = mutableStateOf(false)
+    val customThemes: SnapshotStateList<IdeTheme> = mutableStateListOf(IdeThemeEnum.CUSTOM)
+    val selectedCustomTheme: MutableState<IdeTheme> = mutableStateOf(customThemes[0])
 
     /**
      * Set the theme
@@ -35,7 +41,7 @@ class SettingStore(val ideStore: IdeStore) {
     }
 
     fun setCustomTheme(onPrimary: Color, primary: Color, onSecondary: Color, secondary: Color, onBackground: Color, background: Color, onSurface: Color, primaryVariant: Color, secondaryVariant: Color) {
-        IdeTheme.CUSTOM.colors = lightColors(
+        selectedCustomTheme.value.colors = lightColors(
             onPrimary = onPrimary,
             primary = primary,
             onSecondary = onSecondary,
@@ -47,9 +53,29 @@ class SettingStore(val ideStore: IdeStore) {
             secondaryVariant = secondaryVariant
         )
         // Trick to trigger recomposition, the clean way is to make colors a mutable state
-        setTheme(IdeTheme.LIGHT)
+        setTheme(IdeThemeEnum.LIGHT)
 
-        setTheme(IdeTheme.CUSTOM)
+        setTheme(selectedCustomTheme.value)
     }
 
+    fun addCustomTheme() {
+        val customTheme = CustomTheme(theme.value.colors)
+
+        customThemes.add(customTheme)
+        selectCustomTheme(customTheme)
+    }
+
+    fun removeCustomTheme(customTheme: IdeTheme) {
+        if (customThemes.size <= 1)
+            return
+
+        customThemes.remove(customTheme)
+        if (customTheme == selectedCustomTheme.value)
+            selectCustomTheme(customThemes[0])
+    }
+
+    fun selectCustomTheme(customTheme: IdeTheme) {
+        selectedCustomTheme.value = customTheme
+        setTheme(customTheme)
+    }
 }
