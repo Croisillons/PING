@@ -1,9 +1,6 @@
 package fr.epita.assistants.ui.view.tools
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -20,6 +17,9 @@ import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
 import fr.epita.assistants.ui.store.ProjectStore
 
+/**
+ * Display the Tool section
+ */
 @Composable
 fun Tools(projectStore: ProjectStore)
 {
@@ -47,6 +47,9 @@ fun ToolTabs(projectStore: ProjectStore) {
     }
 }
 
+/**
+ * Display the build tool window
+ */
 @Composable
 fun BuildWindow(projectStore: ProjectStore) {
     SelectionContainer {
@@ -70,12 +73,25 @@ fun BuildWindow(projectStore: ProjectStore) {
     }
 }
 
+/**
+ * Represents a tool, containing the tab and the window
+ */
 interface ToolTab
 {
+    /**
+     * Name displayed on the tab
+     */
     fun getName(): String
+
+    /**
+     * Display the window when selected
+     */
     @Composable
     fun display(projectStore: ProjectStore)
 
+    /**
+     * Display the tab button
+     */
     @Composable
     fun displayTab(projectStore: ProjectStore)
     {
@@ -120,5 +136,4 @@ class BuildToolTab : ToolTab
     override fun display(projectStore: ProjectStore) {
         BuildWindow(projectStore)
     }
-
 }
