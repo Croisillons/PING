@@ -11,6 +11,8 @@ import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.myide.domain.entity.Project
 import fr.epita.assistants.ui.view.tools.BuildToolTab
+import fr.epita.assistants.ui.view.tools.TerminalToolTab
+import fr.epita.assistants.ui.view.tools.TerminalWindow
 import fr.epita.assistants.ui.view.tools.ToolTab
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +31,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var compiling = mutableStateOf(false)
     var compilationOutput: MutableState<InputStream?> = mutableStateOf(null)
     val snackBar: SnackBarStore = SnackBarStore()
-    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab())
+    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), TerminalToolTab())
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
 
     /**

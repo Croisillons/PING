@@ -1,29 +1,6 @@
 package fr.epita.assistants.ui.view.tools
 
 import androidx.compose.desktop.SwingPanel
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
-import com.jediterm.pty.PtyProcessTtyConnector
-import com.jediterm.terminal.RequestOrigin
-import com.jediterm.terminal.TerminalColor
-import com.jediterm.terminal.TerminalMode
-import com.jediterm.terminal.TextStyle
-import com.jediterm.terminal.emulator.ColorPalette
-import com.jediterm.terminal.ui.JediTermWidget
-import com.jediterm.terminal.ui.settings.DefaultSettingsProvider
-import com.pty4j.PtyProcess
-import java.awt.Dimension
-import java.nio.charset.Charset
-import javax.swing.BoxLayout
-import javax.swing.JPanel
-
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,7 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
+import com.jediterm.pty.PtyProcessTtyConnector
+import com.jediterm.terminal.TerminalColor
+import com.jediterm.terminal.TerminalMode
+import com.jediterm.terminal.TextStyle
+import com.jediterm.terminal.emulator.ColorPalette
+import com.jediterm.terminal.ui.JediTermWidget
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider
+import com.pty4j.PtyProcess
 import fr.epita.assistants.ui.store.ProjectStore
+import java.nio.charset.Charset
+import javax.swing.BoxLayout
+import javax.swing.JPanel
 
 class TerminalState {
     val panel = JPanel()
@@ -89,7 +78,7 @@ class TerminalSettings : DefaultSettingsProvider() {
 }
 
 @Composable
-fun Tools() {
+fun TerminalWindow() {
     val state = remember { TerminalState() }
 
     SideEffect {
@@ -243,4 +232,17 @@ class BuildToolTab : ToolTab
     override fun display(projectStore: ProjectStore) {
         BuildWindow(projectStore)
     }
+}
+
+class TerminalToolTab : ToolTab
+{
+    override fun getName(): String {
+        return "Terminal"
+    }
+
+    @Composable
+    override fun display(projectStore: ProjectStore) {
+        TerminalWindow()
+    }
+
 }
