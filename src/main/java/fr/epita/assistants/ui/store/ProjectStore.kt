@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import fr.epita.assistants.features.maven.CompileFeature
+import fr.epita.assistants.features.maven.PackageFeature
 import fr.epita.assistants.myide.domain.entity.Feature
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.entity.Node
@@ -30,6 +31,7 @@ import javax.sound.sampled.AudioSystem
 class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var compiling = mutableStateOf(false)
     var compilationOutput: MutableState<InputStream?> = mutableStateOf(null)
+    var compilationOutputText: MutableState<String> = mutableStateOf("")
     val snackBar: SnackBarStore = SnackBarStore()
     var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), TerminalToolTab())
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
@@ -86,7 +88,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
             val result: Feature.ExecutionReport =
-                    ideStore.projectService.execute(project, Mandatory.Features.Maven.COMPILE, CompileFeature.Callback { output: InputStream ->
+                    ideStore.projectService.execute(project, Mandatory.Features.Maven.PACKAGE, PackageFeature.Callback { output: InputStream ->
                         compilationOutput.value = output
                     })
             launch(Dispatchers.Main) {
