@@ -78,30 +78,7 @@ class TerminalSettings : DefaultSettingsProvider() {
 }
 
 @Composable
-fun TerminalWindow() {
-    val state = remember { TerminalState() }
-
-    SideEffect {
-        val settingsProvider = TerminalSettings();
-
-        val tw = JediTermWidget(settingsProvider)
-
-        tw.terminal.setModeEnabled(TerminalMode.AutoNewLine, true)
-
-        val cmd = arrayOf("/bin/bash", "-l")
-        val env = mapOf("TERM" to "xterm")
-
-        val pty = PtyProcess.exec(cmd, env)
-
-        tw.createTerminalSession(PtyProcessTtyConnector(pty, Charset.forName("UTF-8")))
-        tw.start()
-
-        state.widget = tw
-
-        state.panel.layout = BoxLayout(state.panel, BoxLayout.Y_AXIS)
-        state.panel.add(tw)
-    }
-
+fun TerminalWindow(state: TerminalState) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -236,13 +213,36 @@ class BuildToolTab : ToolTab
 
 class TerminalToolTab : ToolTab
 {
+    val state = TerminalState()
+
+    init {
+        val settingsProvider = TerminalSettings();
+
+        val tw = JediTermWidget(settingsProvider)
+
+        tw.terminal.setModeEnabled(TerminalMode.AutoNewLine, true)
+
+        val cmd = arrayOf("/bin/bash", "-l")
+        val env = mapOf("TERM" to "xterm")
+
+        val pty = PtyProcess.exec(cmd, env)
+
+        tw.createTerminalSession(PtyProcessTtyConnector(pty, Charset.forName("UTF-8")))
+        tw.start()
+
+        state.widget = tw
+
+        state.panel.layout = BoxLayout(state.panel, BoxLayout.Y_AXIS)
+        state.panel.add(tw)
+    }
+
     override fun getName(): String {
         return "Terminal"
     }
 
     @Composable
     override fun display(projectStore: ProjectStore) {
-        TerminalWindow()
+        TerminalWindow(state)
     }
 
 }
