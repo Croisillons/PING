@@ -18,6 +18,9 @@ import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
@@ -68,6 +71,8 @@ fun main() {
  */
 @Composable
 fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
+    val density = LocalDensity.current.density
+
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         Row(
             modifier = Modifier.height(Dp(35f))
@@ -86,7 +91,9 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
                 Modifier.width(12.dp)
                     .fillMaxHeight()
                     .draggable(orientation = Orientation.Horizontal,
-                        state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) })
+                        state = rememberDraggableState {
+                            projectStore.incrementTreeWidth(it.dp / density)
+                        })
                     .cursor(Cursor.E_RESIZE_CURSOR),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -102,7 +109,9 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
             Modifier.height(12.dp)
                 .fillMaxWidth()
                 .draggable(orientation = Orientation.Vertical,
-                    state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) })
+                    state = rememberDraggableState {
+                        projectStore.incrementFilesHeight(it.dp / density)
+                    })
                 .cursor(Cursor.N_RESIZE_CURSOR),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
