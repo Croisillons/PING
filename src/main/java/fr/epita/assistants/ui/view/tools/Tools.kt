@@ -1,15 +1,12 @@
 package fr.epita.assistants.ui.view.tools
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -28,10 +25,14 @@ fun Tools(projectStore: ProjectStore)
 {
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         ToolTabs(projectStore)
-        BuildWindow(projectStore) // FIXME
+
+        projectStore.selectedToolTab.value.display(projectStore)
     }
 }
 
+/**
+ * Display all tool tabs
+ */
 @Composable
 fun ToolTabs(projectStore: ProjectStore) {
     Row(
@@ -40,39 +41,8 @@ fun ToolTabs(projectStore: ProjectStore) {
             .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        BuildTab(projectStore)
-    }
-}
-
-@Composable
-fun BuildTab(projectStore: ProjectStore)
-{
-    val hoverState = remember { mutableStateOf(false) }
-    Surface(
-        color = if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
-        shape = RoundedCornerShape(4.dp),
-        modifier = Modifier
-            .pointerMoveFilter(
-                onEnter = {
-                    hoverState.value = true
-                    false
-                },
-                onExit = {
-                    hoverState.value = false
-                    false
-                }
-            )
-            .padding(end = 4.dp)
-            //.clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier.padding(8.dp, 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Build",
-                color = MaterialTheme.colors.onSecondary
-            )
+        for (tab in projectStore.toolsTabs) {
+            tab.displayTab(projectStore)
         }
     }
 }
@@ -98,4 +68,57 @@ fun BuildWindow(projectStore: ProjectStore) {
             )
         }
     }
+}
+
+interface ToolTab
+{
+    fun getName(): String
+    @Composable
+    fun display(projectStore: ProjectStore)
+
+    @Composable
+    fun displayTab(projectStore: ProjectStore)
+    {
+        val hoverState = remember { mutableStateOf(false) }
+        Surface(
+            color = if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier
+                .pointerMoveFilter(
+                    onEnter = {
+                        hoverState.value = true
+                        false
+                    },
+                    onExit = {
+                        hoverState.value = false
+                        false
+                    }
+                )
+                .padding(end = 4.dp)
+                .clickable(onClick = { projectStore.selectedToolTab.value = this })
+        ) {
+            Row(
+                modifier = Modifier.padding(8.dp, 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = getName(),
+                    color = MaterialTheme.colors.onSecondary
+                )
+            }
+        }
+    }
+}
+
+class BuildToolTab : ToolTab
+{
+    override fun getName(): String {
+        return "Build"
+    }
+
+    @Composable
+    override fun display(projectStore: ProjectStore) {
+        BuildWindow(projectStore)
+    }
+
 }
