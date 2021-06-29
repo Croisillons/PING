@@ -90,6 +90,23 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
             val result: Feature.ExecutionReport =
                     ideStore.projectService.execute(project, Mandatory.Features.Maven.PACKAGE, PackageFeature.Callback { output: InputStream ->
                         compilationOutput.value = output
+                        launch(Dispatchers.IO) {
+
+                            var res = ""
+                            while (true) {
+                                val byteToRead = output.available()
+                                if (byteToRead == 0)
+                                    continue
+                                val bytes = output.readNBytes(byteToRead)
+                                if (bytes.count() == 0)
+                                    break
+                                res += String(bytes)
+
+                                launch(Dispatchers.Main) {
+                                    compilationOutputText.value = res
+                                }
+                            }
+                        }
                     })
             launch(Dispatchers.Main) {
                 compiling.value = false

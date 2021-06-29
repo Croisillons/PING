@@ -134,11 +134,9 @@ fun BuildWindow(projectStore: ProjectStore) {
         ) {
             if (projectStore.compilationOutput.value == null)
                 return@Surface
-            val byteArr = projectStore.compilationOutput.value!!.readAllBytes()
-            val outputStr = String(byteArr)
             val scroll = rememberScrollState(0)
             Text(
-                text = outputStr,
+                text = projectStore.compilationOutputText.value,
                 modifier = Modifier
                     .verticalScroll(scroll)
             )
