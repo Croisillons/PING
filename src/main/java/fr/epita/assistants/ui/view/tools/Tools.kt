@@ -17,6 +17,7 @@ import com.jediterm.terminal.TerminalMode
 import com.jediterm.terminal.TextStyle
 import com.jediterm.terminal.emulator.ColorPalette
 import com.jediterm.terminal.ui.JediTermWidget
+import com.jediterm.terminal.ui.UIUtil
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider
 import com.pty4j.PtyProcess
 import java.awt.Dimension
@@ -82,8 +83,15 @@ fun Tools() {
 
         tw.terminal.setModeEnabled(TerminalMode.AutoNewLine, true)
 
-        val cmd = arrayOf("/bin/bash", "-l")
-        val env = mapOf("TERM" to "xterm")
+        lateinit var cmd : Array<String>;
+        val env = mutableMapOf<String, String>();
+
+        if (UIUtil.isWindows) {
+            cmd = arrayOf("cmd.exe")
+        } else {
+            cmd = arrayOf("/bin/bash", "-l")
+            env["TERM"] = "xterm"
+        }
 
         val pty = PtyProcess.exec(cmd, env)
 
