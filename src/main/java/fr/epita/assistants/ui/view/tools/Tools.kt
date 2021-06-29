@@ -129,7 +129,7 @@ fun BuildWindow(projectStore: ProjectStore) {
         Surface(
             color = MaterialTheme.colors.secondary,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(5.dp)
         ) {
             if (projectStore.compilationOutput.value == null)
