@@ -1,17 +1,23 @@
 package fr.epita.assistants.ui.view.tools
 
 import androidx.compose.desktop.SwingPanel
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.unit.dp
 import com.jediterm.pty.PtyProcessTtyConnector
-import com.jediterm.terminal.RequestOrigin
 import com.jediterm.terminal.TerminalColor
 import com.jediterm.terminal.TerminalMode
 import com.jediterm.terminal.TextStyle
@@ -20,7 +26,7 @@ import com.jediterm.terminal.ui.JediTermWidget
 import com.jediterm.terminal.ui.UIUtil
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider
 import com.pty4j.PtyProcess
-import java.awt.Dimension
+import fr.epita.assistants.ui.store.ProjectStore
 import java.nio.charset.Charset
 import javax.swing.BoxLayout
 import javax.swing.JPanel
@@ -73,10 +79,142 @@ class TerminalSettings : DefaultSettingsProvider() {
 }
 
 @Composable
-fun Tools() {
-    val state = remember { TerminalState() }
+fun TerminalWindow(state: TerminalState) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        SwingPanel(
+            background = Color.Black,
+            factory = { state.panel },
+        )
+    }
 
-    SideEffect {
+}
+
+/**
+ * Display the Tool section
+ */
+@Composable
+fun Tools(projectStore: ProjectStore)
+{
+    Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
+        ToolTabs(projectStore)
+
+        projectStore.selectedToolTab.value.display(projectStore)
+    }
+}
+
+/**
+ * Display all tool tabs
+ */
+@Composable
+fun ToolTabs(projectStore: ProjectStore) {
+    Row(
+        modifier = Modifier
+            .height(44.dp)
+            .horizontalScroll(rememberScrollState()),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for (tab in projectStore.toolsTabs) {
+            tab.displayTab(projectStore)
+        }
+    }
+}
+
+/**
+ * Display the build tool window
+ */
+@Composable
+fun BuildWindow(projectStore: ProjectStore) {
+    SelectionContainer {
+        Surface(
+            color = MaterialTheme.colors.secondary,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(5.dp)
+        ) {
+            if (projectStore.compilationOutput.value == null)
+                return@Surface
+            val scroll = rememberScrollState(0)
+            Text(
+                text = projectStore.compilationOutputText.value,
+                modifier = Modifier
+                    .verticalScroll(scroll)
+            )
+        }
+    }
+}
+
+/**
+ * Represents a tool, containing the tab and the window
+ */
+interface ToolTab
+{
+    /**
+     * Name displayed on the tab
+     */
+    fun getName(): String
+
+    /**
+     * Display the window when selected
+     */
+    @Composable
+    fun display(projectStore: ProjectStore)
+
+    /**
+     * Display the tab button
+     */
+    @Composable
+    fun displayTab(projectStore: ProjectStore)
+    {
+        val hoverState = remember { mutableStateOf(false) }
+        Surface(
+            color = if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier
+                .pointerMoveFilter(
+                    onEnter = {
+                        hoverState.value = true
+                        false
+                    },
+                    onExit = {
+                        hoverState.value = false
+                        false
+                    }
+                )
+                .padding(end = 4.dp)
+                .clickable(onClick = { projectStore.selectedToolTab.value = this })
+        ) {
+            Row(
+                modifier = Modifier.padding(8.dp, 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = getName(),
+                    color = MaterialTheme.colors.onSecondary
+                )
+            }
+        }
+    }
+}
+
+class BuildToolTab : ToolTab
+{
+    override fun getName(): String {
+        return "Build"
+    }
+
+    @Composable
+    override fun display(projectStore: ProjectStore) {
+        BuildWindow(projectStore)
+    }
+}
+
+class TerminalToolTab : ToolTab
+{
+    val state = TerminalState()
+
+    init {
         val settingsProvider = TerminalSettings();
 
         val tw = JediTermWidget(settingsProvider)
@@ -104,13 +242,13 @@ fun Tools() {
         state.panel.add(tw)
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        SwingPanel(
-            background = Color.Black,
-            factory = { state.panel },
-        )
+    override fun getName(): String {
+        return "Terminal"
+    }
+
+    @Composable
+    override fun display(projectStore: ProjectStore) {
+        TerminalWindow(state)
     }
 
 }

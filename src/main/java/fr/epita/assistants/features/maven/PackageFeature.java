@@ -5,6 +5,8 @@ import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Project;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Consumer;
 
 public class PackageFeature implements Feature {
     /**
@@ -20,13 +22,12 @@ public class PackageFeature implements Feature {
                 .directory(project.getRootNode().getPath().toFile());
         try {
             Process process = builder.start();
+            if (params.length == 1)
+            {
+                Consumer<InputStream> callback = ((PackageFeature.Callback) params[0]).callback;
+                callback.accept(process.getInputStream());
+            }
             process.waitFor();
-            int res = process.exitValue();
-            var output = process.getInputStream();
-            var bytes = output.readAllBytes();
-            // System.out.println("Exit value: " + res);
-            // System.out.println(new String(bytes));
-
         } catch (IOException | InterruptedException e) {
             // e.printStackTrace();
             return () -> false;
@@ -43,4 +44,7 @@ public class PackageFeature implements Feature {
     {
         return Mandatory.Features.Maven.PACKAGE;
     }
+
+    public static record Callback(Consumer<InputStream> callback)
+    {}
 }

@@ -5,14 +5,21 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import fr.epita.assistants.features.maven.CompileFeature
+import fr.epita.assistants.features.maven.PackageFeature
 import fr.epita.assistants.myide.domain.entity.Feature
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.myide.domain.entity.Project
+import fr.epita.assistants.ui.view.tools.BuildToolTab
+import fr.epita.assistants.ui.view.tools.TerminalToolTab
+import fr.epita.assistants.ui.view.tools.TerminalWindow
+import fr.epita.assistants.ui.view.tools.ToolTab
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.InputStream
 import javax.sound.sampled.AudioSystem
 
 /**
@@ -23,7 +30,11 @@ import javax.sound.sampled.AudioSystem
  */
 class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var compiling = mutableStateOf(false)
+    var compilationOutput: MutableState<InputStream?> = mutableStateOf(null)
+    var compilationOutputText: MutableState<String> = mutableStateOf("")
     val snackBar: SnackBarStore = SnackBarStore()
+    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), TerminalToolTab())
+    var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
 
     /**
      * List of files of the project
@@ -77,7 +88,26 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
             val result: Feature.ExecutionReport =
-                    ideStore.projectService.execute(project, Mandatory.Features.Maven.COMPILE)
+                    ideStore.projectService.execute(project, Mandatory.Features.Maven.PACKAGE, PackageFeature.Callback { output: InputStream ->
+                        compilationOutput.value = output
+                        launch(Dispatchers.IO) {
+
+                            var res = ""
+                            while (true) {
+                                val byteToRead = output.available()
+                                if (byteToRead == 0)
+                                    continue
+                                val bytes = output.readNBytes(byteToRead)
+                                if (bytes.count() == 0)
+                                    break
+                                res += String(bytes)
+
+                                launch(Dispatchers.Main) {
+                                    compilationOutputText.value = res
+                                }
+                            }
+                        }
+                    })
             launch(Dispatchers.Main) {
                 compiling.value = false
                 if (result.isSuccess) {

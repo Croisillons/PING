@@ -122,7 +122,7 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
             )
         }
         Row(modifier = Modifier.fillMaxHeight()) {
-            Tools()
+            Tools(projectStore)
         }
     }
 }

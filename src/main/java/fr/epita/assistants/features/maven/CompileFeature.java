@@ -3,10 +3,12 @@ package fr.epita.assistants.features.maven;
 import fr.epita.assistants.myide.domain.entity.Feature;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Project;
+import kotlin.Unit;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class CompileFeature implements Feature {
@@ -23,13 +25,13 @@ public class CompileFeature implements Feature {
                 .directory(project.getRootNode().getPath().toFile());
         try {
             Process process = builder.start();
+            if (params.length == 1)
+            {
+                Consumer<InputStream> callback = ((Callback) params[0]).callback;
+                callback.accept(process.getInputStream());
+            }
             process.waitFor();
-            int res = process.exitValue();
-            var output = process.getInputStream();
-            var bytes = output.readAllBytes();
-            // System.out.println("Exit value: " + res);
-            // System.out.println(new String(bytes));
-
+            System.out.println("Compilation done.");
         } catch (IOException | InterruptedException e) {
             // e.printStackTrace();
             return () -> false;
@@ -46,4 +48,7 @@ public class CompileFeature implements Feature {
     {
         return Mandatory.Features.Maven.COMPILE;
     }
+
+    public static record Callback(Consumer<InputStream> callback)
+    {}
 }
