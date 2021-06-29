@@ -6,3 +6,4 @@ javadoc/
 *.iml
 build/
 .gradle/
+config.properties

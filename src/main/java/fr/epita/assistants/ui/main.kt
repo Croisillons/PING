@@ -1,8 +1,12 @@
 package fr.epita.assistants.ui
 
+import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.desktop.Window
+import androidx.compose.desktop.WindowEvents
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -12,45 +16,44 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.epita.assistants.myide.domain.service.MyProjectService
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.store.ProjectStore
-import fr.epita.assistants.ui.store.SettingStore
-import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.store.SnackBarStore
 import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.utils.loadConfig
+import fr.epita.assistants.ui.view.actions.ActionsView
 import fr.epita.assistants.ui.view.dialog.CustomThemeCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tools.Tools
 import fr.epita.assistants.ui.view.tree.TreeView
+import org.apache.log4j.BasicConfigurator
 import java.awt.Cursor
 
 fun main() {
-    val myProjectService: MyProjectService = MyProjectService()
-    val ideStore: IdeStore = IdeStore(myProjectService, SettingStore())
-
+    val ideStore: IdeStore = loadConfig()
+    BasicConfigurator.configure()
     Window(
         title = "IDE",
-        menuBar = IdeMenu(ideStore),
         size = IntSize(1400, 800),
         centered = true
     ) {
         MaterialTheme(
             colors = ideStore.setting.theme.value.colors
         ) {
+            LocalAppWindow.current.maximize()
             if (ideStore.project.value != null) {
-                ProjectView(ideStore.project.value!!)
+                ProjectView(ideStore, ideStore.project.value!!)
                 SnackbarView(ideStore.project.value!!.snackBar)
             } else {
                 OpenProjectView { ideStore.openProject() }
@@ -67,24 +70,30 @@ fun main() {
  *
  */
 @Composable
-fun ProjectView(projectStore: ProjectStore) {
+fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
+    val density = LocalDensity.current.density
+
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         Row(
-                modifier = Modifier.height(Dp(35f))
-                        .background(MaterialTheme.colors.background)
-                        .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
+            modifier = Modifier.height(Dp(35f))
+                .background(MaterialTheme.colors.background)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            IdeMenu(ideStore)
             ActionsView(projectStore)
         }
+        Divider(color = MaterialTheme.colors.secondary, thickness = 0.5.dp)
         Row(modifier = Modifier.height(projectStore.filesHeight.value)) {
             TreeView(projectStore)
             Row(
                 Modifier.width(12.dp)
                     .fillMaxHeight()
                     .draggable(orientation = Orientation.Horizontal,
-                        state = rememberDraggableState { projectStore.incrementTreeWidth(it.dp) })
+                        state = rememberDraggableState {
+                            projectStore.incrementTreeWidth(it.dp / density)
+                        })
                     .cursor(Cursor.E_RESIZE_CURSOR),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -100,7 +109,9 @@ fun ProjectView(projectStore: ProjectStore) {
             Modifier.height(12.dp)
                 .fillMaxWidth()
                 .draggable(orientation = Orientation.Vertical,
-                    state = rememberDraggableState { projectStore.incrementFilesHeight(it.dp) })
+                    state = rememberDraggableState {
+                        projectStore.incrementFilesHeight(it.dp / density)
+                    })
                 .cursor(Cursor.N_RESIZE_CURSOR),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -152,7 +163,7 @@ fun SnackbarView(snackBar: SnackBarStore) {
             Snackbar(
                 action = {
                     Button(
-                        onClick = {snackBar.isVisible.value = false}
+                        onClick = { snackBar.isVisible.value = false }
                     ) {
                         Text("Close")
                     }

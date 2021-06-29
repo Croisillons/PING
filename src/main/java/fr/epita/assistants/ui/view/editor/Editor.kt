@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.key.Key
@@ -46,7 +47,10 @@ import java.awt.Cursor
 fun OpenFilesView(projectStore: ProjectStore) {
     val sedState = remember { mutableStateOf(false) }
     val file = projectStore.selectedOpenFile.value
-    Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
+    Column(
+        modifier = Modifier.padding(end = 8.dp)
+            .background(MaterialTheme.colors.background)
+    ) {
         OpenFileTabsView(projectStore)
         if (file != null) {
             val onValueChange: (it: String) -> Unit = {
@@ -139,9 +143,11 @@ fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -
 @Composable
 fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit, onSave: () -> Unit) {
     SelectionContainer {
-        Surface(
-            color = MaterialTheme.colors.secondary,
-            modifier = Modifier.fillMaxWidth()
+        Box(
+            modifier = Modifier
+                .shadow(8.dp, RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colors.secondary, RoundedCornerShape(12.dp))
+                .fillMaxWidth()
         ) {
             BasicTextField(
                 value = content,
@@ -171,8 +177,10 @@ fun EditorView(content: String, onValueChange: (String) -> Unit, onReplace: (Boo
 @Composable
 fun NoOpenFileView() {
     Column(
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colors.secondary),
+        modifier = Modifier
+            .shadow(8.dp, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colors.secondary, RoundedCornerShape(12.dp))
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
