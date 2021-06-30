@@ -43,7 +43,8 @@ fun ActionsView(projectStore: ProjectStore) {
                 contentDescription = "Run Project",
                 modifier = Modifier.padding(horizontal = 5.dp)
                     .clickable {
-                        projectStore.run()
+                        if (!projectStore.running.value)
+                            projectStore.run()
                     }
                     .cursor(Cursor.HAND_CURSOR)
             )
