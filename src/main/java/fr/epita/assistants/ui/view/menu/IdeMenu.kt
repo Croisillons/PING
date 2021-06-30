@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
 import fr.epita.assistants.myide.domain.entity.Mandatory
-import fr.epita.assistants.ui.model.IdeTheme
+import fr.epita.assistants.ui.model.IdeThemeEnum
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.utils.MenuBar
 
@@ -147,31 +147,31 @@ fun ThemeMenu(ideStore: IdeStore) {
             .background(MaterialTheme.colors.primary),
     ) {
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeTheme.LIGHT) },
+            onClick = { ideStore.setting.setTheme(IdeThemeEnum.LIGHT) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Light", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeTheme.DARK) },
+            onClick = { ideStore.setting.setTheme(IdeThemeEnum.DARK) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Dark", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeTheme.PINK) },
+            onClick = { ideStore.setting.setTheme(IdeThemeEnum.PINK) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Pink", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeTheme.BLUE) },
+            onClick = { ideStore.setting.setTheme(IdeThemeEnum.BLUE) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Blue", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeTheme.GREEN) },
+            onClick = { ideStore.setting.setTheme(IdeThemeEnum.GREEN) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Green", color = MaterialTheme.colors.onPrimary)

@@ -1,11 +1,11 @@
 package fr.epita.assistants.ui.view.dialog
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -18,37 +18,26 @@ import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import fr.epita.assistants.ui.model.IdeTheme
 import fr.epita.assistants.ui.store.IdeStore
+import fr.epita.assistants.ui.store.SettingStore
 import fr.epita.assistants.ui.utils.IdeCard
 import fr.epita.assistants.ui.utils.cursor
 import java.awt.Cursor
-import java.io.File
 
 
 @Composable
 fun CustomThemeCard(ideStore: IdeStore) {
-    val onPrimaryColor = MaterialTheme.colors.onPrimary
-    val primaryColor = MaterialTheme.colors.primary
-    val onSecondaryColor = MaterialTheme.colors.onSecondary
-    val secondaryColor = MaterialTheme.colors.secondary
-    val onBackgroundColor = MaterialTheme.colors.onBackground
-    val backgroundColor = MaterialTheme.colors.background
-    val onSurfaceColor = MaterialTheme.colors.onSurface
-    val primaryVariantColor = MaterialTheme.colors.primaryVariant
-    val secondaryVariantColor = MaterialTheme.colors.secondaryVariant
-
-
-    val onPrimary = remember { mutableStateOf(onPrimaryColor) }
-    val primary = remember { mutableStateOf(primaryColor) }
-    val onSecondary = remember { mutableStateOf(onSecondaryColor) }
-    val secondary = remember { mutableStateOf(secondaryColor) }
-    val background = remember { mutableStateOf(backgroundColor) }
-    val onBackground = remember { mutableStateOf(onBackgroundColor) }
-    val onSurface = remember { mutableStateOf(onSurfaceColor) }
-    val primaryVariant = remember { mutableStateOf(primaryVariantColor) }
-    val secondaryVariant = remember { mutableStateOf(secondaryVariantColor) }
+    val onPrimary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onPrimary) }
+    val primary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.primary) }
+    val onSecondary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onSecondary) }
+    val secondary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.secondary) }
+    val background = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.background) }
+    val onBackground = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onBackground) }
+    val onSurface = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onSurface) }
+    val primaryVariant = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.primaryVariant) }
+    val secondaryVariant =
+        remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.secondaryVariant) }
 
     val (selectedColorTheme, setSelectedColorTheme) = remember { mutableStateOf(onPrimary) }
 
@@ -58,7 +47,10 @@ fun CustomThemeCard(ideStore: IdeStore) {
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Icon(
                     Icons.Default.Close,
                     contentDescription = "Close",
@@ -74,6 +66,18 @@ fun CustomThemeCard(ideStore: IdeStore) {
                     fontSize = 24.sp,
                     fontWeight = FontWeight(500)
                 )
+                Spacer(modifier = Modifier.height(32.dp))
+                CustomThemeList(ideStore.setting) {
+                    onPrimary.value = ideStore.setting.selectedCustomTheme.value.colors.onPrimary
+                    primary.value = ideStore.setting.selectedCustomTheme.value.colors.primary
+                    onSecondary.value = ideStore.setting.selectedCustomTheme.value.colors.onSecondary
+                    secondary.value = ideStore.setting.selectedCustomTheme.value.colors.secondary
+                    background.value = ideStore.setting.selectedCustomTheme.value.colors.background
+                    onBackground.value = ideStore.setting.selectedCustomTheme.value.colors.onBackground
+                    onSurface.value = ideStore.setting.selectedCustomTheme.value.colors.onSurface
+                    primaryVariant.value = ideStore.setting.selectedCustomTheme.value.colors.primaryVariant
+                    secondaryVariant.value = ideStore.setting.selectedCustomTheme.value.colors.secondaryVariant
+                }
                 Spacer(modifier = Modifier.height(32.dp))
                 Row {
                     Column(
@@ -139,7 +143,7 @@ fun ColorPickerItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth(0.7f)
+        modifier = Modifier.fillMaxWidth(0.8f)
             .clickable(onClick = { onClick(color) })
             .background(
                 if (hoverState or (color == selectedColor)) MaterialTheme.colors.onSurface else Color.Transparent,
@@ -258,5 +262,98 @@ fun ColorPicker(selectedColor: MutableState<Color>) {
             )
         }
 
+    }
+}
+
+@Composable
+fun CustomThemeList(settingStore: SettingStore, onClick: () -> Unit) {
+    val horizontalScrollState = rememberScrollState(0)
+    Row(
+        modifier = Modifier.fillMaxWidth(0.7f),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(modifier = Modifier.weight(0.9f)) {
+            Row(
+                modifier = Modifier.horizontalScroll(horizontalScrollState)
+            ) {
+                settingStore.customThemes.forEachIndexed { idx, theme ->
+                    CustomThemeItem(
+                        "Theme #$idx",
+                        theme,
+                        settingStore.selectedCustomTheme.value == theme,
+                        { settingStore.selectCustomTheme(theme); onClick() }) { settingStore.removeCustomTheme(theme) }
+                }
+            }
+            HorizontalScrollbar(
+                modifier = Modifier
+                    .padding(top = 4.dp),
+                adapter = rememberScrollbarAdapter(horizontalScrollState)
+            )
+        }
+
+        Column(
+            modifier = Modifier.weight(0.1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Box(
+                modifier = Modifier.background(MaterialTheme.colors.primary, RoundedCornerShape(4.dp))
+                    .padding(2.dp)
+                    .clickable { settingStore.addCustomTheme(); onClick() }
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Add theme",
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
+        }
+
+
+    }
+
+}
+
+@Composable
+fun CustomThemeItem(
+    title: String,
+    customTheme: IdeTheme,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    onRemove: () -> Unit
+) {
+    val hoverState = remember { mutableStateOf(false) }
+    Surface(
+        color = if (hoverState.value or isSelected) MaterialTheme.colors.primary else Color.Transparent,
+        shape = RoundedCornerShape(4.dp),
+        modifier = Modifier
+            .pointerMoveFilter(
+                onEnter = {
+                    hoverState.value = true
+                    false
+                },
+                onExit = {
+                    hoverState.value = false
+                    false
+                }
+            )
+            .padding(horizontal = 4.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = title,
+                color = if (hoverState.value or isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "Remove Theme",
+                tint = if (hoverState.value or isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary,
+                modifier = Modifier.padding(end = 4.dp)
+                    .clickable { onRemove() }
+            )
+        }
     }
 }
