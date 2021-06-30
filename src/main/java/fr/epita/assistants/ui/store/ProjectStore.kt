@@ -139,24 +139,8 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
                         var res = ""
                         running.value = true
                         while (running.value) {
-                            var byteToRead = streams.output.available()
-                            if (byteToRead == 0)
-                            {
-                                byteToRead = streams.error.available()
-                                val bytes = streams.error.readNBytes(byteToRead)
-                                if (bytes.count() == 0)
-                                    continue
-                                res += String(bytes)
-
-                                launch(Dispatchers.Main) {
-                                    runOutputText.value = res
-                                }
-                                continue
-                            }
-                            val bytes = streams.output.readNBytes(byteToRead)
-                            if (bytes.count() == 0)
-                                continue
-                            res += String(bytes)
+                            res += streams.readOutput()
+                            res += streams.readError()
 
                             launch(Dispatchers.Main) {
                                 runOutputText.value = res

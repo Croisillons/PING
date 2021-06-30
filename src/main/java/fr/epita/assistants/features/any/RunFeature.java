@@ -54,5 +54,24 @@ public class RunFeature implements Feature {
     {}
 
     public static record RunStreams(InputStream output, InputStream error)
-    {}
+    {
+        public String readOutput() throws IOException
+        {
+            return readStream(output);
+        }
+
+        public String readError() throws IOException
+        {
+            return readStream(error);
+        }
+
+        private String readStream(final InputStream stream) throws IOException
+        {
+            int byteToRead = stream.available();
+            var bytes = stream.readNBytes(byteToRead);
+            if (bytes.length != 0)
+                return new String(bytes);
+            return "";
+        }
+    }
 }
