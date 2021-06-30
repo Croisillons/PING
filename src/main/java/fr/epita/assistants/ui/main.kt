@@ -84,7 +84,7 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
             IdeMenu(ideStore)
             ActionsView(projectStore)
         }
-        Divider(color = MaterialTheme.colors.secondary, thickness = 0.5.dp)
+        Divider(color = MaterialTheme.colors.secondary, thickness = 0.5.dp, modifier = Modifier.padding(bottom = 6.dp))
         Row(modifier = Modifier.height(projectStore.filesHeight.value)) {
             TreeView(projectStore)
             Row(

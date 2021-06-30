@@ -117,7 +117,7 @@ fun ToolTabs(projectStore: ProjectStore) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (tab in projectStore.toolsTabs) {
-            tab.displayTab(projectStore)
+            tab.displayTab(projectStore, projectStore.selectedToolTab.value == tab)
         }
     }
 }
@@ -167,11 +167,11 @@ interface ToolTab
      * Display the tab button
      */
     @Composable
-    fun displayTab(projectStore: ProjectStore)
+    fun displayTab(projectStore: ProjectStore, isSelected: Boolean)
     {
         val hoverState = remember { mutableStateOf(false) }
         Surface(
-            color = if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
+            color = if (isSelected) MaterialTheme.colors.primary else if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier
                 .pointerMoveFilter(
@@ -193,7 +193,7 @@ interface ToolTab
             ) {
                 Text(
                     text = getName(),
-                    color = MaterialTheme.colors.onSecondary
+                    color = MaterialTheme.colors.onPrimary
                 )
             }
         }

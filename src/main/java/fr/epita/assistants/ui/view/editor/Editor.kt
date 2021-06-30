@@ -84,7 +84,7 @@ fun OpenFileTabsView(projectStore: ProjectStore) {
     val horizontalScrollState = rememberScrollState()
     Row(
         modifier = Modifier
-            .height(44.dp)
+            .height(36.dp)
             .horizontalScroll(horizontalScrollState),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -102,7 +102,7 @@ fun OpenFileTabsView(projectStore: ProjectStore) {
 fun OpenFileTab(openFileStore: OpenFileStore, onClick: () -> Unit, onClose: () -> Unit) {
     val hoverState = remember { mutableStateOf(false) }
     Surface(
-        color = if (hoverState.value or openFileStore.selected) MaterialTheme.colors.onSurface else Color.Transparent,
+        color = if (openFileStore.selected) MaterialTheme.colors.secondary else if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
         shape = RoundedCornerShape(4.dp),
         modifier = Modifier
             .pointerMoveFilter(

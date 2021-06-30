@@ -91,7 +91,6 @@ fun TreeTopBarView(projectStore: ProjectStore, projectName: String, onRefresh: (
             FileActions(projectStore.showFileActions)
         }
     }
-    Spacer(modifier = Modifier.height(8.dp))
 }
 
 /**
