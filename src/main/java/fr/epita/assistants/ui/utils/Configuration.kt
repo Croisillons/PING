@@ -1,5 +1,6 @@
 package fr.epita.assistants.ui.utils
 
+import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import fr.epita.assistants.myide.domain.service.MyProjectService
@@ -38,6 +39,26 @@ fun loadConfig(): IdeStore {
                 Color(Integer.parseInt(prop.getProperty("theme.primaryVariant"))),
                 Color(Integer.parseInt(prop.getProperty("theme.secondaryVariant"))),
             )
+
+            var i = 0
+            while (prop.getProperty("customTheme$i.onPrimary") != null) {
+                val colors = lightColors(
+                    onPrimary = Color(Integer.parseInt(prop.getProperty("customTheme$i.onPrimary"))),
+                    primary = Color(Integer.parseInt(prop.getProperty("customTheme$i.primary"))),
+                    onSecondary = Color(Integer.parseInt(prop.getProperty("customTheme$i.onSecondary"))),
+                    secondary = Color(Integer.parseInt(prop.getProperty("customTheme$i.secondary"))),
+                    onBackground = Color(Integer.parseInt(prop.getProperty("customTheme$i.onBackground"))),
+                    background = Color(Integer.parseInt(prop.getProperty("customTheme$i.background"))),
+                    onSurface = Color(Integer.parseInt(prop.getProperty("customTheme$i.onSurface"))),
+                    primaryVariant = Color(Integer.parseInt(prop.getProperty("customTheme$i.primaryVariant"))),
+                    secondaryVariant = Color(Integer.parseInt(prop.getProperty("customTheme$i.secondaryVariant"))),
+                )
+                ideStore.setting.loadCustomTheme(colors)
+                i++
+            }
+
+            if (ideStore.setting.customThemes.size > 1)
+                ideStore.setting.customThemes.removeAt(0)
         }
     } catch (ex: IOException) {
         println("No configuration file")

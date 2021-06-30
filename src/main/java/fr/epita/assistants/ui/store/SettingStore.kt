@@ -1,5 +1,6 @@
 package fr.epita.assistants.ui.store
 
+import androidx.compose.material.Colors
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.MutableState
@@ -77,5 +78,11 @@ class SettingStore(val ideStore: IdeStore) {
     fun selectCustomTheme(customTheme: IdeTheme) {
         selectedCustomTheme.value = customTheme
         setTheme(customTheme)
+    }
+
+    fun loadCustomTheme(colors: Colors) {
+        val customTheme = CustomTheme(colors)
+
+        customThemes.add(customTheme)
     }
 }
