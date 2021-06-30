@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.view.tools.BuildToolTab
+import fr.epita.assistants.ui.view.tools.RunToolTab
 import java.awt.Cursor
 
 /**
@@ -32,8 +34,10 @@ fun ActionsView(projectStore: ProjectStore) {
                 contentDescription = "Build Project",
                 modifier = Modifier.padding(horizontal = 5.dp)
                     .clickable {
-                        if (!projectStore.compiling.value)
+                        if (!projectStore.compiling.value) {
+                            projectStore.selectToolTab(BuildToolTab::class)
                             projectStore.compileProject()
+                        }
                     }
                     .cursor(Cursor.HAND_CURSOR)
             )
@@ -43,8 +47,10 @@ fun ActionsView(projectStore: ProjectStore) {
                 contentDescription = "Run Project",
                 modifier = Modifier.padding(horizontal = 5.dp)
                     .clickable {
-                        if (!projectStore.running.value)
+                        if (!projectStore.running.value) {
+                            projectStore.selectToolTab(RunToolTab::class)
                             projectStore.run()
+                        }
                     }
                     .cursor(Cursor.HAND_CURSOR)
             )

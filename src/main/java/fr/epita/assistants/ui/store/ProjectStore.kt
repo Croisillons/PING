@@ -17,7 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.InputStream
+import java.security.cert.Extension
 import javax.sound.sampled.AudioSystem
+import kotlin.reflect.KClass
 
 /**
  * Class used to store all the state of the project.
@@ -78,6 +80,13 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
 
         // TODO: optimize it
         ideStore.saveConfig()
+    }
+
+    fun <T: ToolTab> selectToolTab(toolTab: KClass<T>)
+    {
+        val toSelect = toolsTabs.find { toolTab.isInstance(it) }
+        if (toSelect != null)
+            selectedToolTab.value = toSelect
     }
 
     /**
