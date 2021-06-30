@@ -9,7 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.jediterm.pty.PtyProcessTtyConnector
 import com.jediterm.terminal.TerminalColor
-import com.jediterm.terminal.TerminalMode
 import com.jediterm.terminal.TextStyle
 import com.jediterm.terminal.emulator.ColorPalette
 import com.jediterm.terminal.ui.JediTermWidget
@@ -80,12 +79,13 @@ class TerminalSettings : DefaultSettingsProvider() {
 }
 
 @Composable
-fun TerminalWindow(state: TerminalState) {
+fun TerminalWindow(state: TerminalState, hide: Boolean = false) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         SwingPanel(
             background = Color.Black,
+            modifier = if (hide) Modifier.zIndex(0f) else Modifier,
             factory = { state.panel },
         )
     }
@@ -96,8 +96,7 @@ fun TerminalWindow(state: TerminalState) {
  * Display the Tool section
  */
 @Composable
-fun Tools(projectStore: ProjectStore)
-{
+fun Tools(projectStore: ProjectStore) {
     Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
         ToolTabs(projectStore)
 
@@ -151,8 +150,7 @@ fun BuildWindow(projectStore: ProjectStore) {
 /**
  * Represents a tool, containing the tab and the window
  */
-interface ToolTab
-{
+interface ToolTab {
     /**
      * Name displayed on the tab
      */
@@ -168,8 +166,7 @@ interface ToolTab
      * Display the tab button
      */
     @Composable
-    fun displayTab(projectStore: ProjectStore, isSelected: Boolean)
-    {
+    fun displayTab(projectStore: ProjectStore, isSelected: Boolean) {
         val hoverState = remember { mutableStateOf(false) }
         Surface(
             color = if (isSelected) MaterialTheme.colors.secondary else if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
@@ -201,8 +198,7 @@ interface ToolTab
     }
 }
 
-class BuildToolTab : ToolTab
-{
+class BuildToolTab : ToolTab {
     override fun getName(): String {
         return "Build"
     }
@@ -213,8 +209,7 @@ class BuildToolTab : ToolTab
     }
 }
 
-class TerminalToolTab(val projectStore: ProjectStore) : ToolTab
-{
+class TerminalToolTab(val projectStore: ProjectStore) : ToolTab {
     val state = TerminalState()
 
     init {
@@ -222,7 +217,7 @@ class TerminalToolTab(val projectStore: ProjectStore) : ToolTab
 
         val tw = JediTermWidget(settingsProvider)
 
-        lateinit var cmd : Array<String>
+        lateinit var cmd: Array<String>
         val env = HashMap(System.getenv())
 
         if (UIUtil.isWindows) {
@@ -249,7 +244,7 @@ class TerminalToolTab(val projectStore: ProjectStore) : ToolTab
 
     @Composable
     override fun display(projectStore: ProjectStore) {
-        TerminalWindow(state)
+        TerminalWindow(state, projectStore.ideStore.setting.customThemeDialog.value)
     }
 
 }
