@@ -35,7 +35,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var runOutputText: MutableState<String> = mutableStateOf("")
     var runStreams: MutableState<RunFeature.RunStreams?> = mutableStateOf(null)
     val snackBar: SnackBarStore = SnackBarStore()
-    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab())
+    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab(this))
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
 
     /**

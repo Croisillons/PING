@@ -30,6 +30,7 @@ import fr.epita.assistants.ui.store.ProjectStore
 import java.nio.charset.Charset
 import javax.swing.BoxLayout
 import javax.swing.JPanel
+import kotlin.io.path.absolutePathString
 
 class TerminalState {
     val panel = JPanel()
@@ -212,19 +213,19 @@ class BuildToolTab : ToolTab
     }
 }
 
-class TerminalToolTab : ToolTab
+class TerminalToolTab(val projectStore: ProjectStore) : ToolTab
 {
     val state = TerminalState()
 
     init {
-        val settingsProvider = TerminalSettings();
+        val settingsProvider = TerminalSettings()
 
         val tw = JediTermWidget(settingsProvider)
 
         tw.terminal.setModeEnabled(TerminalMode.AutoNewLine, true)
 
-        lateinit var cmd : Array<String>;
-        val env = mutableMapOf<String, String>();
+        lateinit var cmd : Array<String>
+        val env = HashMap(System.getenv())
 
         if (UIUtil.isWindows) {
             cmd = arrayOf("cmd.exe")
@@ -233,7 +234,7 @@ class TerminalToolTab : ToolTab
             env["TERM"] = "xterm"
         }
 
-        val pty = PtyProcess.exec(cmd, env)
+        val pty = PtyProcess.exec(cmd, env, projectStore.project.rootNode.path.absolutePathString())
 
         tw.createTerminalSession(PtyProcessTtyConnector(pty, Charset.forName("UTF-8")))
         tw.start()
