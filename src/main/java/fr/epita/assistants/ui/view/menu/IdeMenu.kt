@@ -56,6 +56,21 @@ fun IdeMenu(ideStore: IdeStore) {
             ThemeMenu(ideStore)
         }
 
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .background(if (ideStore.menuBarState.value == MenuBar.TOOL) MaterialTheme.colors.primary else Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "Tool",
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(horizontal = 8.dp)
+                    .clickable { ideStore.menuBarState.value = MenuBar.TOOL }
+            )
+            ToolMenu(ideStore)
+        }
+
         if (ideStore.project.value?.project?.aspects?.any { it -> it.type == Mandatory.Aspects.MAVEN } == true) {
             Box(
                 modifier = Modifier
@@ -71,21 +86,6 @@ fun IdeMenu(ideStore: IdeStore) {
                 )
                 MavenMenu(ideStore)
             }
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .background(if (ideStore.menuBarState.value == MenuBar.TOOL) MaterialTheme.colors.primary else Color.Transparent),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                "Tool",
-                color = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.padding(horizontal = 8.dp)
-                    .clickable { ideStore.menuBarState.value = MenuBar.TOOL }
-            )
-            ToolMenu(ideStore)
         }
 
         if (ideStore.project.value?.project?.aspects?.any { it -> it.type == Mandatory.Aspects.GIT } == true) {
@@ -215,7 +215,7 @@ fun MavenMenu(ideStore: IdeStore) {
             .background(MaterialTheme.colors.primary),
     ) {
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.mavenInstall() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Install", color = MaterialTheme.colors.onPrimary)
@@ -227,31 +227,31 @@ fun MavenMenu(ideStore: IdeStore) {
             Text("Compile", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.mavenExec() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Exec", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.mavenClean() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Clean", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.compileProject() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Package", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.mavenTest() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Test", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.mavenTest() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Tree", color = MaterialTheme.colors.onPrimary)
@@ -299,13 +299,13 @@ fun GitMenu(ideStore: IdeStore) {
             .background(MaterialTheme.colors.primary),
     ) {
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.gitPull() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Pull", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { },
+            onClick = { ideStore.project.value?.gitPush() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Push", color = MaterialTheme.colors.onPrimary)

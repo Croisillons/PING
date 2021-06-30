@@ -246,4 +246,82 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
 
         selectedOpenFile.value!!.hasChanged.value = false
     }
+
+    /**
+     * Git pull
+     */
+    fun gitPull() {
+        executeFeature("Git Pull", Mandatory.Features.Git.PULL)
+    }
+
+    /**
+     * Git push
+     */
+    fun gitPush() {
+        executeFeature("Git Push", Mandatory.Features.Git.PUSH)
+    }
+
+    /**
+     * Maven install
+     */
+    fun mavenInstall() {
+        executeFeature("Maven Install", Mandatory.Features.Maven.INSTALL)
+    }
+
+    /**
+     * Maven clean
+     */
+    fun mavenClean() {
+        executeFeature("Maven Clean", Mandatory.Features.Maven.CLEAN)
+    }
+
+    /**
+     * Maven exec
+     */
+    fun mavenExec() {
+        executeFeature("Maven Exec", Mandatory.Features.Maven.EXEC)
+    }
+
+    /**
+     * Maven test
+     */
+    fun mavenTest() {
+        executeFeature("Maven Test", Mandatory.Features.Maven.TEST)
+    }
+
+    /**
+     * Maven tree
+     */
+    fun mavenTree() {
+        executeFeature("Maven Tree", Mandatory.Features.Maven.TREE)
+    }
+
+    /**
+     * Execute Feature
+     * @param name: name of the feature
+     * @param feature: Type of the feature
+     * @param callback: Callback after the feature is executed
+     */
+    fun executeFeature(name: String, feature: Feature.Type, callback: Any? = null) {
+        val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+        coroutineScope.launch {
+            val result: Feature.ExecutionReport = ideStore.projectService.execute(project, feature, callback)
+            launch(Dispatchers.Main) {
+                if (result.isSuccess) {
+                    snackBar.title.value = "$name succeed."
+                    snackBar.image.value = snackBar.successImage
+                    launch(Dispatchers.IO) {
+                        makeSound(File("src/main/resources/yiha-success.wav").absoluteFile)
+                    }
+                } else {
+                    snackBar.title.value = "$name failed."
+                    snackBar.image.value = snackBar.failImage
+                    launch(Dispatchers.IO) {
+                        makeSound(File("src/main/resources/yiha-failed.wav").absoluteFile)
+                    }
+                }
+                snackBar.launchSnackBar()
+            }
+        }
+    }
 }
