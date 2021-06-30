@@ -1,10 +1,7 @@
 package fr.epita.assistants.ui.view.editor
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -27,6 +24,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.mouse.mouseScrollFilter
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -83,16 +81,21 @@ fun OpenFilesView(projectStore: ProjectStore) {
  */
 @Composable
 fun OpenFileTabsView(projectStore: ProjectStore) {
+    val horizontalScrollState = rememberScrollState()
     Row(
         modifier = Modifier
             .height(44.dp)
-            .horizontalScroll(rememberScrollState()),
+            .horizontalScroll(horizontalScrollState),
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (openFileStore in projectStore.openFiles) {
             OpenFileTab(openFileStore, { projectStore.selectOpenFile(openFileStore) }) { openFileStore.close() }
         }
     }
+    HorizontalScrollbar(
+        modifier = Modifier,
+        adapter = rememberScrollbarAdapter(horizontalScrollState),
+    )
 }
 
 @Composable

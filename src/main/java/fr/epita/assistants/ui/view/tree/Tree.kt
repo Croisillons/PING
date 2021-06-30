@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.mouse.mouseScrollFilter
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -90,6 +91,7 @@ fun TreeTopBarView(projectStore: ProjectStore, projectName: String, onRefresh: (
             FileActions(projectStore.showFileActions)
         }
     }
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 /**
