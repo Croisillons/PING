@@ -53,6 +53,8 @@ class IdeStore(val projectService: MyProjectService) {
     fun cleanProject() {
         project.value?.let {
             projectService.execute(project.value!!.project, Mandatory.Features.Any.CLEANUP)
+            project.value!!.snackBar.title.value = "Clean succeed."
+            project.value!!.snackBar.launchSnackBar()
         }
     }
 
@@ -62,6 +64,8 @@ class IdeStore(val projectService: MyProjectService) {
     fun exportProject() {
         project.value?.let {
             projectService.execute(project.value!!.project, Mandatory.Features.Any.DIST)
+            project.value!!.snackBar.title.value = "Export succeed."
+            project.value!!.snackBar.launchSnackBar()
         }
     }
 

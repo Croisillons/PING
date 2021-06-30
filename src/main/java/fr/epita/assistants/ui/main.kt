@@ -169,7 +169,8 @@ fun SnackbarView(snackBar: SnackBarStore) {
                     }
                 },
                 modifier = Modifier.padding(8.dp)
-                    .height(100.dp)
+                    .height(100.dp),
+                backgroundColor = MaterialTheme.colors.secondary
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -182,6 +183,7 @@ fun SnackbarView(snackBar: SnackBarStore) {
                     Text(
                         text = snackBar.title.value,
                         fontWeight = FontWeight(600),
+                        color = MaterialTheme.colors.onSecondary
                     )
                 }
             }

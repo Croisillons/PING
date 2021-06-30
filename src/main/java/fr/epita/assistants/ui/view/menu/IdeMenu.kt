@@ -134,7 +134,7 @@ fun ProjectMenu(ideStore: IdeStore) {
             Text("Clean Project", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.openProject() },
+            onClick = { ideStore.exportProject() },
             enabled = ideStore.project.value != null,
             modifier = Modifier.fillMaxWidth()
         ) {
