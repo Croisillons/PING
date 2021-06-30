@@ -39,7 +39,7 @@ fun ActionsView(projectStore: ProjectStore) {
             )
             Icon(
                 Icons.Default.PlayArrow,
-                tint = MaterialTheme.colors.onSecondary,
+                tint = if (projectStore.running.value) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onSecondary,
                 contentDescription = "Run Project",
                 modifier = Modifier.padding(horizontal = 5.dp)
                     .clickable {
@@ -50,7 +50,7 @@ fun ActionsView(projectStore: ProjectStore) {
             )
             Icon(
                 Icons.Default.Stop,
-                tint = Color(red = 199, green = 84, blue = 80, alpha = 255),
+                tint = if (projectStore.running.value) Color(red = 199, green = 84, blue = 80, alpha = 255) else MaterialTheme.colors.onSecondary,
                 contentDescription = "Stop Project",
                 modifier = Modifier.padding(horizontal = 5.dp)
                     .clickable { projectStore.stop() }
