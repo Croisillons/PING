@@ -2,6 +2,7 @@ package fr.epita.assistants.myide.domain.entity;
 
 import fr.epita.assistants.features.any.CleanupFeature;
 import fr.epita.assistants.features.any.DistFeature;
+import fr.epita.assistants.features.any.RunFeature;
 import fr.epita.assistants.features.any.SearchFeature;
 import fr.epita.assistants.features.git.AddFeature;
 import fr.epita.assistants.features.git.CommitFeature;
@@ -58,6 +59,8 @@ public class MyProject implements Project {
             return Optional.of(new DistFeature());
         else if (Mandatory.Features.Any.SEARCH.equals(featureType))
             return Optional.of(new SearchFeature());
+        else if (Supplement.Features.Any.RUN.equals(featureType))
+            return Optional.of(new RunFeature());
 
         if (aspects.stream().anyMatch(aspect -> aspect.getType().equals(Mandatory.Aspects.GIT)))
         {
