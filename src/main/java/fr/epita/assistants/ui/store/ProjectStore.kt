@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.jediterm.terminal.RequestOrigin
 import fr.epita.assistants.features.any.RunFeature
 import fr.epita.assistants.features.maven.PackageFeature
 import fr.epita.assistants.myide.domain.entity.*
@@ -15,11 +16,18 @@ import fr.epita.assistants.ui.view.tools.ToolTab
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.awt.Dimension
 import java.io.File
 import java.io.InputStream
 import java.security.cert.Extension
 import javax.sound.sampled.AudioSystem
 import kotlin.reflect.KClass
+import java.io.IOException
+
+import java.io.OutputStream
+
+
+
 
 /**
  * Class used to store all the state of the project.
@@ -97,25 +105,19 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
             val result: Feature.ExecutionReport =
-                    ideStore.projectService.execute(project, Mandatory.Features.Maven.PACKAGE, PackageFeature.Callback { output: InputStream ->
-                        compilationOutput.value = output
-                        launch(Dispatchers.IO) {
+                ideStore.projectService.execute(project, Mandatory.Features.Maven.PACKAGE, PackageFeature.Callback { output: InputStream ->
+                    val buildTooltab = toolsTabs.find { BuildToolTab::class.isInstance(it) } as BuildToolTab
 
-                            var res = ""
-                            while (true) {
-                                val byteToRead = output.available()
-                                if (byteToRead == 0)
-                                    continue
-                                val bytes = output.readNBytes(byteToRead)
-                                if (bytes.count() == 0)
-                                    break
-                                res += String(bytes)
+                    buildTooltab.state.widget.terminal.clearScreen()
 
-                                launch(Dispatchers.Main) {
-                                    compilationOutputText.value = res
-                                }
-                            }
+                    val terminalOutputStream: OutputStream = object : OutputStream() {
+                        @Throws(IOException::class)
+                        override fun write(ch: Int) {
+                            buildTooltab.je.processChar(ch.toChar(), buildTooltab.state.widget.terminal)
                         }
+                    }
+
+                    output.transferTo(terminalOutputStream)
                     })
             launch(Dispatchers.Main) {
                 compiling.value = false
