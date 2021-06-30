@@ -171,7 +171,7 @@ interface ToolTab
     {
         val hoverState = remember { mutableStateOf(false) }
         Surface(
-            color = if (isSelected) MaterialTheme.colors.primary else if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
+            color = if (isSelected) MaterialTheme.colors.onSecondary else if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier
                 .pointerMoveFilter(
