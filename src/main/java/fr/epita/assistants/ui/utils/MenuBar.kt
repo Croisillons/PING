@@ -4,5 +4,7 @@ enum class MenuBar {
     PROJECT,
     THEME,
     MAVEN,
-    GIT;
+    GIT,
+    TOOL,
+    ;
 }

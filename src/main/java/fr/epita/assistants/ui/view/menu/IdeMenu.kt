@@ -18,6 +18,7 @@ import fr.epita.assistants.myide.domain.entity.Mandatory
 import fr.epita.assistants.ui.model.IdeThemeEnum
 import fr.epita.assistants.ui.store.IdeStore
 import fr.epita.assistants.ui.utils.MenuBar
+import fr.epita.assistants.ui.view.tools.TerminalToolTab
 
 @Composable
 fun IdeMenu(ideStore: IdeStore) {
@@ -70,6 +71,21 @@ fun IdeMenu(ideStore: IdeStore) {
                 )
                 MavenMenu(ideStore)
             }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .background(if (ideStore.menuBarState.value == MenuBar.TOOL) MaterialTheme.colors.primary else Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "Tool",
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(horizontal = 8.dp)
+                    .clickable { ideStore.menuBarState.value = MenuBar.TOOL }
+            )
+            ToolMenu(ideStore)
         }
 
         if (ideStore.project.value?.project?.aspects?.any { it -> it.type == Mandatory.Aspects.GIT } == true) {
@@ -239,6 +255,32 @@ fun MavenMenu(ideStore: IdeStore) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Tree", color = MaterialTheme.colors.onPrimary)
+        }
+    }
+}
+
+@Composable
+fun ToolMenu(ideStore: IdeStore) {
+    DropdownMenu(
+        expanded = ideStore.menuBarState.value == MenuBar.TOOL,
+        onDismissRequest = { ideStore.menuBarState.value = null },
+        modifier = Modifier.pointerMoveFilter(
+            onExit = {
+                ideStore.menuBarState.value = null
+                false
+            }
+        )
+            .background(MaterialTheme.colors.primary),
+    ) {
+        DropdownMenuItem(
+            onClick = {
+                val newTerminal = TerminalToolTab()
+                ideStore.project.value?.toolsTabs?.add(newTerminal)
+                ideStore.project.value?.selectedToolTab?.value = newTerminal
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("New terminal", color = MaterialTheme.colors.onPrimary)
         }
     }
 }
