@@ -274,7 +274,7 @@ fun ToolMenu(ideStore: IdeStore) {
     ) {
         DropdownMenuItem(
             onClick = {
-                val newTerminal = TerminalToolTab()
+                val newTerminal = TerminalToolTab(ideStore.project.value!!)
                 ideStore.project.value?.toolsTabs?.add(newTerminal)
                 ideStore.project.value?.selectedToolTab?.value = newTerminal
             },
