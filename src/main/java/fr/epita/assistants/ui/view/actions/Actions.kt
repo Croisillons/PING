@@ -42,7 +42,9 @@ fun ActionsView(projectStore: ProjectStore) {
                 tint = MaterialTheme.colors.onSecondary,
                 contentDescription = "Run Project",
                 modifier = Modifier.padding(horizontal = 5.dp)
-                    .clickable { }
+                    .clickable {
+                        projectStore.run()
+                    }
                     .cursor(Cursor.HAND_CURSOR)
             )
             Icon(

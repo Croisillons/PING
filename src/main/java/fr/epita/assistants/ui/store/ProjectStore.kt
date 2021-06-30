@@ -5,15 +5,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import fr.epita.assistants.features.maven.CompileFeature
+import fr.epita.assistants.features.any.RunFeature
 import fr.epita.assistants.features.maven.PackageFeature
-import fr.epita.assistants.myide.domain.entity.Feature
-import fr.epita.assistants.myide.domain.entity.Mandatory
-import fr.epita.assistants.myide.domain.entity.Node
-import fr.epita.assistants.myide.domain.entity.Project
+import fr.epita.assistants.myide.domain.entity.*
 import fr.epita.assistants.ui.view.tools.BuildToolTab
+import fr.epita.assistants.ui.view.tools.RunToolTab
 import fr.epita.assistants.ui.view.tools.TerminalToolTab
-import fr.epita.assistants.ui.view.tools.TerminalWindow
 import fr.epita.assistants.ui.view.tools.ToolTab
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +29,10 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var compiling = mutableStateOf(false)
     var compilationOutput: MutableState<InputStream?> = mutableStateOf(null)
     var compilationOutputText: MutableState<String> = mutableStateOf("")
+    var running = mutableStateOf(false)
+    var runOutputText: MutableState<String> = mutableStateOf("")
     val snackBar: SnackBarStore = SnackBarStore()
-    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), TerminalToolTab())
+    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab())
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
 
     /**
@@ -128,6 +127,54 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
                 snackBar.launchSnackBar()
             }
         }
+    }
+
+    fun run() {
+        val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+        coroutineScope.launch {
+            val result: Feature.ExecutionReport =
+                ideStore.projectService.execute(project, Supplement.Features.Any.RUN, RunFeature.Callback { streams: RunFeature.RunStreams ->
+                    launch(Dispatchers.IO) {
+
+                        var res = ""
+                        running.value = true
+                        while (running.value) {
+                            var byteToRead = streams.output.available()
+                            if (byteToRead == 0)
+                            {
+                                byteToRead = streams.error.available()
+                                val bytes = streams.error.readNBytes(byteToRead)
+                                if (bytes.count() == 0)
+                                    continue
+                                res += String(bytes)
+
+                                launch(Dispatchers.Main) {
+                                    runOutputText.value = res
+                                }
+                                continue
+                            }
+                            val bytes = streams.output.readNBytes(byteToRead)
+                            if (bytes.count() == 0)
+                                continue
+                            res += String(bytes)
+
+                            launch(Dispatchers.Main) {
+                                runOutputText.value = res
+                            }
+                        }
+                    }
+                })
+            running.value = false
+        }
+    }
+
+    fun getCompiledArtefact() : File? {
+        val targetFolder = project.rootNode.children.find { it.isFolder and it.path.fileName.equals("target") }
+        if (targetFolder != null) {
+            val jarFile = targetFolder.children.find { it.isFile and it.path.fileName.endsWith(".jar") }
+            return jarFile?.path?.toFile()
+        }
+        return null
     }
 
     /**
