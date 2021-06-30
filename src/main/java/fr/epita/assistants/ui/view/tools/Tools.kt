@@ -230,7 +230,7 @@ class TerminalToolTab(val projectStore: ProjectStore) : ToolTab
         if (UIUtil.isWindows) {
             cmd = arrayOf("cmd.exe")
         } else {
-            cmd = arrayOf("/bin/bash", "-l")
+            cmd = arrayOf(env.getOrDefault("SHELL", "/bin/bash"), "-l")
             env["TERM"] = "xterm"
         }
 
