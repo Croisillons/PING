@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.jediterm.pty.PtyProcessTtyConnector
 import com.jediterm.terminal.ArrayTerminalDataStream
 import com.jediterm.terminal.TerminalColor
@@ -29,8 +28,6 @@ import com.jediterm.terminal.ui.UIUtil
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider
 import com.pty4j.PtyProcess
 import fr.epita.assistants.ui.store.ProjectStore
-import java.io.IOException
-import java.io.OutputStream
 import java.nio.charset.Charset
 import javax.swing.BoxLayout
 import javax.swing.JPanel
@@ -85,13 +82,12 @@ class TerminalSettings : DefaultSettingsProvider() {
 }
 
 @Composable
-fun TerminalWindow(state: TerminalState, hide: Boolean = false) {
+fun TerminalWindow(state: TerminalState) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         SwingPanel(
             background = Color.Black,
-            modifier = if (hide) Modifier.zIndex(0f) else Modifier,
             factory = { state.panel },
         )
     }
@@ -179,11 +175,10 @@ interface ToolTab {
     }
 }
 
-class BuildToolTab : ToolTab
-{
+class BuildToolTab : ToolTab {
     val state = TerminalState()
 
-    var je : JediEmulator;
+    var je: JediEmulator;
 
     init {
         val settingsProvider = TerminalSettings()
@@ -246,7 +241,7 @@ class TerminalToolTab(val projectStore: ProjectStore) : ToolTab {
 
     @Composable
     override fun display(projectStore: ProjectStore) {
-        TerminalWindow(state, projectStore.ideStore.setting.customThemeDialog.value)
+        TerminalWindow(state)
     }
 
 }

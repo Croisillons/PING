@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.jediterm.terminal.RequestOrigin
 import fr.epita.assistants.features.any.RunFeature
 import fr.epita.assistants.features.maven.PackageFeature
 import fr.epita.assistants.myide.domain.entity.*
+import fr.epita.assistants.ui.model.EditorTab
 import fr.epita.assistants.ui.view.tools.BuildToolTab
 import fr.epita.assistants.ui.view.tools.RunToolTab
 import fr.epita.assistants.ui.view.tools.TerminalToolTab
@@ -16,10 +16,8 @@ import fr.epita.assistants.ui.view.tools.ToolTab
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.awt.Dimension
 import java.io.File
 import java.io.InputStream
-import java.security.cert.Extension
 import javax.sound.sampled.AudioSystem
 import kotlin.reflect.KClass
 import java.io.IOException
@@ -54,12 +52,12 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     /**
      * List of tab displaying a file content
      */
-    val openFiles: MutableList<OpenFileStore> = mutableStateListOf()
+    val editorTabs: MutableList<EditorTab> = mutableStateListOf()
 
     /**
      * Currently viewed file tab
      */
-    var selectedOpenFile: MutableState<OpenFileStore?> = mutableStateOf(null)
+    var selectedEditorTab: MutableState<EditorTab?> = mutableStateOf(null)
 
     /**
      * Resize the views
@@ -198,8 +196,8 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * Select an open file tab
      * @param openFile: file to open
      */
-    fun selectOpenFile(openFile: OpenFileStore?) {
-        selectedOpenFile.value = openFile
+    fun selectEditorTab(openFile: EditorTab?) {
+        selectedEditorTab.value = openFile
     }
 
     /**
@@ -207,24 +205,31 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * @param node: node corresponding to the file
      */
     fun openFileEditor(node: Node) {
-        var editor: OpenFileStore? = openFiles.firstOrNull { it.node == node }
+        var editor: EditorTab? = editorTabs.firstOrNull { it.getName() == node.path.fileName.toString() }
 
         if (editor == null) {
             editor = OpenFileStore(node, this)
-            openFiles.add(editor)
+            editorTabs.add(editor)
         }
 
-        selectOpenFile(editor)
+        selectEditorTab(editor)
+    }
+
+    fun openThemeEditor(themeStore: ThemeStore) {
+        if (!editorTabs.contains(themeStore)) {
+            editorTabs.add(themeStore)
+        }
+        selectEditorTab(themeStore)
     }
 
     /**
      * Close an open file tab
-     * @param openFile: file to close
+     * @param editorTab: file to close
      */
-    fun closeEditor(openFile: OpenFileStore) {
-        val index = openFiles.indexOf(openFile)
-        openFiles.remove(openFile)
-        selectOpenFile(openFiles.getOrNull(index.coerceAtMost(openFiles.lastIndex)))
+    fun closeEditor(editorTab: EditorTab) {
+        val index = editorTabs.indexOf(editorTab)
+        editorTabs.remove(editorTab)
+        selectEditorTab(editorTabs.getOrNull(index.coerceAtMost(editorTabs.lastIndex)))
     }
 
     /**
@@ -241,12 +246,13 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * Save selected file
      */
     fun saveFile() {
-        val node = selectedOpenFile.value!!.node
-        val content = selectedOpenFile.value!!.content.value
+        val file = selectedEditorTab.value!! as OpenFileStore
+        val node = file.node
+        val content = file.content.value
 
         ideStore.projectService.nodeService.update(node, 0, Int.MAX_VALUE, content.toByteArray())
 
-        selectedOpenFile.value!!.hasChanged.value = false
+        file.hasChanged.value = false
     }
 
     /**

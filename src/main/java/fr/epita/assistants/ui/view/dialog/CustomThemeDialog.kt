@@ -13,70 +13,58 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.epita.assistants.ui.model.IdeTheme
-import fr.epita.assistants.ui.store.IdeStore
-import fr.epita.assistants.ui.store.SettingStore
-import fr.epita.assistants.ui.utils.IdeCard
+import fr.epita.assistants.ui.store.ThemeStore
 import fr.epita.assistants.ui.utils.cursor
 import java.awt.Cursor
 
 
 @Composable
-fun CustomThemeCard(ideStore: IdeStore) {
-    val onPrimary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onPrimary) }
-    val primary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.primary) }
-    val onSecondary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onSecondary) }
-    val secondary = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.secondary) }
-    val background = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.background) }
-    val onBackground = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onBackground) }
-    val onSurface = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.onSurface) }
-    val primaryVariant = remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.primaryVariant) }
+fun CustomThemeCard(themeStore: ThemeStore) {
+    val onPrimary = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.onPrimary) }
+    val primary = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.primary) }
+    val onSecondary = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.onSecondary) }
+    val secondary = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.secondary) }
+    val background = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.background) }
+    val onBackground = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.onBackground) }
+    val onSurface = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.onSurface) }
+    val primaryVariant = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.primaryVariant) }
     val secondaryVariant =
-        remember { mutableStateOf(ideStore.setting.selectedCustomTheme.value.colors.secondaryVariant) }
+        remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.secondaryVariant) }
 
     val (selectedColorTheme, setSelectedColorTheme) = remember { mutableStateOf(onPrimary) }
 
-
-    IdeCard {
+    var verticalScrollState = rememberScrollState()
+    Box(
+        modifier = Modifier
+            .shadow(8.dp, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colors.secondary, RoundedCornerShape(12.dp))
+            .fillMaxWidth()
+    ) {
         Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxHeight()
+                .verticalScroll(verticalScrollState)
+                .padding(32.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = "Close",
-                    tint = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier.align(Alignment.End)
-                        .clickable { ideStore.setting.dimissCustomTheme() }
-                        .cursor(Cursor.HAND_CURSOR)
-                )
-                Text(
-                    text = "Make your custom Theme",
-                    color = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight(500)
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                CustomThemeList(ideStore.setting) {
-                    onPrimary.value = ideStore.setting.selectedCustomTheme.value.colors.onPrimary
-                    primary.value = ideStore.setting.selectedCustomTheme.value.colors.primary
-                    onSecondary.value = ideStore.setting.selectedCustomTheme.value.colors.onSecondary
-                    secondary.value = ideStore.setting.selectedCustomTheme.value.colors.secondary
-                    background.value = ideStore.setting.selectedCustomTheme.value.colors.background
-                    onBackground.value = ideStore.setting.selectedCustomTheme.value.colors.onBackground
-                    onSurface.value = ideStore.setting.selectedCustomTheme.value.colors.onSurface
-                    primaryVariant.value = ideStore.setting.selectedCustomTheme.value.colors.primaryVariant
-                    secondaryVariant.value = ideStore.setting.selectedCustomTheme.value.colors.secondaryVariant
+                CustomThemeList(themeStore) {
+                    onPrimary.value = themeStore.selectedCustomTheme.value.colors.onPrimary
+                    primary.value = themeStore.selectedCustomTheme.value.colors.primary
+                    onSecondary.value = themeStore.selectedCustomTheme.value.colors.onSecondary
+                    secondary.value = themeStore.selectedCustomTheme.value.colors.secondary
+                    background.value = themeStore.selectedCustomTheme.value.colors.background
+                    onBackground.value = themeStore.selectedCustomTheme.value.colors.onBackground
+                    onSurface.value = themeStore.selectedCustomTheme.value.colors.onSurface
+                    primaryVariant.value = themeStore.selectedCustomTheme.value.colors.primaryVariant
+                    secondaryVariant.value = themeStore.selectedCustomTheme.value.colors.secondaryVariant
                 }
                 Spacer(modifier = Modifier.height(32.dp))
                 Row {
@@ -102,9 +90,10 @@ fun CustomThemeCard(ideStore: IdeStore) {
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    ideStore.setting.setCustomTheme(
+                    themeStore.setCustomTheme(
                         onPrimary.value,
                         primary.value,
                         onSecondary.value,
@@ -127,7 +116,9 @@ fun CustomThemeCard(ideStore: IdeStore) {
                 )
             }
         }
-
+        VerticalScrollbar(
+            adapter = rememberScrollbarAdapter(verticalScrollState)
+        )
     }
 }
 
@@ -266,7 +257,7 @@ fun ColorPicker(selectedColor: MutableState<Color>) {
 }
 
 @Composable
-fun CustomThemeList(settingStore: SettingStore, onClick: () -> Unit) {
+fun CustomThemeList(themeStore: ThemeStore, onClick: () -> Unit) {
     val horizontalScrollState = rememberScrollState(0)
     Row(
         modifier = Modifier.fillMaxWidth(0.7f),
@@ -277,12 +268,11 @@ fun CustomThemeList(settingStore: SettingStore, onClick: () -> Unit) {
             Row(
                 modifier = Modifier.horizontalScroll(horizontalScrollState)
             ) {
-                settingStore.customThemes.forEachIndexed { idx, theme ->
+                themeStore.customThemes.forEachIndexed { idx, theme ->
                     CustomThemeItem(
                         "Theme #$idx",
-                        theme,
-                        settingStore.selectedCustomTheme.value == theme,
-                        { settingStore.selectCustomTheme(theme); onClick() }) { settingStore.removeCustomTheme(theme) }
+                        themeStore.selectedCustomTheme.value == theme,
+                        { themeStore.selectCustomTheme(theme); onClick() }) { themeStore.removeCustomTheme(theme) }
                 }
             }
             HorizontalScrollbar(
@@ -300,7 +290,7 @@ fun CustomThemeList(settingStore: SettingStore, onClick: () -> Unit) {
             Box(
                 modifier = Modifier.background(MaterialTheme.colors.primary, RoundedCornerShape(4.dp))
                     .padding(2.dp)
-                    .clickable { settingStore.addCustomTheme(); onClick() }
+                    .clickable { themeStore.addCustomTheme(); onClick() }
             ) {
                 Icon(
                     Icons.Default.Add,
@@ -318,7 +308,6 @@ fun CustomThemeList(settingStore: SettingStore, onClick: () -> Unit) {
 @Composable
 fun CustomThemeItem(
     title: String,
-    customTheme: IdeTheme,
     isSelected: Boolean,
     onClick: () -> Unit,
     onRemove: () -> Unit

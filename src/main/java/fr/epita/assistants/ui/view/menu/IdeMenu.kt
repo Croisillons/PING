@@ -163,37 +163,37 @@ fun ThemeMenu(ideStore: IdeStore) {
             .background(MaterialTheme.colors.primary),
     ) {
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeThemeEnum.LIGHT) },
+            onClick = { ideStore.setting.theme.setTheme(IdeThemeEnum.LIGHT) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Light", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeThemeEnum.DARK) },
+            onClick = { ideStore.setting.theme.setTheme(IdeThemeEnum.DARK) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Dark", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeThemeEnum.PINK) },
+            onClick = { ideStore.setting.theme.setTheme(IdeThemeEnum.PINK) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Pink", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeThemeEnum.BLUE) },
+            onClick = { ideStore.setting.theme.setTheme(IdeThemeEnum.BLUE) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Blue", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.setTheme(IdeThemeEnum.GREEN) },
+            onClick = { ideStore.setting.theme.setTheme(IdeThemeEnum.GREEN) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Green", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.setting.openCustomTheme() },
+            onClick = { ideStore.setting.theme.openCustomTheme() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Custom Theme", color = MaterialTheme.colors.onPrimary)

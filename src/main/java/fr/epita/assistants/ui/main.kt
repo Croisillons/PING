@@ -2,11 +2,8 @@ package fr.epita.assistants.ui
 
 import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.desktop.Window
-import androidx.compose.desktop.WindowEvents
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -19,8 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalViewConfiguration
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
@@ -32,7 +27,6 @@ import fr.epita.assistants.ui.store.SnackBarStore
 import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.utils.loadConfig
 import fr.epita.assistants.ui.view.actions.ActionsView
-import fr.epita.assistants.ui.view.dialog.CustomThemeCard
 import fr.epita.assistants.ui.view.editor.OpenFilesView
 import fr.epita.assistants.ui.view.menu.IdeMenu
 import fr.epita.assistants.ui.view.tools.Tools
@@ -49,7 +43,7 @@ fun main() {
         centered = true
     ) {
         MaterialTheme(
-            colors = ideStore.setting.theme.value.colors
+            colors = ideStore.setting.theme.theme.value.colors
         ) {
             LocalAppWindow.current.maximize()
             if (ideStore.project.value != null) {
@@ -57,10 +51,6 @@ fun main() {
                 SnackbarView(ideStore.project.value!!.snackBar)
             } else {
                 OpenProjectView { ideStore.openProject() }
-            }
-
-            if (ideStore.setting.customThemeDialog.value) {
-                CustomThemeCard(ideStore)
             }
         }
     }

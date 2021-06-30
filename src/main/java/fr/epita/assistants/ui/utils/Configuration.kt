@@ -28,7 +28,7 @@ fun loadConfig(): IdeStore {
                 }
             }
 
-            ideStore.setting.setCustomTheme(
+            ideStore.setting.theme.setCustomTheme(
                 Color(Integer.parseInt(prop.getProperty("theme.onPrimary"))),
                 Color(Integer.parseInt(prop.getProperty("theme.primary"))),
                 Color(Integer.parseInt(prop.getProperty("theme.onSecondary"))),
@@ -53,12 +53,12 @@ fun loadConfig(): IdeStore {
                     primaryVariant = Color(Integer.parseInt(prop.getProperty("customTheme$i.primaryVariant"))),
                     secondaryVariant = Color(Integer.parseInt(prop.getProperty("customTheme$i.secondaryVariant"))),
                 )
-                ideStore.setting.loadCustomTheme(colors)
+                ideStore.setting.theme.loadCustomTheme(colors)
                 i++
             }
 
-            if (ideStore.setting.customThemes.size > 1)
-                ideStore.setting.customThemes.removeAt(0)
+            if (ideStore.setting.theme.customThemes.size > 1)
+                ideStore.setting.theme.customThemes.removeAt(0)
         }
     } catch (ex: IOException) {
         println("No configuration file")

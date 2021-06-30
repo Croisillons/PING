@@ -83,7 +83,7 @@ class IdeStore(val projectService: MyProjectService) {
                         prop.setProperty("ide.height", project.value!!.filesHeight.value.value.toString())
                     }
 
-                    val colors = setting.theme.value.colors
+                    val colors = setting.theme.theme.value.colors
                     prop.setProperty("theme.onPrimary", colors.onPrimary.toArgb().toString())
                     prop.setProperty("theme.primary", colors.primary.toArgb().toString())
                     prop.setProperty("theme.onSecondary", colors.onSecondary.toArgb().toString())
@@ -94,7 +94,7 @@ class IdeStore(val projectService: MyProjectService) {
                     prop.setProperty("theme.primaryVariant", colors.primaryVariant.toArgb().toString())
                     prop.setProperty("theme.secondaryVariant", colors.secondaryVariant.toArgb().toString())
 
-                    setting.customThemes.forEachIndexed { idx, theme ->
+                    setting.theme.customThemes.forEachIndexed { idx, theme ->
                         prop.setProperty("customTheme$idx.onPrimary", theme.colors.onPrimary.toArgb().toString())
                         prop.setProperty("customTheme$idx.primary", theme.colors.primary.toArgb().toString())
                         prop.setProperty("customTheme$idx.onSecondary", theme.colors.onSecondary.toArgb().toString())
