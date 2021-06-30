@@ -18,18 +18,24 @@ import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.jediterm.pty.PtyProcessTtyConnector
+import com.jediterm.terminal.ArrayTerminalDataStream
 import com.jediterm.terminal.TerminalColor
+import com.jediterm.terminal.TerminalMode
 import com.jediterm.terminal.TextStyle
 import com.jediterm.terminal.emulator.ColorPalette
+import com.jediterm.terminal.emulator.JediEmulator
 import com.jediterm.terminal.ui.JediTermWidget
 import com.jediterm.terminal.ui.UIUtil
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider
 import com.pty4j.PtyProcess
 import fr.epita.assistants.ui.store.ProjectStore
+import java.io.IOException
+import java.io.OutputStream
 import java.nio.charset.Charset
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 import kotlin.io.path.absolutePathString
+
 
 class TerminalState {
     val panel = JPanel()
@@ -123,31 +129,6 @@ fun ToolTabs(projectStore: ProjectStore) {
 }
 
 /**
- * Display the build tool window
- */
-@Composable
-fun BuildWindow(projectStore: ProjectStore) {
-    SelectionContainer {
-        Surface(
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            if (projectStore.compilationOutput.value == null)
-                return@Surface
-            val scroll = rememberScrollState(0)
-            Text(
-                text = projectStore.compilationOutputText.value,
-                color = MaterialTheme.colors.onPrimary,
-                modifier = Modifier
-                    .verticalScroll(scroll)
-                    .padding(8.dp)
-            )
-        }
-    }
-}
-
-/**
  * Represents a tool, containing the tab and the window
  */
 interface ToolTab {
@@ -198,14 +179,35 @@ interface ToolTab {
     }
 }
 
-class BuildToolTab : ToolTab {
+class BuildToolTab : ToolTab
+{
+    val state = TerminalState()
+
+    var je : JediEmulator;
+
+    init {
+        val settingsProvider = TerminalSettings()
+
+        val tw = JediTermWidget(settingsProvider)
+
+        tw.terminal.setModeEnabled(TerminalMode.AutoNewLine, true)
+        je = JediEmulator(ArrayTerminalDataStream(charArrayOf()), tw.terminal)
+
+        tw.start()
+
+        state.widget = tw
+
+        state.panel.layout = BoxLayout(state.panel, BoxLayout.Y_AXIS)
+        state.panel.add(tw)
+    }
+
     override fun getName(): String {
         return "Build"
     }
 
     @Composable
     override fun display(projectStore: ProjectStore) {
-        BuildWindow(projectStore)
+        TerminalWindow(state)
     }
 }
 
