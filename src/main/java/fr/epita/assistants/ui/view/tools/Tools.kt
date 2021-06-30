@@ -171,7 +171,7 @@ interface ToolTab
     {
         val hoverState = remember { mutableStateOf(false) }
         Surface(
-            color = if (isSelected) MaterialTheme.colors.onSecondary else if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
+            color = if (isSelected) MaterialTheme.colors.secondary else if (hoverState.value) MaterialTheme.colors.onSurface else Color.Transparent,
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier
                 .pointerMoveFilter(
@@ -193,7 +193,7 @@ interface ToolTab
             ) {
                 Text(
                     text = getName(),
-                    color = MaterialTheme.colors.onPrimary
+                    color = if (isSelected) MaterialTheme.colors.onSecondary else MaterialTheme.colors.onPrimary
                 )
             }
         }
@@ -267,13 +267,13 @@ class RunToolTab : ToolTab {
                 color = MaterialTheme.colors.secondary,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(5.dp)
             ) {
                 val scroll = rememberScrollState(0)
                 Text(
                     text = projectStore.runOutputText.value,
                     modifier = Modifier
                         .verticalScroll(scroll)
+                        .padding(8.dp)
                 )
             }
         }
