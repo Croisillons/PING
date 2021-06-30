@@ -31,7 +31,7 @@ public class RunFeature implements Feature {
                     if (params.length == 1)
                     {
                         var callback = ((RunFeature.Callback) params[0]).callback;
-                        callback.accept(new RunStreams(process.getInputStream(), process.getErrorStream()));
+                        callback.accept(new RunStreams(process, process.getInputStream(), process.getErrorStream()));
                     }
                     process.waitFor();
                     return () -> true;
@@ -53,7 +53,7 @@ public class RunFeature implements Feature {
     public static record Callback(Consumer<RunStreams> callback)
     {}
 
-    public static record RunStreams(InputStream output, InputStream error)
+    public static record RunStreams(Process process, InputStream output, InputStream error)
     {
         public String readOutput() throws IOException
         {

@@ -31,6 +31,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var compilationOutputText: MutableState<String> = mutableStateOf("")
     var running = mutableStateOf(false)
     var runOutputText: MutableState<String> = mutableStateOf("")
+    var runStreams: MutableState<RunFeature.RunStreams?> = mutableStateOf(null)
     val snackBar: SnackBarStore = SnackBarStore()
     var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab())
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
@@ -135,9 +136,9 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
             val result: Feature.ExecutionReport =
                 ideStore.projectService.execute(project, Supplement.Features.Any.RUN, RunFeature.Callback { streams: RunFeature.RunStreams ->
                     launch(Dispatchers.IO) {
-
                         var res = ""
                         running.value = true
+                        runStreams.value = streams
                         while (running.value) {
                             res += streams.readOutput()
                             res += streams.readError()
@@ -150,6 +151,11 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
                 })
             running.value = false
         }
+    }
+
+    fun stop() {
+        runStreams.value?.process?.destroy()
+        running.value = false
     }
 
     fun getCompiledArtefact() : File? {

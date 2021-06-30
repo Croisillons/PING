@@ -53,7 +53,7 @@ fun ActionsView(projectStore: ProjectStore) {
                 tint = Color(red = 199, green = 84, blue = 80, alpha = 255),
                 contentDescription = "Stop Project",
                 modifier = Modifier.padding(horizontal = 5.dp)
-                    .clickable { }
+                    .clickable { projectStore.stop() }
                     .cursor(Cursor.HAND_CURSOR)
             )
         }
