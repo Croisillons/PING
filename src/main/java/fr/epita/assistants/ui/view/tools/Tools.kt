@@ -112,6 +112,7 @@ fun ToolTabs(projectStore: ProjectStore) {
     Row(
         modifier = Modifier
             .height(44.dp)
+            .padding(horizontal = 8.dp)
             .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -128,18 +129,19 @@ fun ToolTabs(projectStore: ProjectStore) {
 fun BuildWindow(projectStore: ProjectStore) {
     SelectionContainer {
         Surface(
-            color = MaterialTheme.colors.secondary,
+            color = MaterialTheme.colors.primary,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(5.dp)
         ) {
             if (projectStore.compilationOutput.value == null)
                 return@Surface
             val scroll = rememberScrollState(0)
             Text(
                 text = projectStore.compilationOutputText.value,
+                color = MaterialTheme.colors.onPrimary,
                 modifier = Modifier
                     .verticalScroll(scroll)
+                    .padding(8.dp)
             )
         }
     }
