@@ -254,3 +254,29 @@ class TerminalToolTab : ToolTab
     }
 
 }
+
+class RunToolTab : ToolTab {
+    override fun getName(): String {
+        return "Run"
+    }
+
+    @Composable
+    override fun display(projectStore: ProjectStore) {
+        SelectionContainer {
+            Surface(
+                color = MaterialTheme.colors.secondary,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(5.dp)
+            ) {
+                val scroll = rememberScrollState(0)
+                Text(
+                    text = projectStore.runOutputText.value,
+                    modifier = Modifier
+                        .verticalScroll(scroll)
+                )
+            }
+        }
+    }
+
+}
