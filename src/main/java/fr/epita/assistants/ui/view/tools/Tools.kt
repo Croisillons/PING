@@ -222,8 +222,6 @@ class TerminalToolTab(val projectStore: ProjectStore) : ToolTab
 
         val tw = JediTermWidget(settingsProvider)
 
-        tw.terminal.setModeEnabled(TerminalMode.AutoNewLine, true)
-
         lateinit var cmd : Array<String>
         val env = HashMap(System.getenv())
 
