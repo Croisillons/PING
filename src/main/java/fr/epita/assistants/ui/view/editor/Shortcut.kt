@@ -1,10 +1,10 @@
 package fr.epita.assistants.ui.view.editor
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.isTypedEvent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -89,6 +89,7 @@ fun ShortcutsItem(
 ) {
     val (hoverState, setHoverState) = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+    val interactionSource = remember { MutableInteractionSource() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -128,13 +129,20 @@ fun ShortcutsItem(
             BasicTextField(
                 value = shortcut.toString(),
                 onValueChange = { },
-                modifier = Modifier.focusRequester(focusRequester)
+                readOnly = true,
+                modifier = Modifier.width(IntrinsicSize.Max)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        if (it.toString() == "Active") {
+                            onClick()
+                        }
+                    }
                     .onPreviewKeyEvent {
                         when {
                             ((it.isCtrlPressed || it.isShiftPressed || it.isAltPressed)
                                     && it.key != Key.CtrlLeft && it.key != Key.ShiftLeft && it.key != Key.AltLeft
                                     && it.key != Key.CtrlRight && it.key != Key.ShiftRight && it.key != Key.AltRight
-                                    && it.key.keyCode != 0L) -> {
+                                    && it.key.keyCode != 0L && isSelected) -> {
                                 onSet(it)
                                 true
                             }
