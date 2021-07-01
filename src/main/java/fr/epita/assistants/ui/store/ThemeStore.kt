@@ -20,7 +20,7 @@ import fr.epita.assistants.ui.model.EditorTab
 import fr.epita.assistants.ui.model.IdeTheme
 import fr.epita.assistants.ui.model.IdeThemeEnum
 import fr.epita.assistants.ui.utils.cursor
-import fr.epita.assistants.ui.view.dialog.CustomThemeCard
+import fr.epita.assistants.ui.view.dialog.ThemeView
 import java.awt.Cursor
 
 class ThemeStore(val ideStore: IdeStore) : EditorTab {
@@ -99,7 +99,7 @@ class ThemeStore(val ideStore: IdeStore) : EditorTab {
 
     @Composable
     override fun display(ideStore: IdeStore) {
-        CustomThemeCard(ideStore.setting.theme)
+        ThemeView(ideStore.setting.theme)
     }
 
     @Composable
