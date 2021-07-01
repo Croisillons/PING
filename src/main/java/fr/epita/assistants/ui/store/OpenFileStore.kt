@@ -1,15 +1,11 @@
 package fr.epita.assistants.ui.store
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
@@ -29,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.ui.model.EditorTab
 import fr.epita.assistants.ui.utils.CodeHighlight
@@ -90,22 +87,42 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
             Sed(file.content.value, onValueChange, onReplace)
         }
 
+        val textStyle: TextStyle = TextStyle(
+            MaterialTheme.colors.onBackground,
+            fontSize = 14.sp,
+            fontWeight = FontWeight(600),
+            fontFamily = FontFamily.Monospace,
+            lineHeight = 22.sp
+        )
+        val horizontalScrollState = rememberScrollState()
+        val verticalScrollState = rememberScrollState()
         SelectionContainer {
-            Box(
+            Row(
                 modifier = Modifier
                     .shadow(8.dp, RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colors.secondary, RoundedCornerShape(12.dp))
                     .fillMaxWidth()
+                    .padding(8.dp)
             ) {
+                Row() {
+                    Column(
+                        modifier = Modifier.verticalScroll(verticalScrollState)
+                    ) {
+                        content.value.split("\n").forEachIndexed { idx, str ->
+                            Text(
+                                text = " $idx".padEnd(5) + " ",
+                                style = textStyle
+                            )
+                        }
+                    }
+                    Divider(color = MaterialTheme.colors.onSecondary, modifier = Modifier.fillMaxHeight().width(0.5.dp))
+                }
+
                 BasicTextField(
                     value = content.value,
                     onValueChange = onValueChange,
-                    textStyle = TextStyle(
-                        MaterialTheme.colors.onSecondary,
-                        fontWeight = FontWeight(600),
-                        fontFamily = FontFamily.Monospace
-                    ),
-                    modifier = Modifier.padding(8.dp)
+                    textStyle = textStyle,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                         .fillMaxHeight()
                         .onPreviewKeyEvent {
                             when {
@@ -119,11 +136,25 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                                 }
                                 else -> false
                             }
-                        },
+                        }
+                        .horizontalScroll(horizontalScrollState)
+                        .verticalScroll(verticalScrollState),
                     visualTransformation = CodeHighlight(MaterialTheme.colors)
                 )
+                VerticalScrollbar(
+                    adapter = rememberScrollbarAdapter(verticalScrollState),
+                    modifier = Modifier.padding(end = 4.dp)
+                        .fillMaxHeight(),
+                )
             }
+
         }
+
+        HorizontalScrollbar(
+            adapter = rememberScrollbarAdapter(horizontalScrollState),
+            modifier = Modifier
+                .fillMaxWidth()
+        )
     }
 
     @Composable

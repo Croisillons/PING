@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.ThemeStore
@@ -39,7 +38,7 @@ fun CustomThemeCard(themeStore: ThemeStore) {
 
     val (selectedColorTheme, setSelectedColorTheme) = remember { mutableStateOf(onPrimary) }
 
-    var verticalScrollState = rememberScrollState()
+    val verticalScrollState = rememberScrollState()
     Box(
         modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(12.dp))
@@ -199,7 +198,8 @@ fun ColorPicker(selectedColor: MutableState<Color>) {
 
         Column {
             Text(
-                text = "Hue"
+                text = "Hue",
+                color = MaterialTheme.colors.onSecondary
             )
             Slider(
                 value = hueState.value,
@@ -217,7 +217,8 @@ fun ColorPicker(selectedColor: MutableState<Color>) {
             )
 
             Text(
-                text = "Saturation"
+                text = "Saturation",
+                color = MaterialTheme.colors.onSecondary
             )
             Slider(
                 value = saturationState.value,
@@ -235,7 +236,8 @@ fun ColorPicker(selectedColor: MutableState<Color>) {
             )
 
             Text(
-                text = "Lightness"
+                text = "Lightness",
+                color = MaterialTheme.colors.onSecondary
             )
             Slider(
                 value = lightnessState.value,
