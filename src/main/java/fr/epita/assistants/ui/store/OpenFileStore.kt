@@ -105,7 +105,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                         fontWeight = FontWeight(600),
                         fontFamily = FontFamily.Monospace
                     ),
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(8.dp)
                         .fillMaxHeight()
                         .onPreviewKeyEvent {
                             when {

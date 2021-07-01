@@ -58,6 +58,8 @@ class CodeHighlight(val colors: Colors) : VisualTransformation {
             addStyle(colors.secondaryVariant, strFormatted, "actual ")
             addStyle(colors.secondaryVariant, strFormatted, "import ")
             addStyle(colors.secondaryVariant, strFormatted, "package ")
+            addStyle(colors.secondaryVariant, strFormatted, Regex("<[^>]*>"))
+            addStyle(colors.primaryVariant, strFormatted, Regex("\"[^\"]*\""))
 
             addStyle(colors.onBackground, strFormatted, "true")
             addStyle(colors.onBackground, strFormatted, "false")
@@ -70,6 +72,7 @@ class CodeHighlight(val colors: Colors) : VisualTransformation {
             addStyle(colors.onBackground, strFormatted, "-> ")
 
             addStyle(colors.onBackground, strFormatted, Regex(" int "))
+            addStyle(colors.onBackground, strFormatted, Regex(" void "))
             addStyle(colors.onBackground, strFormatted, Regex(" boolean "))
             addStyle(colors.onBackground, strFormatted, Regex(" float "))
             addStyle(colors.onBackground, strFormatted, Regex(" long "))
@@ -87,6 +90,8 @@ class CodeHighlight(val colors: Colors) : VisualTransformation {
             addStyle(colors.onBackground, strFormatted, Regex("Char "))
             addStyle(colors.onBackground, strFormatted, Regex("Short "))
             addStyle(colors.onBackground, strFormatted, Regex("Byte "))
+
+            addStyle(colors.onSecondary, strFormatted, Regex("\\|"))
         }
     }
 
