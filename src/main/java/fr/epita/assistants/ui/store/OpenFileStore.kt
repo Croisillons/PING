@@ -97,14 +97,14 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
         val horizontalScrollState = rememberScrollState()
         val verticalScrollState = rememberScrollState()
         SelectionContainer {
-            Row(
+            Box(
                 modifier = Modifier
                     .shadow(8.dp, RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colors.secondary, RoundedCornerShape(12.dp))
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Row() {
+                Row {
                     Column(
                         modifier = Modifier.verticalScroll(verticalScrollState)
                     ) {
@@ -116,45 +116,45 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                         }
                     }
                     Divider(color = MaterialTheme.colors.onSecondary, modifier = Modifier.fillMaxHeight().width(0.5.dp))
-                }
-
-                BasicTextField(
-                    value = content.value,
-                    onValueChange = onValueChange,
-                    textStyle = textStyle,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                        .fillMaxHeight()
-                        .onPreviewKeyEvent {
-                            when {
-                                (it.isCtrlPressed && it.key == Key.S) -> {
-                                    ideStore.project.value!!.saveFile()
-                                    true
+                    BasicTextField(
+                        value = content.value,
+                        onValueChange = onValueChange,
+                        textStyle = textStyle,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                            .fillMaxHeight()
+                            .onPreviewKeyEvent {
+                                when {
+                                    (it.isCtrlPressed && it.key == Key.S) -> {
+                                        ideStore.project.value!!.saveFile()
+                                        true
+                                    }
+                                    (it.isCtrlPressed && it.key == Key.F) -> {
+                                        onReplace(true)
+                                        true
+                                    }
+                                    else -> false
                                 }
-                                (it.isCtrlPressed && it.key == Key.F) -> {
-                                    onReplace(true)
-                                    true
-                                }
-                                else -> false
                             }
-                        }
-                        .horizontalScroll(horizontalScrollState)
-                        .verticalScroll(verticalScrollState),
-                    visualTransformation = CodeHighlight(MaterialTheme.colors)
-                )
+                            .horizontalScroll(horizontalScrollState)
+                            .verticalScroll(verticalScrollState),
+                        visualTransformation = CodeHighlight(MaterialTheme.colors)
+                    )
+
+                }
                 VerticalScrollbar(
                     adapter = rememberScrollbarAdapter(verticalScrollState),
-                    modifier = Modifier.padding(end = 4.dp)
-                        .fillMaxHeight(),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .align(Alignment.CenterEnd),
+                )
+                HorizontalScrollbar(
+                    adapter = rememberScrollbarAdapter(horizontalScrollState),
+                    modifier = Modifier.padding(start = 58.dp, end = 12.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
                 )
             }
-
         }
-
-        HorizontalScrollbar(
-            adapter = rememberScrollbarAdapter(horizontalScrollState),
-            modifier = Modifier
-                .fillMaxWidth()
-        )
     }
 
     @Composable
