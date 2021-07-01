@@ -3,6 +3,8 @@ package fr.epita.assistants.ui.view.editor
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.isTypedEvent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,8 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,13 +55,19 @@ fun ShortcutView(ideStore: IdeStore) {
             ShortcutsItem(
                 "Save",
                 ideStore.setting.shortcuts.save,
-                selectedShortcut.value == ShortcutEnum.SAVE
-            ) { selectedShortcut.value = ShortcutEnum.SAVE }
+                selectedShortcut.value == ShortcutEnum.SAVE,
+                { selectedShortcut.value = ShortcutEnum.SAVE }) {
+                ideStore.setting.shortcuts.set(ShortcutEnum.SAVE, it)
+                selectedShortcut.value = ShortcutEnum.NONE
+            }
             ShortcutsItem(
                 "Replace",
                 ideStore.setting.shortcuts.replace,
-                selectedShortcut.value == ShortcutEnum.REPLACE
-            ) { selectedShortcut.value = ShortcutEnum.REPLACE }
+                selectedShortcut.value == ShortcutEnum.REPLACE,
+                { selectedShortcut.value = ShortcutEnum.REPLACE }) {
+                ideStore.setting.shortcuts.set(ShortcutEnum.REPLACE, it)
+                selectedShortcut.value = ShortcutEnum.NONE
+            }
 
 
         }
@@ -67,8 +80,15 @@ fun ShortcutView(ideStore: IdeStore) {
 }
 
 @Composable
-fun ShortcutsItem(title: String, shortcut: Shortcut, isSelected: Boolean, onClick: () -> Unit) {
+fun ShortcutsItem(
+    title: String,
+    shortcut: Shortcut,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    onSet: (KeyEvent) -> Unit
+) {
     val (hoverState, setHoverState) = remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -80,16 +100,19 @@ fun ShortcutsItem(title: String, shortcut: Shortcut, isSelected: Boolean, onClic
             .pointerMoveFilter(
                 onEnter = {
                     setHoverState(true)
-                    true
+                    false
                 },
                 onExit = {
                     setHoverState(false)
-                    true
+                    false
                 }
             )
             .cursor(Cursor.HAND_CURSOR)
             .padding(end = 16.dp)
-            .clickable(onClick = onClick),
+            .clickable {
+                onClick()
+                focusRequester.requestFocus()
+            },
     ) {
         Text(
             text = title,
@@ -102,9 +125,23 @@ fun ShortcutsItem(title: String, shortcut: Shortcut, isSelected: Boolean, onClic
                 .background(MaterialTheme.colors.primary, RoundedCornerShape(4.dp))
                 .padding(vertical = 4.dp, horizontal = 10.dp)
         ) {
-            Text(
-                text = shortcut.toString(),
-                color = MaterialTheme.colors.onPrimary
+            BasicTextField(
+                value = shortcut.toString(),
+                onValueChange = { },
+                modifier = Modifier.focusRequester(focusRequester)
+                    .onPreviewKeyEvent {
+                        when {
+                            ((it.isCtrlPressed || it.isShiftPressed || it.isAltPressed)
+                                    && it.key != Key.CtrlLeft && it.key != Key.ShiftLeft && it.key != Key.AltLeft
+                                    && it.key != Key.CtrlRight && it.key != Key.ShiftRight && it.key != Key.AltRight
+                                    && it.key.keyCode != 0L) -> {
+                                onSet(it)
+                                true
+                            }
+                            else -> false
+                        }
+                    },
+                textStyle = TextStyle(MaterialTheme.colors.onPrimary)
             )
         }
     }
