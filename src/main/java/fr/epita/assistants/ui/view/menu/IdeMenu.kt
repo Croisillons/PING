@@ -56,6 +56,13 @@ fun IdeMenu(ideStore: IdeStore) {
             ThemeMenu(ideStore)
         }
 
+        Text(
+            "Shortcuts",
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.padding(horizontal = 8.dp)
+                .clickable { ideStore.setting.shortcuts.openShortcut() }
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxHeight()
@@ -281,13 +288,6 @@ fun ToolMenu(ideStore: IdeStore) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("New terminal", color = MaterialTheme.colors.onPrimary)
-        }
-
-        DropdownMenuItem(
-            onClick = { ideStore.setting.shortcuts.openShortcut() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Shortcuts", color = MaterialTheme.colors.onPrimary)
         }
     }
 }
