@@ -116,7 +116,8 @@ fun ThemeView(themeStore: ThemeStore) {
             }
         }
         VerticalScrollbar(
-            adapter = rememberScrollbarAdapter(verticalScrollState)
+            adapter = rememberScrollbarAdapter(verticalScrollState),
+            modifier = Modifier.align(Alignment.CenterEnd)
         )
     }
 }
