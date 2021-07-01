@@ -17,4 +17,5 @@ import fr.epita.assistants.ui.model.IdeThemeEnum
  */
 class SettingStore(val ideStore: IdeStore) {
     val theme: ThemeStore = ThemeStore(ideStore)
+    val shortcuts: ShortcutStore = ShortcutStore(ideStore)
 }

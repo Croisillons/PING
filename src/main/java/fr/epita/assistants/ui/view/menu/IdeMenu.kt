@@ -282,6 +282,13 @@ fun ToolMenu(ideStore: IdeStore) {
         ) {
             Text("New terminal", color = MaterialTheme.colors.onPrimary)
         }
+
+        DropdownMenuItem(
+            onClick = { ideStore.setting.shortcuts.openShortcut() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Shortcuts", color = MaterialTheme.colors.onPrimary)
+        }
     }
 }
 
