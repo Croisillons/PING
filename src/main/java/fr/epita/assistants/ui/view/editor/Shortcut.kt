@@ -1,10 +1,10 @@
 package fr.epita.assistants.ui.view.editor
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -52,6 +52,21 @@ fun ShortcutView(ideStore: IdeStore) {
                 fontWeight = FontWeight(500)
             )
             Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = "Reset",
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.align(Alignment.End)
+                    .padding(end = 16.dp, bottom = 10.dp)
+                    .background(MaterialTheme.colors.primary, RoundedCornerShape(4.dp))
+                    .padding(vertical = 4.dp, horizontal = 10.dp)
+                    .clickable {
+                        ideStore.setting.shortcuts.resetAll()
+                        selectedShortcut.value = ShortcutEnum.SAVE
+                        selectedShortcut.value = ShortcutEnum.REPLACE
+                        selectedShortcut.value = ShortcutEnum.NONE
+                    },
+            )
+            Divider(color = MaterialTheme.colors.primary, thickness = 0.5.dp, modifier = Modifier.padding(bottom = 10.dp))
             ShortcutsItem(
                 "Save",
                 ideStore.setting.shortcuts.save,
@@ -89,7 +104,6 @@ fun ShortcutsItem(
 ) {
     val (hoverState, setHoverState) = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
-    val interactionSource = remember { MutableInteractionSource() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

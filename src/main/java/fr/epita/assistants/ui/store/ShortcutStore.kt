@@ -33,6 +33,7 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
     fun openShortcut() {
         ideStore.project.value?.openShortcutEditor(this)
     }
+
     fun set(shortcut: ShortcutEnum, event: KeyEvent) {
         val newShortcut = Shortcut(event.isCtrlPressed, event.isShiftPressed, event.isAltPressed, event.key)
         when (shortcut) {
@@ -40,6 +41,11 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
             ShortcutEnum.REPLACE -> replace = newShortcut
             else -> {}
         }
+    }
+
+    fun resetAll() {
+        save = Shortcut(ctrl = true, key = Key.S)
+        replace = Shortcut(ctrl = true, key = Key.F)
     }
 
     override fun getName(): String {
