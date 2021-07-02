@@ -2,7 +2,7 @@
 
 ## Features
 * Themes: 5 different themes are available: Light, Dark, Pink, Blue, Green
-  * Custom Theme
+  * Custom Themes
 * Open a project, open one or several files to edit
 * Clean project (according to the .myideignore file)
 * Export project: Clean and Zip the project
@@ -10,19 +10,27 @@
 * View of the project files
 * Search and Replace (Sed)
 * Resizable window and views
+* Support of Maven and Git project
 * Maven project:
     * Compilation (Coffee Cup button)
         * if the compilation succeed: Snackbar is displayed with a happy cowboy, and we can hear a happy "Yeeha"
         * if the compilation failed: Snackbar is displayed with a sad cowboy, and we can hear a sad "Yeeha"
-* Configuration saved (Theme, opened project, view size)
+    * Build and Run
+        * Output displayed in real time
+        * Stop the Run
+* Git project:
+    * Pull and Push
+    * Use terminal to Add and Commit
+* Configuration saved (Current Theme, Custom Themes, Shortcuts, Project, View Size)
 * Shortcuts: CTRL+S to save, CTRL+F to replace...
+    * Customize Shortcuts
 * Java syntax highlighting
+* Add Terminal : Implementation with JediTerm
+* Code snippets
 
 ## WIP
-* Custom shortcuts
-* Add Terminal : Implementation with JediTerm
-* Add code snippets
-* Compilation output
+* More code snippets
+* More shortcuts
+* Tag handling
   
 ## TODO
-* Add tag
