@@ -1,9 +1,14 @@
 package fr.epita.assistants.ui.store
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
@@ -11,19 +16,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerMoveFilter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.model.EditorTab
 import fr.epita.assistants.ui.model.Shortcut
 import fr.epita.assistants.ui.model.ShortcutEnum
 import fr.epita.assistants.ui.utils.cursor
 import fr.epita.assistants.ui.view.editor.ShortcutView
-import fr.epita.assistants.ui.view.editor.ShortcutsItem
 import java.awt.Cursor
 
 class ShortcutStore(val ideStore: IdeStore) : EditorTab {
@@ -39,13 +40,16 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
         when (shortcut) {
             ShortcutEnum.SAVE -> save = newShortcut
             ShortcutEnum.REPLACE -> replace = newShortcut
-            else -> {}
+            else -> {
+            }
         }
+        ideStore.saveConfig()
     }
 
     fun resetAll() {
         save = Shortcut(ctrl = true, key = Key.S)
         replace = Shortcut(ctrl = true, key = Key.F)
+        ideStore.saveConfig()
     }
 
     override fun getName(): String {

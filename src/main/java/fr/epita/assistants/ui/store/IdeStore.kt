@@ -106,6 +106,9 @@ class IdeStore(val projectService: MyProjectService) {
                         prop.setProperty("customTheme$idx.secondaryVariant", theme.colors.secondaryVariant.toArgb().toString())
                     }
 
+                    prop.setProperty("shortcut.save", setting.shortcuts.save.toString())
+                    prop.setProperty("shortcut.replace", setting.shortcuts.replace.toString())
+
                     // save properties to project root folder
                     prop.store(output, null)
                     // println("Configuration saved : $prop")
