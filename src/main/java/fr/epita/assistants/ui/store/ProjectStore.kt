@@ -222,6 +222,12 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         selectEditorTab(themeStore)
     }
 
+    fun openShortcutEditor(shortcutStore: ShortcutStore) {
+        if (!editorTabs.contains(shortcutStore)) {
+            editorTabs.add(shortcutStore)
+        }
+        selectEditorTab(shortcutStore)
+    }
     /**
      * Close an open file tab
      * @param editorTab: file to close

@@ -2,8 +2,10 @@ package fr.epita.assistants.ui.utils
 
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.unit.Dp
 import fr.epita.assistants.myide.domain.service.MyProjectService
+import fr.epita.assistants.ui.model.Shortcut
 import fr.epita.assistants.ui.store.IdeStore
 import java.io.FileInputStream
 import java.io.IOException
@@ -19,7 +21,7 @@ fun loadConfig(): IdeStore {
             // load a properties file
             prop.load(input)
 
-            // get the property value and print it out
+            // Load ide setting: project path + ide width and height
             prop.getProperty("project.path")?.let { path ->
                 ideStore.loadProject(path)
                 ideStore.project.value?.let { project ->
@@ -28,6 +30,7 @@ fun loadConfig(): IdeStore {
                 }
             }
 
+            // Load current theme
             ideStore.setting.theme.setCustomTheme(
                 Color(Integer.parseInt(prop.getProperty("theme.onPrimary"))),
                 Color(Integer.parseInt(prop.getProperty("theme.primary"))),
@@ -40,6 +43,7 @@ fun loadConfig(): IdeStore {
                 Color(Integer.parseInt(prop.getProperty("theme.secondaryVariant"))),
             )
 
+            // Load custom themes
             var i = 0
             while (prop.getProperty("customTheme$i.onPrimary") != null) {
                 val colors = lightColors(
@@ -59,9 +63,24 @@ fun loadConfig(): IdeStore {
 
             if (ideStore.setting.theme.customThemes.size > 1)
                 ideStore.setting.theme.customThemes.removeAt(0)
+
+            // Load Shortcuts
+            loadShortcut(prop, "save")?.let { ideStore.setting.shortcuts.save = it }
+            loadShortcut(prop, "replace")?.let { ideStore.setting.shortcuts.replace = it }
         }
     } catch (ex: IOException) {
         println("No configuration file")
     }
     return ideStore
+}
+
+fun loadShortcut(prop: Properties, name: String): Shortcut? {
+    val shortcutString = prop.getProperty("shortcut.$name") ?: return null
+    val ctrl = shortcutString.contains("Ctrl")
+    val shift = shortcutString.contains("Shift")
+    val alt = shortcutString.contains("Alt")
+    val key = Key(shortcutString.last().code)
+
+    val shortcut = Shortcut(ctrl, shift, alt, key)
+    return shortcut
 }

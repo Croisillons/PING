@@ -24,7 +24,7 @@ import java.awt.Cursor
 
 
 @Composable
-fun CustomThemeCard(themeStore: ThemeStore) {
+fun ThemeView(themeStore: ThemeStore) {
     val onPrimary = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.onPrimary) }
     val primary = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.primary) }
     val onSecondary = remember { mutableStateOf(themeStore.selectedCustomTheme.value.colors.onSecondary) }
@@ -116,7 +116,8 @@ fun CustomThemeCard(themeStore: ThemeStore) {
             }
         }
         VerticalScrollbar(
-            adapter = rememberScrollbarAdapter(verticalScrollState)
+            adapter = rememberScrollbarAdapter(verticalScrollState),
+            modifier = Modifier.align(Alignment.CenterEnd)
         )
     }
 }

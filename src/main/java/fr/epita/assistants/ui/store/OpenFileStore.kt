@@ -123,12 +123,13 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                         modifier = Modifier.padding(horizontal = 8.dp)
                             .fillMaxHeight()
                             .onPreviewKeyEvent {
+                                val shortcuts = ideStore.setting.shortcuts
                                 when {
-                                    (it.isCtrlPressed && it.key == Key.S) -> {
+                                    (shortcuts.save.isPressed(it)) -> {
                                         ideStore.project.value!!.saveFile()
                                         true
                                     }
-                                    (it.isCtrlPressed && it.key == Key.F) -> {
+                                    (shortcuts.replace.isPressed(it)) -> {
                                         onReplace(true)
                                         true
                                     }
