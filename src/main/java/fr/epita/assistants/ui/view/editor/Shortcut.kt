@@ -122,7 +122,6 @@ fun ShortcutsItem(
                     false
                 }
             )
-            .cursor(Cursor.HAND_CURSOR)
             .padding(end = 16.dp)
             .clickable {
                 onClick()
@@ -141,7 +140,7 @@ fun ShortcutsItem(
                 .padding(vertical = 4.dp, horizontal = 10.dp)
         ) {
             BasicTextField(
-                value = shortcut.toString(),
+                value = if (isSelected) "Recording..." else shortcut.toString(),
                 onValueChange = { },
                 readOnly = true,
                 modifier = Modifier.width(IntrinsicSize.Max)
