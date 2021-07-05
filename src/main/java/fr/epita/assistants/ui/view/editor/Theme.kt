@@ -77,11 +77,12 @@ fun ThemeView(themeStore: ThemeStore) {
                         color = MaterialTheme.colors.onSecondary,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
-                    OutlinedTextField(
+                    TextField(
                         value = themeStore.selectedCustomTheme.value.themeName.value,
                         onValueChange = { themeStore.selectedCustomTheme.value.themeName.value = it },
-                        maxLines = 1,
-                        textStyle = TextStyle(MaterialTheme.colors.onSecondary)
+                        singleLine = true,
+                        textStyle = TextStyle(MaterialTheme.colors.onSecondary),
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
                 Row {
@@ -355,7 +356,7 @@ fun CustomThemeItem(
             Text(
                 text = title,
                 color = if (hoverState.value or isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
             Icon(
                 Icons.Default.Close,
