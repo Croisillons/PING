@@ -57,7 +57,8 @@ fun loadConfig(): IdeStore {
                     primaryVariant = Color(Integer.parseInt(prop.getProperty("customTheme$i.primaryVariant"))),
                     secondaryVariant = Color(Integer.parseInt(prop.getProperty("customTheme$i.secondaryVariant"))),
                 )
-                ideStore.setting.theme.loadCustomTheme(colors)
+                val name = prop.getProperty("customTheme$i.name")
+                ideStore.setting.theme.loadCustomTheme(name, colors)
                 i++
             }
 

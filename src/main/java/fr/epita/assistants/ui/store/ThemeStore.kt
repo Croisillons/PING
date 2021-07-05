@@ -48,7 +48,17 @@ class ThemeStore(val ideStore: IdeStore) : EditorTab {
         ideStore.project.value?.closeEditor(this)
     }
 
-    fun setCustomTheme(onPrimary: Color, primary: Color, onSecondary: Color, secondary: Color, onBackground: Color, background: Color, onSurface: Color, primaryVariant: Color, secondaryVariant: Color) {
+    fun setCustomTheme(
+        onPrimary: Color,
+        primary: Color,
+        onSecondary: Color,
+        secondary: Color,
+        onBackground: Color,
+        background: Color,
+        onSurface: Color,
+        primaryVariant: Color,
+        secondaryVariant: Color
+    ) {
         selectedCustomTheme.value.colors = lightColors(
             onPrimary = onPrimary,
             primary = primary,
@@ -67,7 +77,7 @@ class ThemeStore(val ideStore: IdeStore) : EditorTab {
     }
 
     fun addCustomTheme() {
-        val customTheme = CustomTheme(theme.value.colors)
+        val customTheme = CustomTheme("Theme #${customThemes.size}", theme.value.colors)
 
         customThemes.add(customTheme)
         selectCustomTheme(customTheme)
@@ -87,8 +97,9 @@ class ThemeStore(val ideStore: IdeStore) : EditorTab {
         setTheme(customTheme)
     }
 
-    fun loadCustomTheme(colors: Colors) {
-        val customTheme = CustomTheme(colors)
+    fun loadCustomTheme(name: String, colors: Colors) {
+        val customTheme = CustomTheme("theme #${customThemes.size}", colors)
+        customTheme.themeName.value = name
 
         customThemes.add(customTheme)
     }
