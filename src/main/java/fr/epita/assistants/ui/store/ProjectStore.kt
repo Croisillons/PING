@@ -260,7 +260,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         }
         selectEditorTab(shortcutStore)
     }
-    
+
     /**
      * Close an open file tab
      * @param editorTab: file to close
