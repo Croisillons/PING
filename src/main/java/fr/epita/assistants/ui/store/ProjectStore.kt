@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import fr.epita.assistants.features.any.RunDiagnosticsFeature
 import fr.epita.assistants.features.any.RunFeature
 import fr.epita.assistants.features.maven.PackageFeature
 import fr.epita.assistants.myide.domain.entity.*
@@ -23,8 +24,8 @@ import kotlin.reflect.KClass
 import java.io.IOException
 
 import java.io.OutputStream
-
-
+import javax.tools.Diagnostic
+import javax.tools.JavaFileObject
 
 
 /**
@@ -43,6 +44,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     val snackBar: SnackBarStore = SnackBarStore()
     var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab(this))
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
+    var diagnostics: MutableList<Diagnostic<out JavaFileObject>> = mutableListOf()
 
     /**
      * List of files of the project
@@ -176,6 +178,12 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         return null
     }
 
+    fun runDiagnostics() {
+        ideStore.projectService.execute(project, Supplement.Features.Any.RUN_DIAGNOSTICS, RunDiagnosticsFeature.Callback { diagnostics ->
+            this.diagnostics = diagnostics
+        })
+    }
+
     /**
      * Make sound
      */
@@ -259,6 +267,8 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         ideStore.projectService.nodeService.update(node, 0, Int.MAX_VALUE, content.toByteArray())
 
         file.hasChanged.value = false
+
+        runDiagnostics()
     }
 
     /**
