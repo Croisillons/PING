@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.ThemeStore
@@ -65,7 +66,25 @@ fun ThemeView(themeStore: ThemeStore) {
                     primaryVariant.value = themeStore.selectedCustomTheme.value.colors.primaryVariant
                     secondaryVariant.value = themeStore.selectedCustomTheme.value.colors.secondaryVariant
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Name",
+                        color = MaterialTheme.colors.onSecondary,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    TextField(
+                        value = themeStore.selectedCustomTheme.value.themeName.value,
+                        onValueChange = { themeStore.selectedCustomTheme.value.themeName.value = it },
+                        singleLine = true,
+                        textStyle = TextStyle(MaterialTheme.colors.onSecondary),
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
                 Row {
                     Column(
                         modifier = Modifier.weight(0.5f),
@@ -271,9 +290,9 @@ fun CustomThemeList(themeStore: ThemeStore, onClick: () -> Unit) {
             Row(
                 modifier = Modifier.horizontalScroll(horizontalScrollState)
             ) {
-                themeStore.customThemes.forEachIndexed { idx, theme ->
+                themeStore.customThemes.forEach { theme ->
                     CustomThemeItem(
-                        "Theme #$idx",
+                        theme.themeName.value,
                         themeStore.selectedCustomTheme.value == theme,
                         { themeStore.selectCustomTheme(theme); onClick() }) { themeStore.removeCustomTheme(theme) }
                 }
@@ -337,7 +356,7 @@ fun CustomThemeItem(
             Text(
                 text = title,
                 color = if (hoverState.value or isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSecondary,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
             Icon(
                 Icons.Default.Close,

@@ -69,6 +69,10 @@ class IdeStore(val projectService: MyProjectService) {
         }
     }
 
+    /**
+     * Save the configuration of the IDE: View size, current project, current theme, current shortcuts
+     * Done in background using Coroutine
+     */
     fun saveConfig() {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {
@@ -84,6 +88,7 @@ class IdeStore(val projectService: MyProjectService) {
                     }
 
                     val colors = setting.theme.theme.value.colors
+                    prop.setProperty("theme.name", setting.theme.theme.value.themeName.value)
                     prop.setProperty("theme.onPrimary", colors.onPrimary.toArgb().toString())
                     prop.setProperty("theme.primary", colors.primary.toArgb().toString())
                     prop.setProperty("theme.onSecondary", colors.onSecondary.toArgb().toString())
@@ -95,6 +100,7 @@ class IdeStore(val projectService: MyProjectService) {
                     prop.setProperty("theme.secondaryVariant", colors.secondaryVariant.toArgb().toString())
 
                     setting.theme.customThemes.forEachIndexed { idx, theme ->
+                        prop.setProperty("customTheme$idx.name", theme.themeName.value)
                         prop.setProperty("customTheme$idx.onPrimary", theme.colors.onPrimary.toArgb().toString())
                         prop.setProperty("customTheme$idx.primary", theme.colors.primary.toArgb().toString())
                         prop.setProperty("customTheme$idx.onSecondary", theme.colors.onSecondary.toArgb().toString())
@@ -102,8 +108,14 @@ class IdeStore(val projectService: MyProjectService) {
                         prop.setProperty("customTheme$idx.onBackground", theme.colors.onBackground.toArgb().toString())
                         prop.setProperty("customTheme$idx.background", theme.colors.background.toArgb().toString())
                         prop.setProperty("customTheme$idx.onSurface", theme.colors.onSurface.toArgb().toString())
-                        prop.setProperty("customTheme$idx.primaryVariant", theme.colors.primaryVariant.toArgb().toString())
-                        prop.setProperty("customTheme$idx.secondaryVariant", theme.colors.secondaryVariant.toArgb().toString())
+                        prop.setProperty(
+                            "customTheme$idx.primaryVariant",
+                            theme.colors.primaryVariant.toArgb().toString()
+                        )
+                        prop.setProperty(
+                            "customTheme$idx.secondaryVariant",
+                            theme.colors.secondaryVariant.toArgb().toString()
+                        )
                     }
 
                     prop.setProperty("shortcut.save", setting.shortcuts.save.toString())

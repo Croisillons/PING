@@ -28,14 +28,29 @@ import fr.epita.assistants.ui.view.editor.ShortcutView
 import java.awt.Cursor
 
 class ShortcutStore(val ideStore: IdeStore) : EditorTab {
+    /**
+     * Save Shortcut
+     */
     var save = Shortcut(ctrl = true, key = Key.S)
+
+    /**
+     * Replace Shortcut
+     */
     var replace = Shortcut(ctrl = true, key = Key.F)
     var jumpTo = Shortcut(ctrl = true, key = Key.J)
 
+    /**
+     * Open Shortcut tab into editor
+     */
     fun openShortcut() {
         ideStore.project.value?.openShortcutEditor(this)
     }
 
+    /**
+     * Bind the key event to the given shortcut
+     * @param shortcut: The shortcut to change
+     * @param event: The keyEvent holding the key combination
+     */
     fun set(shortcut: ShortcutEnum, event: KeyEvent) {
         val newShortcut = Shortcut(event.isCtrlPressed, event.isShiftPressed, event.isAltPressed, event.key)
         when (shortcut) {
@@ -48,6 +63,9 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
         ideStore.saveConfig()
     }
 
+    /**
+     * Reset all shortcut with their default value
+     */
     fun resetAll() {
         save = Shortcut(ctrl = true, key = Key.S)
         replace = Shortcut(ctrl = true, key = Key.F)

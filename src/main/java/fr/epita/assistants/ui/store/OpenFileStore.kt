@@ -39,15 +39,33 @@ import java.awt.Cursor
 /**
  * Store an open file
  */
+<<<<<<< HEAD
 class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val offset: Int) : EditorTab {
+=======
+class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab {
+    /**
+     * Name of the file
+     */
+>>>>>>> 9416d78476acc84bf2c5d0560827048592b72731
     val filename: String = node.path.fileName.toString()
+
+    /**
+     * State of the content of the file
+     */
     val content = mutableStateOf("")
+
+    /**
+     * State if the current file has unsaved changes
+     */
     val hasChanged = mutableStateOf(false)
     val selected: Boolean
         get() {
             return projectStore.selectedEditorTab.value == this
         }
 
+    /**
+     * We load the file content when the file is opened
+     */
     init {
         loadFileContent()
     }

@@ -3,13 +3,20 @@ package fr.epita.assistants.ui.model
 import androidx.compose.material.Colors
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
 /**
  * Enum of the all the themes
  */
-enum class IdeThemeEnum(override var colors: Colors) : IdeTheme {
+enum class IdeThemeEnum(
+    private var title: String,
+    override var colors: Colors,
+    override var themeName: MutableState<String> = mutableStateOf(title)
+) : IdeTheme {
     LIGHT(
+        "Light",
         lightColors(
             onPrimary = Color(87, 90, 94),
             primary = Color(218, 220, 221),
@@ -19,12 +26,13 @@ enum class IdeThemeEnum(override var colors: Colors) : IdeTheme {
             onSurface = Color(175, 175, 175, 50),
 
             // use for highlight syntax
-            primaryVariant = Color(132,76,192),
-            secondaryVariant = Color(238,88,108),
-            onBackground = Color(96,174,228),
+            primaryVariant = Color(132, 76, 192),
+            secondaryVariant = Color(238, 88, 108),
+            onBackground = Color(96, 174, 228),
         )
     ),
     DARK(
+        "Dark",
         darkColors(
             onPrimary = Color(255, 255, 255),
             primary = Color(40, 44, 52),
@@ -34,12 +42,13 @@ enum class IdeThemeEnum(override var colors: Colors) : IdeTheme {
             onSurface = Color(175, 175, 175, 50),
 
             // use for highlight syntax
-            primaryVariant = Color(132,76,192),
-            secondaryVariant = Color(238,88,108),
-            onBackground = Color(96,174,228)
+            primaryVariant = Color(132, 76, 192),
+            secondaryVariant = Color(238, 88, 108),
+            onBackground = Color(96, 174, 228)
         )
     ),
     PINK(
+        "Pink",
         lightColors(
             onPrimary = Color(87, 90, 94),
             primary = Color(252, 234, 241),
@@ -49,12 +58,13 @@ enum class IdeThemeEnum(override var colors: Colors) : IdeTheme {
             onSurface = Color(254, 93, 159, 50),
 
             // use for highlight syntax
-            primaryVariant = Color(132,76,192),
-            secondaryVariant = Color(238,88,108),
-            onBackground = Color(96,174,228),
+            primaryVariant = Color(132, 76, 192),
+            secondaryVariant = Color(238, 88, 108),
+            onBackground = Color(96, 174, 228),
         )
     ),
     BLUE(
+        "Blue",
         lightColors(
             onPrimary = Color(255, 255, 255),
             primary = Color(44, 62, 80),
@@ -64,12 +74,13 @@ enum class IdeThemeEnum(override var colors: Colors) : IdeTheme {
             onSurface = Color(3, 85, 102, 50),
 
             // use for highlight syntax
-            primaryVariant = Color(132,76,192),
-            secondaryVariant = Color(238,88,108),
-            onBackground = Color(96,174,228),
+            primaryVariant = Color(132, 76, 192),
+            secondaryVariant = Color(238, 88, 108),
+            onBackground = Color(96, 174, 228),
         )
     ),
     GREEN(
+        "Green",
         darkColors(
             onPrimary = Color(200, 200, 200),
             primary = Color(10, 73, 85),
@@ -79,12 +90,13 @@ enum class IdeThemeEnum(override var colors: Colors) : IdeTheme {
             onSurface = Color(87, 90, 94, 50),
 
             // use for highlight syntax
-            primaryVariant = Color(132,76,192),
-            secondaryVariant = Color(238,88,108),
-            onBackground = Color(247,255,246),
+            primaryVariant = Color(132, 76, 192),
+            secondaryVariant = Color(238, 88, 108),
+            onBackground = Color(247, 255, 246),
         )
     ),
     CUSTOM(
+        "Custom",
         darkColors(
             onPrimary = Color(255, 255, 255),
             primary = Color(40, 44, 52),
@@ -94,9 +106,9 @@ enum class IdeThemeEnum(override var colors: Colors) : IdeTheme {
             onSurface = Color(175, 175, 175, 50),
 
             // use for highlight syntax
-            primaryVariant = Color(132,76,192),
-            secondaryVariant = Color(238,88,108),
-            onBackground = Color(96,174,228)
+            primaryVariant = Color(132, 76, 192),
+            secondaryVariant = Color(238, 88, 108),
+            onBackground = Color(96, 174, 228)
         )
     );
 }

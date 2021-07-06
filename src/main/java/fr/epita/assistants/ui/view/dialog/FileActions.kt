@@ -42,7 +42,7 @@ fun FileActions(showFileActions: MutableState<Boolean>) {
                         false
                     }
             )
-                .background(MaterialTheme.colors.primary)
+                    .background(MaterialTheme.colors.primary)
     ) {
         DropdownMenuItem(
                 onClick = { createFile() },
@@ -70,9 +70,22 @@ fun createFile() {
     if (jChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
         jChooser.selectedFile.createNewFile()
         val file = jChooser.selectedFile
-        if (jChooser.selectedFile.toString().contains(".java")) {
-            File("src/main/java/fr/epita/assistants/ui/utils/toto.java").copyTo(File(file.toString()), true)
-            file.writeText(file.readText().replace("toto", jChooser.selectedFile.name.removeSuffix(".java")))
+        val filename = jChooser.selectedFile.toString()
+        if (filename.contains(".java")) {
+            when {
+                filename.contains("Enum") -> {
+                    File("src/main/java/fr/epita/assistants/ui/utils/totoEnum.java").copyTo(File(file.toString()), true)
+                    file.writeText(file.readText().replace("totoEnum", jChooser.selectedFile.name.removeSuffix(".java")))
+                }
+                filename.contains("Interface") -> {
+                    File("src/main/java/fr/epita/assistants/ui/utils/totoInterface.java").copyTo(File(file.toString()), true)
+                    file.writeText(file.readText().replace("totoInterface", jChooser.selectedFile.name.removeSuffix(".java")))
+                }
+                else -> {
+                    File("src/main/java/fr/epita/assistants/ui/utils/toto.java").copyTo(File(file.toString()), true)
+                    file.writeText(file.readText().replace("toto", jChooser.selectedFile.name.removeSuffix(".java")))
+                }
+            }
         }
     }
 }
