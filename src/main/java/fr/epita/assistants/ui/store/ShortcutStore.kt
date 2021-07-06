@@ -30,6 +30,7 @@ import java.awt.Cursor
 class ShortcutStore(val ideStore: IdeStore) : EditorTab {
     var save = Shortcut(ctrl = true, key = Key.S)
     var replace = Shortcut(ctrl = true, key = Key.F)
+    var jumpTo = Shortcut(ctrl = true, key = Key.J)
 
     fun openShortcut() {
         ideStore.project.value?.openShortcutEditor(this)
@@ -40,6 +41,7 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
         when (shortcut) {
             ShortcutEnum.SAVE -> save = newShortcut
             ShortcutEnum.REPLACE -> replace = newShortcut
+            ShortcutEnum.JUMP_TO -> jumpTo = newShortcut
             else -> {
             }
         }
@@ -49,6 +51,7 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
     fun resetAll() {
         save = Shortcut(ctrl = true, key = Key.S)
         replace = Shortcut(ctrl = true, key = Key.F)
+        jumpTo = Shortcut(ctrl = true, key = Key.J)
         ideStore.saveConfig()
     }
 

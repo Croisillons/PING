@@ -76,13 +76,21 @@ fun ShortcutView(ideStore: IdeStore) {
                 selectedShortcut.value = ShortcutEnum.NONE
             }
             ShortcutsItem(
-                "Replace",
-                ideStore.setting.shortcuts.replace,
-                selectedShortcut.value == ShortcutEnum.REPLACE,
-                { selectedShortcut.value = ShortcutEnum.REPLACE }) {
+                    "Replace",
+                    ideStore.setting.shortcuts.replace,
+                    selectedShortcut.value == ShortcutEnum.REPLACE,
+                    { selectedShortcut.value = ShortcutEnum.REPLACE }) {
                 ideStore.setting.shortcuts.set(ShortcutEnum.REPLACE, it)
                 selectedShortcut.value = ShortcutEnum.NONE
             }
+            ShortcutsItem(
+                    "Jump to definition",
+            ideStore.setting.shortcuts.jumpTo,
+            selectedShortcut.value == ShortcutEnum.JUMP_TO,
+            { selectedShortcut.value = ShortcutEnum.JUMP_TO }) {
+            ideStore.setting.shortcuts.set(ShortcutEnum.JUMP_TO, it)
+            selectedShortcut.value = ShortcutEnum.NONE
+        }
 
 
         }
