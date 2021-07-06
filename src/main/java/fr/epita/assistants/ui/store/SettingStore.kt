@@ -16,6 +16,13 @@ import fr.epita.assistants.ui.model.IdeThemeEnum
  * Settings of the IDE
  */
 class SettingStore(val ideStore: IdeStore) {
+    /**
+     * Everything related to the IDE Themes
+     */
     val theme: ThemeStore = ThemeStore(ideStore)
+
+    /**
+     * Everything related t o the IDE Shortcuts
+     */
     val shortcuts: ShortcutStore = ShortcutStore(ideStore)
 }

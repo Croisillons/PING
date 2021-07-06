@@ -17,14 +17,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import javax.sound.sampled.AudioSystem
 import kotlin.reflect.KClass
-import java.io.IOException
-
-import java.io.OutputStream
-
-
 
 
 /**
@@ -41,7 +38,15 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var runOutputText: MutableState<String> = mutableStateOf("")
     var runStreams: MutableState<RunFeature.RunStreams?> = mutableStateOf(null)
     val snackBar: SnackBarStore = SnackBarStore()
+
+    /**
+     * Mutable list of the tool tabs
+     */
     var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab(this))
+
+    /**
+     * State of the selected tool tab
+     */
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
 
     /**
@@ -80,42 +85,48 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * Increments the height of the file tree and editor composables
      * @param x the value to add to filesHeight
      */
-    fun incrementFilesHeight(x: Dp)
-    {
+    fun incrementFilesHeight(x: Dp) {
         filesHeight.value = filesHeight.value.plus(x)
 
         // TODO: optimize it
         ideStore.saveConfig()
     }
 
-    fun <T: ToolTab> selectToolTab(toolTab: KClass<T>)
-    {
+    /**
+     * Selects the given tooltab
+     * @param toolTab: The tooltab to select
+     */
+    fun <T : ToolTab> selectToolTab(toolTab: KClass<T>) {
         val toSelect = toolsTabs.find { toolTab.isInstance(it) }
         if (toSelect != null)
             selectedToolTab.value = toSelect
     }
 
     /**
-     * Compile Project
+     * Compile Project done in background
+     * Display if the compilation succeed or failed
      */
     fun compileProject() {
         compiling.value = true
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
             val result: Feature.ExecutionReport =
-                ideStore.projectService.execute(project, Mandatory.Features.Maven.PACKAGE, PackageFeature.Callback { output: InputStream ->
-                    val buildTooltab = toolsTabs.find { BuildToolTab::class.isInstance(it) } as BuildToolTab
+                ideStore.projectService.execute(
+                    project,
+                    Mandatory.Features.Maven.PACKAGE,
+                    PackageFeature.Callback { output: InputStream ->
+                        val buildTooltab = toolsTabs.find { BuildToolTab::class.isInstance(it) } as BuildToolTab
 
-                    buildTooltab.state.widget.terminal.clearScreen()
+                        buildTooltab.state.widget.terminal.clearScreen()
 
-                    val terminalOutputStream: OutputStream = object : OutputStream() {
-                        @Throws(IOException::class)
-                        override fun write(ch: Int) {
-                            buildTooltab.je.processChar(ch.toChar(), buildTooltab.state.widget.terminal)
+                        val terminalOutputStream: OutputStream = object : OutputStream() {
+                            @Throws(IOException::class)
+                            override fun write(ch: Int) {
+                                buildTooltab.je.processChar(ch.toChar(), buildTooltab.state.widget.terminal)
+                            }
                         }
-                    }
 
-                    output.transferTo(terminalOutputStream)
+                        output.transferTo(terminalOutputStream)
                     })
             launch(Dispatchers.Main) {
                 compiling.value = false
@@ -139,35 +150,49 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         }
     }
 
+
+    /**
+     * Run the project only if there is a artefact
+     * Done in background
+     */
     fun run() {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
             val result: Feature.ExecutionReport =
-                ideStore.projectService.execute(project, Supplement.Features.Any.RUN, RunFeature.Callback { streams: RunFeature.RunStreams ->
-                    launch(Dispatchers.IO) {
-                        var res = ""
-                        running.value = true
-                        runStreams.value = streams
-                        while (running.value) {
-                            res += streams.readOutput()
-                            res += streams.readError()
+                ideStore.projectService.execute(
+                    project,
+                    Supplement.Features.Any.RUN,
+                    RunFeature.Callback { streams: RunFeature.RunStreams ->
+                        launch(Dispatchers.IO) {
+                            var res = ""
+                            running.value = true
+                            runStreams.value = streams
+                            while (running.value) {
+                                res += streams.readOutput()
+                                res += streams.readError()
 
-                            launch(Dispatchers.Main) {
-                                runOutputText.value = res
+                                launch(Dispatchers.Main) {
+                                    runOutputText.value = res
+                                }
                             }
                         }
-                    }
-                })
+                    })
             running.value = false
         }
     }
 
+    /**
+     * Stop the runtime by destroying the process
+     */
     fun stop() {
         runStreams.value?.process?.destroy()
         running.value = false
     }
 
-    fun getCompiledArtefact() : File? {
+    /**
+     * Get the compiled Artefact
+     */
+    fun getCompiledArtefact(): File? {
         val targetFolder = project.rootNode.children.find { it.isFolder and it.path.fileName.equals("target") }
         if (targetFolder != null) {
             val jarFile = targetFolder.children.find { it.isFile and it.path.fileName.endsWith(".jar") }
@@ -178,6 +203,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
 
     /**
      * Make sound
+     * @param file: The file sound to start
      */
     fun makeSound(file: File) {
         val audioInputStream = AudioSystem.getAudioInputStream(file)
@@ -215,6 +241,9 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         selectEditorTab(editor)
     }
 
+    /**
+     * Open theme editor tab
+     */
     fun openThemeEditor(themeStore: ThemeStore) {
         if (!editorTabs.contains(themeStore)) {
             editorTabs.add(themeStore)
@@ -222,12 +251,16 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         selectEditorTab(themeStore)
     }
 
+    /**
+     * Open shortcuts editor tab
+     */
     fun openShortcutEditor(shortcutStore: ShortcutStore) {
         if (!editorTabs.contains(shortcutStore)) {
             editorTabs.add(shortcutStore)
         }
         selectEditorTab(shortcutStore)
     }
+
     /**
      * Close an open file tab
      * @param editorTab: file to close

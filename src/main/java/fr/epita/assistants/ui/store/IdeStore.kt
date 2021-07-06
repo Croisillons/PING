@@ -69,6 +69,10 @@ class IdeStore(val projectService: MyProjectService) {
         }
     }
 
+    /**
+     * Save the configuration of the IDE: View size, current project, current theme, current shortcuts
+     * Done in background using Coroutine
+     */
     fun saveConfig() {
         val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {

@@ -4,6 +4,9 @@ import androidx.compose.material.Colors
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
+/**
+ * Implements IdeTheme and represents a custom Theme
+ */
 class CustomTheme(
     private var title: String,
     override var colors: Colors,
