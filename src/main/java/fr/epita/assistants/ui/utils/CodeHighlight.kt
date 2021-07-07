@@ -2,16 +2,15 @@ package fr.epita.assistants.ui.utils
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextDecoration
+import fr.epita.assistants.ui.store.ProjectStore
 
 
-class CodeHighlight(val colors: Colors) : VisualTransformation {
+class CodeHighlight(val colors: Colors, val projectStore: ProjectStore) : VisualTransformation {
     val offsetMapping = object : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int {
             return offset
@@ -31,6 +30,11 @@ class CodeHighlight(val colors: Colors) : VisualTransformation {
         withStyle(SpanStyle(colors.onSecondary)) {
             val strFormatted = str.replace("\t", "    ")
             append(strFormatted)
+            for (diagnostic in projectStore.diagnostics)
+            {
+                addStyle(SpanStyle(Color.Red, textDecoration = TextDecoration.Underline), diagnostic.startPosition.toInt(), diagnostic.endPosition.toInt())
+            }
+            //addStyle(SpanStyle(Color.Red), 2, 4)
             addStyle(colors.primaryVariant, strFormatted, ":")
             addStyle(colors.onBackground, strFormatted, "=")
             addStyle(colors.primaryVariant, strFormatted, "\"")

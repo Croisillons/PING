@@ -149,7 +149,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                             }
                             .horizontalScroll(horizontalScrollState)
                             .verticalScroll(verticalScrollState),
-                        visualTransformation = CodeHighlight(MaterialTheme.colors)
+                        visualTransformation = CodeHighlight(MaterialTheme.colors, projectStore)
                     )
 
                 }
