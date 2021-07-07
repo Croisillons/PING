@@ -53,6 +53,11 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
     val content = mutableStateOf(TextFieldValue(""))
 
     /**
+     * Initial content of the file after loading or after saving
+     */
+    val initialContent = mutableStateOf("")
+
+    /**
      * State if the current file has unsaved changes
      */
     val hasChanged = mutableStateOf(false)
@@ -77,6 +82,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
             val result = node.content
             launch(Dispatchers.Main) {
                 content.value = TextFieldValue(result)
+                initialContent.value = result
             }
         }
     }
@@ -91,8 +97,13 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
         val searchState = remember { mutableStateOf(false) }
         val file = projectStore.selectedEditorTab.value!! as OpenFileStore
 
+        val onSave: () -> Unit = {
+            file.initialContent.value = file.content.value.text
+            ideStore.project.value!!.saveFile()
+        }
+        
         val onValueChange: (it: TextFieldValue) -> Unit = {
-            file.hasChanged.value = file.content.value.text != it.text
+            file.hasChanged.value = file.initialContent.value != it.text
             file.content.value = it
         }
 
@@ -175,7 +186,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                 val shortcuts = ideStore.setting.shortcuts
                                 when {
                                     (shortcuts.save.isPressed(it)) -> {
-                                        ideStore.project.value!!.saveFile()
+                                        onSave()
                                         true
                                     }
                                     (shortcuts.replace.isPressed(it)) -> {
