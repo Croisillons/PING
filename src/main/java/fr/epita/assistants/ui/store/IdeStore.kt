@@ -121,6 +121,7 @@ class IdeStore(val projectService: MyProjectService) {
                     prop.setProperty("shortcut.save", setting.shortcuts.save.toString())
                     prop.setProperty("shortcut.replace", setting.shortcuts.replace.toString())
                     prop.setProperty("shortcut.jumpTo", setting.shortcuts.jumpTo.toString())
+                    prop.setProperty("shortcut.search", setting.shortcuts.search.toString())
 
                     // save properties to project root folder
                     prop.store(output, null)

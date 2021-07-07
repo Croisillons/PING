@@ -37,7 +37,16 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
      * Replace Shortcut
      */
     var replace = Shortcut(ctrl = true, key = Key.F)
+
+    /**
+     * Jump to definition Shortcut
+     */
     var jumpTo = Shortcut(ctrl = true, key = Key.J)
+
+    /**
+     * Search Shortcut
+     */
+    var search = Shortcut(ctrl = true, key = Key.B)
 
     /**
      * Open Shortcut tab into editor
@@ -57,6 +66,7 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
             ShortcutEnum.SAVE -> save = newShortcut
             ShortcutEnum.REPLACE -> replace = newShortcut
             ShortcutEnum.JUMP_TO -> jumpTo = newShortcut
+            ShortcutEnum.SEARCH -> search = newShortcut
             else -> {
             }
         }
@@ -70,6 +80,7 @@ class ShortcutStore(val ideStore: IdeStore) : EditorTab {
         save = Shortcut(ctrl = true, key = Key.S)
         replace = Shortcut(ctrl = true, key = Key.F)
         jumpTo = Shortcut(ctrl = true, key = Key.J)
+        search = Shortcut(ctrl = true, key = Key.B)
         ideStore.saveConfig()
     }
 

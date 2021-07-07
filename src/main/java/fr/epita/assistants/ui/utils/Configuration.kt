@@ -69,6 +69,7 @@ fun loadConfig(): IdeStore {
             loadShortcut(prop, "save")?.let { ideStore.setting.shortcuts.save = it }
             loadShortcut(prop, "replace")?.let { ideStore.setting.shortcuts.replace = it }
             loadShortcut(prop, "jumpTo")?.let { ideStore.setting.shortcuts.jumpTo = it }
+            loadShortcut(prop, "search")?.let { ideStore.setting.shortcuts.search = it }
         }
     } catch (ex: IOException) {
         println("No configuration file")

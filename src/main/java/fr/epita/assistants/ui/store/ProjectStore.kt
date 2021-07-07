@@ -287,7 +287,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     fun saveFile() {
         val file = selectedEditorTab.value!! as OpenFileStore
         val node = file.node
-        val content = file.content.value
+        val content = file.content.value.text
 
         ideStore.projectService.nodeService.update(node, 0, Int.MAX_VALUE, content.toByteArray())
 

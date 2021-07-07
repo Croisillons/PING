@@ -26,8 +26,6 @@ import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.model.Shortcut
 import fr.epita.assistants.ui.model.ShortcutEnum
 import fr.epita.assistants.ui.store.IdeStore
-import fr.epita.assistants.ui.utils.cursor
-import java.awt.Cursor
 
 @Composable
 fun ShortcutView(ideStore: IdeStore) {
@@ -66,7 +64,11 @@ fun ShortcutView(ideStore: IdeStore) {
                         selectedShortcut.value = ShortcutEnum.NONE
                     },
             )
-            Divider(color = MaterialTheme.colors.primary, thickness = 0.5.dp, modifier = Modifier.padding(bottom = 10.dp))
+            Divider(
+                color = MaterialTheme.colors.primary,
+                thickness = 0.5.dp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
             ShortcutsItem(
                 "Save",
                 ideStore.setting.shortcuts.save,
@@ -76,22 +78,30 @@ fun ShortcutView(ideStore: IdeStore) {
                 selectedShortcut.value = ShortcutEnum.NONE
             }
             ShortcutsItem(
-                    "Replace",
-                    ideStore.setting.shortcuts.replace,
-                    selectedShortcut.value == ShortcutEnum.REPLACE,
-                    { selectedShortcut.value = ShortcutEnum.REPLACE }) {
+                "Replace",
+                ideStore.setting.shortcuts.replace,
+                selectedShortcut.value == ShortcutEnum.REPLACE,
+                { selectedShortcut.value = ShortcutEnum.REPLACE }) {
                 ideStore.setting.shortcuts.set(ShortcutEnum.REPLACE, it)
                 selectedShortcut.value = ShortcutEnum.NONE
             }
             ShortcutsItem(
-                    "Jump to definition",
-            ideStore.setting.shortcuts.jumpTo,
-            selectedShortcut.value == ShortcutEnum.JUMP_TO,
-            { selectedShortcut.value = ShortcutEnum.JUMP_TO }) {
-            ideStore.setting.shortcuts.set(ShortcutEnum.JUMP_TO, it)
-            selectedShortcut.value = ShortcutEnum.NONE
-        }
+                "Jump to definition",
+                ideStore.setting.shortcuts.jumpTo,
+                selectedShortcut.value == ShortcutEnum.JUMP_TO,
+                { selectedShortcut.value = ShortcutEnum.JUMP_TO }) {
+                ideStore.setting.shortcuts.set(ShortcutEnum.JUMP_TO, it)
+                selectedShortcut.value = ShortcutEnum.NONE
 
+            }
+            ShortcutsItem(
+                "Search definition",
+                ideStore.setting.shortcuts.search,
+                selectedShortcut.value == ShortcutEnum.SEARCH,
+                { selectedShortcut.value = ShortcutEnum.SEARCH }) {
+                ideStore.setting.shortcuts.set(ShortcutEnum.SEARCH, it)
+                selectedShortcut.value = ShortcutEnum.NONE
+            }
 
         }
         VerticalScrollbar(

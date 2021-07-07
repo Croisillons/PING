@@ -8,4 +8,5 @@ enum class ShortcutEnum {
     SAVE,
     REPLACE,
     JUMP_TO,
+    SEARCH,
 }

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
  */
 
 @Composable
-fun Sed(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -> Unit) {
+fun Sed(content: String, onValueChange: (TextFieldValue) -> Unit, onReplace: (Boolean) -> Unit) {
     val from: MutableState<String> = remember { mutableStateOf("") }
     val to: MutableState<String> = remember { mutableStateOf("") }
     AlertDialog(
@@ -52,7 +52,7 @@ fun Sed(content: String, onValueChange: (String) -> Unit, onReplace: (Boolean) -
         confirmButton = {
             Button(
                 onClick = {
-                    onValueChange(content.replace(from.value, to.value))
+                    onValueChange(TextFieldValue(content.replace(from.value, to.value)))
                     onReplace(false)
                 },
                 enabled = from.value != ""//  && to.value != ""

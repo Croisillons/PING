@@ -39,20 +39,16 @@ import java.awt.Cursor
 /**
  * Store an open file
  */
-<<<<<<< HEAD
-class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val offset: Int) : EditorTab {
-=======
-class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab {
+class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val offset: Int = 0) : EditorTab {
     /**
      * Name of the file
      */
->>>>>>> 9416d78476acc84bf2c5d0560827048592b72731
     val filename: String = node.path.fileName.toString()
 
     /**
      * State of the content of the file
      */
-    val content = mutableStateOf("")
+    val content = mutableStateOf(TextFieldValue(""))
 
     /**
      * State if the current file has unsaved changes
@@ -78,7 +74,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
         coroutineScope.launch {
             val result = node.content
             launch(Dispatchers.Main) {
-                content.value = result
+                content.value = TextFieldValue(result)
             }
         }
     }
@@ -93,8 +89,8 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
         val searchState = remember { mutableStateOf(false) }
         val file = projectStore.selectedEditorTab.value!! as OpenFileStore
 
-        val onValueChange: (it: String) -> Unit = {
-            file.hasChanged.value = true
+        val onValueChange: (it: TextFieldValue) -> Unit = {
+            file.hasChanged.value = file.content.value.text != it.text
             file.content.value = it
         }
 
@@ -106,6 +102,20 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
             searchState.value = it
         }
 
+        val onJump: (it: TextFieldValue) -> Unit = {
+            val cursor = it.selection.end
+            val text = it.text
+            var start = cursor
+            var end = cursor
+            while (start > 0 && text.substring(start - 1, end).matches(Regex("[a-zA-Z_]*"))) {
+                start--
+            }
+            while (end < text.length && text.substring(start, end + 1).matches(Regex("[a-zA-Z_]*"))) {
+                end++
+            }
+            searchInProject(projectStore, projectStore.project.rootNode.path.toString(), text.substring(start, end))
+        }
+
         if (searchState.value) {
             JumpTo(onSearch) {
                 searchInProject(projectStore, projectStore.project.rootNode.path.toString(), it)
@@ -113,7 +123,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
         }
 
         if (sedState.value) {
-            Sed(file.content.value, onValueChange, onReplace)
+            Sed(file.content.value.text, onValueChange, onReplace)
         }
 
         val textStyle: TextStyle = TextStyle(
@@ -145,7 +155,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                     Column(
                         modifier = Modifier.verticalScroll(verticalScrollState)
                     ) {
-                        content.value.split("\n").forEachIndexed { idx, str ->
+                        content.value.text.split("\n").forEachIndexed { idx, str ->
                             Text(
                                 text = " $idx".padEnd(5) + " ",
                                 style = textStyle
@@ -171,6 +181,10 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                                         true
                                     }
                                     (shortcuts.jumpTo.isPressed(it)) -> {
+                                        onJump(content.value)
+                                        true
+                                    }
+                                    (shortcuts.search.isPressed(it)) -> {
                                         onSearch(true)
                                         true
                                     }
