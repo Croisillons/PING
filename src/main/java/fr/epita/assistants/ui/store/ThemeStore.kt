@@ -24,8 +24,19 @@ import fr.epita.assistants.ui.view.dialog.ThemeView
 import java.awt.Cursor
 
 class ThemeStore(val ideStore: IdeStore) : EditorTab {
+    /**
+     * Mutable state of the current theme of the IDE
+     */
     val theme: MutableState<IdeTheme> = mutableStateOf(IdeThemeEnum.DARK)
+
+    /**
+     * Mutable state list of all the custom themes
+     */
     val customThemes: SnapshotStateList<IdeTheme> = mutableStateListOf(IdeThemeEnum.CUSTOM)
+
+    /**
+     * Mutable state of the selected custom Theme in the Theme Tab
+     */
     val selectedCustomTheme: MutableState<IdeTheme> = mutableStateOf(customThemes[0])
 
     /**
@@ -38,17 +49,33 @@ class ThemeStore(val ideStore: IdeStore) : EditorTab {
     }
 
     /**
-     * Open dialog to set custom theme
+     * Open Theme tab into the editor
      */
     fun openCustomTheme() {
         ideStore.project.value?.openThemeEditor(this)
     }
 
+    /**
+     * Remmove Theme tab from the editor
+     */
     fun dismissCustomTheme() {
         ideStore.project.value?.closeEditor(this)
     }
 
-    fun setCustomTheme(onPrimary: Color, primary: Color, onSecondary: Color, secondary: Color, onBackground: Color, background: Color, onSurface: Color, primaryVariant: Color, secondaryVariant: Color) {
+    /**
+     * Set Custom Theme as current one
+     */
+    fun setCustomTheme(
+        onPrimary: Color,
+        primary: Color,
+        onSecondary: Color,
+        secondary: Color,
+        onBackground: Color,
+        background: Color,
+        onSurface: Color,
+        primaryVariant: Color,
+        secondaryVariant: Color
+    ) {
         selectedCustomTheme.value.colors = lightColors(
             onPrimary = onPrimary,
             primary = primary,
@@ -66,13 +93,20 @@ class ThemeStore(val ideStore: IdeStore) : EditorTab {
         setTheme(selectedCustomTheme.value)
     }
 
+    /**
+     * Add a new custom Theme that as the color of the current theme
+     */
     fun addCustomTheme() {
-        val customTheme = CustomTheme(theme.value.colors)
+        val customTheme = CustomTheme("Theme #${customThemes.size}", theme.value.colors)
 
         customThemes.add(customTheme)
         selectCustomTheme(customTheme)
     }
 
+    /**
+     * Remove a custom Theme from customThemes
+     * @param customTheme: the theme to remove
+     */
     fun removeCustomTheme(customTheme: IdeTheme) {
         if (customThemes.size <= 1)
             return
@@ -82,13 +116,23 @@ class ThemeStore(val ideStore: IdeStore) : EditorTab {
             selectCustomTheme(customThemes[0])
     }
 
+    /**
+     * Select the given customTheme
+     * @param customTheme: the theme to select
+     */
     fun selectCustomTheme(customTheme: IdeTheme) {
         selectedCustomTheme.value = customTheme
         setTheme(customTheme)
     }
 
-    fun loadCustomTheme(colors: Colors) {
-        val customTheme = CustomTheme(colors)
+    /**
+     * Load custom Theme from config file
+     * @param name: name of the theme
+     * @param colors: Colors of the theme
+     */
+    fun loadCustomTheme(name: String, colors: Colors) {
+        val customTheme = CustomTheme("theme #${customThemes.size}", colors)
+        customTheme.themeName.value = name
 
         customThemes.add(customTheme)
     }

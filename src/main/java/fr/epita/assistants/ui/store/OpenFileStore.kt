@@ -16,9 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.isCtrlPressed
-import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
@@ -40,14 +37,28 @@ import java.awt.Cursor
  * Store an open file
  */
 class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab {
+    /**
+     * Name of the file
+     */
     val filename: String = node.path.fileName.toString()
+
+    /**
+     * State of the content of the file
+     */
     val content = mutableStateOf("")
+
+    /**
+     * State if the current file has unsaved changes
+     */
     val hasChanged = mutableStateOf(false)
     val selected: Boolean
         get() {
             return projectStore.selectedEditorTab.value == this
         }
 
+    /**
+     * We load the file content when the file is opened
+     */
     init {
         loadFileContent()
     }

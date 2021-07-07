@@ -65,6 +65,8 @@ class CodeHighlight(val colors: Colors, val projectStore: ProjectStore) : Visual
             addStyle(colors.secondaryVariant, strFormatted, "import ")
             addStyle(colors.secondaryVariant, strFormatted, "package ")
             addStyle(colors.secondaryVariant, strFormatted, " class ")
+            addStyle(colors.secondaryVariant, strFormatted, " interface ")
+            addStyle(colors.secondaryVariant, strFormatted, " enum ")
             addStyle(colors.secondaryVariant, strFormatted, " throw ")
             addStyle(colors.secondaryVariant, strFormatted, " throws")
             addStyle(colors.secondaryVariant, strFormatted, Regex("<[^>]*>"))
