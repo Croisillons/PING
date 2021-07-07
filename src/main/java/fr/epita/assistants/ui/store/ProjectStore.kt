@@ -233,11 +233,14 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     fun openFileEditor(node: Node, offset: Int) {
         var editor: EditorTab? = editorTabs.firstOrNull { it.getName() == node.path.fileName.toString() }
 
+        if (editor != null && offset != 0) {
+            closeEditor(editor)
+            editor = null
+        }
         if (editor == null) {
             editor = OpenFileStore(node, this, offset)
             editorTabs.add(editor)
         }
-
         selectEditorTab(editor)
     }
 
