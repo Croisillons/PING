@@ -241,11 +241,11 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * Open a file to a tab and select it
      * @param node: node corresponding to the file
      */
-    fun openFileEditor(node: Node) {
+    fun openFileEditor(node: Node, offset: Int) {
         var editor: EditorTab? = editorTabs.firstOrNull { it.getName() == node.path.fileName.toString() }
 
         if (editor == null) {
-            editor = OpenFileStore(node, this)
+            editor = OpenFileStore(node, this, offset)
             editorTabs.add(editor)
         }
 
@@ -298,7 +298,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     fun saveFile() {
         val file = selectedEditorTab.value!! as OpenFileStore
         val node = file.node
-        val content = file.content.value
+        val content = file.content.value.text
 
         ideStore.projectService.nodeService.update(node, 0, Int.MAX_VALUE, content.toByteArray())
 
