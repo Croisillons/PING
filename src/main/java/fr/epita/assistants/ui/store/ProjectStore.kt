@@ -245,7 +245,11 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         var editor: EditorTab? = editorTabs.firstOrNull { it.getName() == node.path.fileName.toString() }
 
         if (editor == null) {
-            editor = OpenFileStore(node, this)
+            if (ideStore.setting.vimMode.value) {
+                editor = OpenVimStore(node, this);
+            } else {
+                editor = OpenFileStore(node, this)
+            }
             editorTabs.add(editor)
         }
 
