@@ -92,12 +92,12 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
 
         val onValueChange: (it: TextFieldValue) -> Unit = {
             file.hasChanged.value = file.content.value.text != it.text
-            val selection = if (it.text.contains("\t")) TextRange(it.selection.end + 3) else TextRange(it.selection.end)
+            val selection = if (it.text.contains("\t")) TextRange(it.selection.start, it.selection.end + 3) else TextRange(it.selection.start, it.selection.end)
             val textFieldValue = TextFieldValue(it.text.replace("\t", "    "), selection)
             file.content.value = textFieldValue
 
             if (file.hasChanged.value)
-                ideStore.project.value!!.saveFile()
+                ideStore.project.value!!.onEdit()
         }
 
         val onReplace: (it: Boolean) -> Unit = {
