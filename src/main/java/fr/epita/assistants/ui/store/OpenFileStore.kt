@@ -1,6 +1,7 @@
 package fr.epita.assistants.ui.store
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -55,6 +57,11 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
     val content = mutableStateOf(TextFieldValue(""))
 
     /**
+     * Initial content of the file after loading or after saving
+     */
+    val initialContent = mutableStateOf("")
+
+    /**
      * State if the current file has unsaved changes
      */
     val hasChanged = mutableStateOf(false)
@@ -79,6 +86,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
             val result = node.content
             launch(Dispatchers.Main) {
                 content.value = TextFieldValue(result)
+                initialContent.value = result
             }
         }
     }
@@ -92,6 +100,11 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
         val sedState = remember { mutableStateOf(false) }
         val searchState = remember { mutableStateOf(false) }
         val file = projectStore.selectedEditorTab.value!! as OpenFileStore
+
+        val onSave: () -> Unit = {
+            file.initialContent.value = file.content.value.text
+            ideStore.project.value!!.saveFile()
+        }
 
         val onValueChange: (it: TextFieldValue) -> Unit = {
             file.hasChanged.value = file.content.value.text != it.text
@@ -149,10 +162,10 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
         )
         val horizontalScrollState = rememberScrollState()
         val verticalScrollState = rememberScrollState()
+        val scope = rememberCoroutineScope()
 
         if (offset != 0) {
-            CoroutineScope(Dispatchers.Default).launch {
-                scrollTo(verticalScrollState, textStyle)
+            scope.launch { verticalScrollState.scrollTo((offset * textStyle.lineHeight.value).toInt())
             }
         }
 
@@ -187,7 +200,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                 val shortcuts = ideStore.setting.shortcuts
                                 when {
                                     (shortcuts.save.isPressed(it)) -> {
-                                        ideStore.project.value!!.saveFile()
+                                        onSave()
                                         true
                                     }
                                     (shortcuts.replace.isPressed(it)) -> {
@@ -271,7 +284,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
         }
     }
 
-    suspend fun scrollTo(verticalScrollState: ScrollState, textStyle: TextStyle) {
-        verticalScrollState.scrollTo((offset * textStyle.lineHeight.value).toInt())
-    }
+    /*suspend fun scrollTo(verticalScrollState: ScrollState, textStyle: TextStyle) {
+        verticalScrollState.scrollBy(offset * textStyle.lineHeight.value)
+    }*/
 }

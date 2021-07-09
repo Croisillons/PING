@@ -1,9 +1,6 @@
 package fr.epita.assistants.ui.utils
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -31,7 +28,7 @@ fun JumpTo(onSearch: (Boolean) -> Unit, search: (String) -> Unit) {
             title = {
             },
             text = {
-                Column(modifier = Modifier.padding(top = 10.dp)) {
+                Column(modifier = Modifier.padding(top = 10.dp).fillMaxHeight()) {
                     TextField(
                             value = from.value,
                             onValueChange = {

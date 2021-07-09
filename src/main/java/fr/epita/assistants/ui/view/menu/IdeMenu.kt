@@ -111,6 +111,20 @@ fun IdeMenu(ideStore: IdeStore) {
                 GitMenu(ideStore)
             }
         }
+
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .background(if (ideStore.setting.vimMode.value) MaterialTheme.colors.primary else Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "VIM",
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(horizontal = 8.dp)
+                    .clickable { ideStore.setting.toggleVimMode() }
+            )
+        }
     }
 }
 

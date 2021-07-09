@@ -23,4 +23,8 @@ interface EditorTab {
      */
     @Composable
     fun displayTab(ideStore: IdeStore, isSelected: Boolean, onClick: () -> Unit, onClose: () -> Unit)
+
+    fun dispose() {
+
+    }
 }
