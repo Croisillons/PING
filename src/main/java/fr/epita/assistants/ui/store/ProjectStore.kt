@@ -283,6 +283,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     fun closeEditor(editorTab: EditorTab) {
         val index = editorTabs.indexOf(editorTab)
         editorTabs.remove(editorTab)
+        editorTab.dispose();
         selectEditorTab(editorTabs.getOrNull(index.coerceAtMost(editorTabs.lastIndex)))
     }
 

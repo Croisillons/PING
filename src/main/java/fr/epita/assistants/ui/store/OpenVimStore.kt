@@ -40,6 +40,8 @@ class OpenVimStore(val node: Node, val projectStore: ProjectStore) : EditorTab {
 
     val state = TerminalState()
 
+    val pty: PtyProcess
+
     /**
      * We create the vim process
      */
@@ -58,7 +60,7 @@ class OpenVimStore(val node: Node, val projectStore: ProjectStore) : EditorTab {
             env["TERM"] = "xterm"
         }
 
-        val pty = PtyProcess.exec(cmd, env, projectStore.project.rootNode.path.absolutePathString())
+        pty = PtyProcess.exec(cmd, env, projectStore.project.rootNode.path.absolutePathString())
 
         val tab = this
 
@@ -76,6 +78,10 @@ class OpenVimStore(val node: Node, val projectStore: ProjectStore) : EditorTab {
 
         state.panel.layout = BoxLayout(state.panel, BoxLayout.Y_AXIS)
         state.panel.add(tw)
+    }
+
+    override fun dispose() {
+        pty.destroy()
     }
 
     override fun getName(): String {
