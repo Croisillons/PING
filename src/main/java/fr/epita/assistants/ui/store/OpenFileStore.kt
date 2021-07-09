@@ -100,6 +100,11 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                 ideStore.project.value!!.onEdit()
         }
 
+        for (diagnostic in ideStore.project.value!!.diagnostics)
+        {
+            // Empty loop juste to use the diagnostic list, to force recomposition on change
+        }
+
         val onReplace: (it: Boolean) -> Unit = {
             sedState.value = it
         }
