@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -91,7 +92,9 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
 
         val onValueChange: (it: TextFieldValue) -> Unit = {
             file.hasChanged.value = file.content.value.text != it.text
-            file.content.value = it
+            val selection = if (it.text.contains("\t")) TextRange(it.selection.end + 3) else TextRange(it.selection.end)
+            val textFieldValue = TextFieldValue(it.text.replace("\t", "    "), selection)
+            file.content.value = textFieldValue
 
             if (file.hasChanged.value)
                 ideStore.project.value!!.saveFile()
