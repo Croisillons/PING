@@ -1,6 +1,7 @@
 package fr.epita.assistants.ui.store
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -21,12 +23,15 @@ import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.myide.domain.entity.Node
 import fr.epita.assistants.ui.model.EditorTab
 import fr.epita.assistants.ui.utils.CodeHighlight
+import fr.epita.assistants.ui.utils.JumpTo
 import fr.epita.assistants.ui.utils.cursor
+import fr.epita.assistants.ui.utils.searchInProject
 import fr.epita.assistants.ui.view.dialog.Sed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +41,7 @@ import java.awt.Cursor
 /**
  * Store an open file
  */
-class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab {
+class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val offset: Int = 0) : EditorTab {
     /**
      * Name of the file
      */
@@ -45,7 +50,12 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
     /**
      * State of the content of the file
      */
-    val content = mutableStateOf("")
+    val content = mutableStateOf(TextFieldValue(""))
+
+    /**
+     * Initial content of the file after loading or after saving
+     */
+    val initialContent = mutableStateOf("")
 
     /**
      * State if the current file has unsaved changes
@@ -71,7 +81,8 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
         coroutineScope.launch {
             val result = node.content
             launch(Dispatchers.Main) {
-                content.value = result
+                content.value = TextFieldValue(result)
+                initialContent.value = result
             }
         }
     }
@@ -83,10 +94,16 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
     @Composable
     override fun display(ideStore: IdeStore) {
         val sedState = remember { mutableStateOf(false) }
+        val searchState = remember { mutableStateOf(false) }
         val file = projectStore.selectedEditorTab.value!! as OpenFileStore
 
-        val onValueChange: (it: String) -> Unit = {
-            file.hasChanged.value = true
+        val onSave: () -> Unit = {
+            file.initialContent.value = file.content.value.text
+            ideStore.project.value!!.saveFile()
+        }
+        
+        val onValueChange: (it: TextFieldValue) -> Unit = {
+            file.hasChanged.value = file.initialContent.value != it.text
             file.content.value = it
         }
 
@@ -94,8 +111,32 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
             sedState.value = it
         }
 
+        val onSearch: (it: Boolean) -> Unit = {
+            searchState.value = it
+        }
+
+        val onJump: (it: TextFieldValue) -> Unit = {
+            val cursor = it.selection.end
+            val text = it.text
+            var start = cursor
+            var end = cursor
+            while (start > 0 && text.substring(start - 1, end).matches(Regex("[a-zA-Z_]*"))) {
+                start--
+            }
+            while (end < text.length && text.substring(start, end + 1).matches(Regex("[a-zA-Z_]*"))) {
+                end++
+            }
+            searchInProject(projectStore, projectStore.project.rootNode.path.toString(), text.substring(start, end))
+        }
+
+        if (searchState.value) {
+            JumpTo(onSearch) {
+                searchInProject(projectStore, projectStore.project.rootNode.path.toString(), it)
+            }
+        }
+
         if (sedState.value) {
-            Sed(file.content.value, onValueChange, onReplace)
+            Sed(file.content.value.text, onValueChange, onReplace)
         }
 
         val textStyle: TextStyle = TextStyle(
@@ -107,6 +148,14 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
         )
         val horizontalScrollState = rememberScrollState()
         val verticalScrollState = rememberScrollState()
+        val scope = rememberCoroutineScope()
+
+        if (offset != 0) {
+            scope.launch { verticalScrollState.scrollTo((offset * textStyle.lineHeight.value).toInt())
+            }
+        }
+
+
         SelectionContainer {
             Box(
                 modifier = Modifier
@@ -119,7 +168,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                     Column(
                         modifier = Modifier.verticalScroll(verticalScrollState)
                     ) {
-                        content.value.split("\n").forEachIndexed { idx, str ->
+                        content.value.text.split("\n").forEachIndexed { idx, str ->
                             Text(
                                 text = " $idx".padEnd(5) + " ",
                                 style = textStyle
@@ -137,11 +186,19 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
                                 val shortcuts = ideStore.setting.shortcuts
                                 when {
                                     (shortcuts.save.isPressed(it)) -> {
-                                        ideStore.project.value!!.saveFile()
+                                        onSave()
                                         true
                                     }
                                     (shortcuts.replace.isPressed(it)) -> {
                                         onReplace(true)
+                                        true
+                                    }
+                                    (shortcuts.jumpTo.isPressed(it)) -> {
+                                        onJump(content.value)
+                                        true
+                                    }
+                                    (shortcuts.search.isPressed(it)) -> {
+                                        onSearch(true)
                                         true
                                     }
                                     else -> false
@@ -213,4 +270,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore) : EditorTab 
         }
     }
 
+    /*suspend fun scrollTo(verticalScrollState: ScrollState, textStyle: TextStyle) {
+        verticalScrollState.scrollBy(offset * textStyle.lineHeight.value)
+    }*/
 }

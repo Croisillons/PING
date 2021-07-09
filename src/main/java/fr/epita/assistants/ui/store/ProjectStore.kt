@@ -23,7 +23,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.sound.sampled.AudioSystem
 import kotlin.reflect.KClass
-
 import javax.tools.Diagnostic
 import javax.tools.JavaFileObject
 
@@ -241,14 +240,17 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      * Open a file to a tab and select it
      * @param node: node corresponding to the file
      */
-    fun openFileEditor(node: Node) {
+    fun openFileEditor(node: Node, offset: Int) {
         var editor: EditorTab? = editorTabs.firstOrNull { it.getName() == node.path.fileName.toString() }
 
+        if (editor != null && offset != 0) {
+            closeEditor(editor)
+            editor = null
+        }
         if (editor == null) {
-            editor = OpenFileStore(node, this)
+            editor = OpenFileStore(node, this, offset)
             editorTabs.add(editor)
         }
-
         selectEditorTab(editor)
     }
 
@@ -298,7 +300,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     fun saveFile() {
         val file = selectedEditorTab.value!! as OpenFileStore
         val node = file.node
-        val content = file.content.value
+        val content = file.content.value.text
 
         ideStore.projectService.nodeService.update(node, 0, Int.MAX_VALUE, content.toByteArray())
 
