@@ -44,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Cursor
 import java.awt.MouseInfo
+import java.lang.Integer.max
 
 /**
  * Store an open file
@@ -202,11 +203,11 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                             .onPreviewKeyEvent {
                                 val shortcuts = ideStore.setting.shortcuts
                                 if (it.key == Key.Backspace) {
-                                    val c1 = file.content.value.text[file.content.value.selection.end - 1]
+                                    val c1 = file.content.value.text[max(0, file.content.value.selection.end-1)]
                                     val c2 = file.content.value.text[file.content.value.selection.end]
                                     if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')|| (c1 == '[' && c2 == ']')) {
                                         file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), file.content.value.selection)
-                                        file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), TextRange(file.content.value.selection.start-1, file.content.value.selection.end -1))
+                                        file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), TextRange(max(0,file.content.value.selection.start-1), max(0, file.content.value.selection.end -1)))
                                         true
                                     } else
                                         false
