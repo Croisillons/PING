@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.epita.assistants.ui.store.IdeStore
+import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
 import fr.epita.assistants.ui.store.SnackBarStore
 import fr.epita.assistants.ui.utils.cursor
@@ -33,6 +35,8 @@ import fr.epita.assistants.ui.view.tools.Tools
 import fr.epita.assistants.ui.view.tree.TreeView
 import org.apache.log4j.BasicConfigurator
 import java.awt.Cursor
+import java.awt.MouseInfo
+import java.util.*
 
 fun main() {
     val ideStore: IdeStore = loadConfig()
@@ -113,6 +117,35 @@ fun ProjectView(ideStore: IdeStore, projectStore: ProjectStore) {
         }
         Row(modifier = Modifier.fillMaxHeight()) {
             Tools(projectStore)
+        }
+    }
+    Box {
+        if (projectStore.selectedEditorTab.value is OpenFileStore)
+        {
+            val file = projectStore.selectedEditorTab.value as OpenFileStore
+            val selection = file.content.value.selection
+            if (selection.collapsed)
+            {
+                for (diagnostic in ideStore.project.value!!.diagnostics)
+                {
+                    if (selection.start >= diagnostic.startPosition && selection.start <= diagnostic.endPosition)
+                    {
+                        // Display error popup
+                        val x = MouseInfo.getPointerInfo().location.x
+                        val y = MouseInfo.getPointerInfo().location.y
+                        Box(Modifier.padding(horizontal = x.dp, vertical = y.dp - 40.dp))
+                        {
+                            Box(modifier = Modifier
+                                .background(MaterialTheme.colors.background)
+                                .padding(8.dp))
+                            {
+                                Text(diagnostic.getMessage(Locale.FRENCH), color = MaterialTheme.colors.onSecondary)
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 }
