@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
@@ -199,6 +201,16 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                             .fillMaxHeight()
                             .onPreviewKeyEvent {
                                 val shortcuts = ideStore.setting.shortcuts
+                                if (it.key == Key.Backspace) {
+                                    val c1 = file.content.value.text[file.content.value.selection.end - 1]
+                                    val c2 = file.content.value.text[file.content.value.selection.end]
+                                    if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')|| (c1 == '[' && c2 == ']')) {
+                                        file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), file.content.value.selection)
+                                        file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), TextRange(file.content.value.selection.start-1, file.content.value.selection.end -1))
+                                        true
+                                    } else
+                                        false
+                                }
                                 when {
                                     (shortcuts.save.isPressed(it)) -> {
                                         onSave()
