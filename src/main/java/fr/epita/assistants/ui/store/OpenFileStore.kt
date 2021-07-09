@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -218,6 +219,31 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                     else -> false
                                 }
                             }
+                                .onKeyEvent { event ->
+                                    when (event.nativeKeyEvent.keyChar) {
+                                        '(' -> {
+                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, ')').toString(), file.content.value.selection)
+                                            true
+                                        }
+                                        '{' -> {
+                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, '}').toString(), file.content.value.selection)
+                                            true
+                                        }
+                                        '[' -> {
+                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, ']').toString(), file.content.value.selection)
+                                            true
+                                        }
+                                        '"' -> {
+                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, '"').toString(), file.content.value.selection)
+                                            true
+                                        }
+                                        '\'' -> {
+                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, '\'').toString(), file.content.value.selection)
+                                            true
+                                        }
+                                        else -> false
+                                    }
+                                }
                             .horizontalScroll(horizontalScrollState)
                             .verticalScroll(verticalScrollState),
                         visualTransformation = CodeHighlight(MaterialTheme.colors, projectStore)
