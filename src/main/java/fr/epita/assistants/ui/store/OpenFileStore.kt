@@ -206,7 +206,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                             }
                             .horizontalScroll(horizontalScrollState)
                             .verticalScroll(verticalScrollState),
-                        visualTransformation = CodeHighlight(MaterialTheme.colors)
+                        visualTransformation = CodeHighlight(MaterialTheme.colors, projectStore)
                     )
 
                 }

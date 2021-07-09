@@ -37,14 +37,6 @@ class TreeStore(val projectStore: ProjectStore) {
          */
         val extension: String get() = node.node.path.fileName.toString().substringAfterLast(".").lowercase()
 
-        /*fun find(): List<TreeItem> {
-            val res = mutableListOf<TreeItem>()
-            if (canExpand) {
-                for (child in node.node.children)
-                    res += TreeItem(child).find()
-            }
-        }*/
-
         /**
          * Function onClick node
          * If the node is a folder: Expand it

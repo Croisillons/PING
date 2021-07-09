@@ -7,6 +7,7 @@ public enum Supplement {
         ;
 
         public enum Any implements Feature.Type {
+            RUN_DIAGNOSTICS,
             RUN;
         }
     }
