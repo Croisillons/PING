@@ -11,10 +11,7 @@ import fr.epita.assistants.features.any.RunFeature
 import fr.epita.assistants.features.maven.PackageFeature
 import fr.epita.assistants.myide.domain.entity.*
 import fr.epita.assistants.ui.model.EditorTab
-import fr.epita.assistants.ui.view.tools.BuildToolTab
-import fr.epita.assistants.ui.view.tools.RunToolTab
-import fr.epita.assistants.ui.view.tools.TerminalToolTab
-import fr.epita.assistants.ui.view.tools.ToolTab
+import fr.epita.assistants.ui.view.tools.*
 import fr.epita.assistants.utils.DelayedRunnable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +46,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     /**
      * Mutable list of the tool tabs
      */
-    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab(this))
+    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), ProblemToolTab(), TerminalToolTab(this))
 
     /**
      * State of the selected tool tab
