@@ -30,10 +30,6 @@ class CodeHighlight(val colors: Colors, val projectStore: ProjectStore) : Visual
         withStyle(SpanStyle(colors.onSecondary)) {
             val strFormatted = str.replace("\t", "    ")
             append(strFormatted)
-            for (diagnostic in projectStore.diagnostics)
-            {
-                addStyle(SpanStyle(Color.Red, textDecoration = TextDecoration.Underline), diagnostic.startPosition.toInt(), diagnostic.endPosition.toInt())
-            }
             //addStyle(SpanStyle(Color.Red), 2, 4)
             addStyle(colors.primaryVariant, strFormatted, ":")
             addStyle(colors.onBackground, strFormatted, "=")
@@ -109,6 +105,18 @@ class CodeHighlight(val colors: Colors, val projectStore: ProjectStore) : Visual
             addStyle(colors.onBackground, strFormatted, Regex(" HashSet"))
 
             addStyle(colors.onSecondary, strFormatted, Regex("\\|"))
+
+            for (diagnostic in projectStore.diagnostics)
+            {
+                if (diagnostic.startPosition == diagnostic.endPosition)
+                {
+                    addStyle(SpanStyle(Color.Red, textDecoration = TextDecoration.Underline), diagnostic.startPosition.toInt() - 1, diagnostic.endPosition.toInt())
+                }
+                else
+                {
+                    addStyle(SpanStyle(Color.Red, textDecoration = TextDecoration.Underline), diagnostic.startPosition.toInt(), diagnostic.endPosition.toInt())
+                }
+            }
         }
     }
 
