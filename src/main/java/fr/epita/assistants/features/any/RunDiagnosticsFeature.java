@@ -46,13 +46,6 @@ public class RunDiagnosticsFeature implements Feature {
 
         boolean res = compiler.getTask(null, fileManager, diagnostics, List.of("-d", "/Users/gabriel/Desktop/tmp"), null, javaFileObjects)
                               .call();
-        if (!res)
-        {
-            for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())
-            {
-                System.err.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic);
-            }
-        }
 
         return diagnostics.getDiagnostics();
     }

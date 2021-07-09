@@ -20,6 +20,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Cursor
+import java.awt.MouseInfo
 
 /**
  * Store an open file
@@ -101,10 +105,20 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
             file.initialContent.value = file.content.value.text
             ideStore.project.value!!.saveFile()
         }
-        
+
         val onValueChange: (it: TextFieldValue) -> Unit = {
-            file.hasChanged.value = file.initialContent.value != it.text
-            file.content.value = it
+            file.hasChanged.value = file.content.value.text != it.text
+            val selection = if (it.text.contains("\t")) TextRange(it.selection.start, it.selection.end + 3) else TextRange(it.selection.start, it.selection.end)
+            val textFieldValue = TextFieldValue(it.text.replace("\t", "    "), selection)
+            file.content.value = textFieldValue
+
+            if (file.hasChanged.value)
+                ideStore.project.value!!.onEdit()
+        }
+
+        for (diagnostic in ideStore.project.value!!.diagnostics)
+        {
+            // Empty loop juste to use the diagnostic list, to force recomposition on change
         }
 
         val onReplace: (it: Boolean) -> Unit = {

@@ -3,6 +3,7 @@ package fr.epita.assistants.ui.store
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import fr.epita.assistants.features.any.RunDiagnosticsFeature
@@ -10,10 +11,8 @@ import fr.epita.assistants.features.any.RunFeature
 import fr.epita.assistants.features.maven.PackageFeature
 import fr.epita.assistants.myide.domain.entity.*
 import fr.epita.assistants.ui.model.EditorTab
-import fr.epita.assistants.ui.view.tools.BuildToolTab
-import fr.epita.assistants.ui.view.tools.RunToolTab
-import fr.epita.assistants.ui.view.tools.TerminalToolTab
-import fr.epita.assistants.ui.view.tools.ToolTab
+import fr.epita.assistants.ui.view.tools.*
+import fr.epita.assistants.utils.DelayedRunnable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +22,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.sound.sampled.AudioSystem
 import kotlin.reflect.KClass
+
 import javax.tools.Diagnostic
 import javax.tools.JavaFileObject
 
@@ -41,17 +41,18 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     var runOutputText: MutableState<String> = mutableStateOf("")
     var runStreams: MutableState<RunFeature.RunStreams?> = mutableStateOf(null)
     val snackBar: SnackBarStore = SnackBarStore()
+    var saveOnEditRunnable: DelayedRunnable? = null
 
     /**
      * Mutable list of the tool tabs
      */
-    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), TerminalToolTab(this))
+    var toolsTabs: MutableList<ToolTab> = mutableListOf(BuildToolTab(), RunToolTab(), ProblemToolTab(), TerminalToolTab(this))
 
     /**
      * State of the selected tool tab
      */
     var selectedToolTab: MutableState<ToolTab> = mutableStateOf(toolsTabs[0])
-    var diagnostics: MutableList<Diagnostic<out JavaFileObject>> = mutableListOf()
+    var diagnostics: SnapshotStateList<Diagnostic<out JavaFileObject>> = mutableStateListOf()
 
     /**
      * List of files of the project
@@ -207,7 +208,8 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
 
     fun runDiagnostics() {
         ideStore.projectService.execute(project, Supplement.Features.Any.RUN_DIAGNOSTICS, RunDiagnosticsFeature.Callback { diagnostics ->
-            this.diagnostics = diagnostics
+            this.diagnostics.clear()
+            this.diagnostics.addAll(diagnostics)
         })
     }
 
@@ -297,6 +299,17 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
         if (projectName.length > 20)
             projectName = projectName.take(20) + "..."
         return projectName
+    }
+
+    fun onEdit() {
+        diagnostics.clear()
+        if (saveOnEditRunnable != null)
+        {
+            saveOnEditRunnable!!.cancel()
+        }
+        saveOnEditRunnable = DelayedRunnable {
+            saveFile()
+        }.runLater(300)
     }
 
     /**

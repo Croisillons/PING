@@ -29,8 +29,10 @@ import com.jediterm.terminal.ui.settings.DefaultSettingsProvider
 import com.pty4j.PtyProcess
 import fr.epita.assistants.ui.store.ProjectStore
 import java.nio.charset.Charset
+import java.util.*
 import javax.swing.BoxLayout
 import javax.swing.JPanel
+import kotlin.collections.HashMap
 import kotlin.io.path.absolutePathString
 
 
@@ -262,6 +264,43 @@ class RunToolTab : ToolTab {
                 val scroll = rememberScrollState(0)
                 Text(
                     text = projectStore.runOutputText.value,
+                    modifier = Modifier
+                        .verticalScroll(scroll)
+                        .padding(8.dp)
+                )
+            }
+        }
+    }
+
+}
+
+class ProblemToolTab : ToolTab {
+    override fun getName(): String {
+        return "Problems"
+    }
+
+    @Composable
+    override fun display(projectStore: ProjectStore) {
+        SelectionContainer {
+            Surface(
+                color = MaterialTheme.colors.secondary,
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                val builder = StringBuilder()
+                for (diagnostic in projectStore.diagnostics)
+                {
+                    builder.append("Error in file ")
+                        .append(diagnostic.source.name)
+                        .append(":")
+                        .append(diagnostic.lineNumber)
+                        .append("\n\n")
+                        .append(diagnostic.getMessage(Locale.FRENCH))
+                        .append("\n\n\n")
+                }
+                val scroll = rememberScrollState(0)
+                Text(
+                    text = builder.toString(),
                     modifier = Modifier
                         .verticalScroll(scroll)
                         .padding(8.dp)
