@@ -92,6 +92,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
         val onValueChange: (it: TextFieldValue) -> Unit = {
             file.hasChanged.value = file.content.value.text != it.text
             file.content.value = it
+            ideStore.project.value!!.saveFile()
         }
 
         val onReplace: (it: Boolean) -> Unit = {
