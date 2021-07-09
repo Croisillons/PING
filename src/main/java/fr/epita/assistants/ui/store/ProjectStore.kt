@@ -248,7 +248,11 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
             editor = null
         }
         if (editor == null) {
-            editor = OpenFileStore(node, this, offset)
+            if (ideStore.setting.vimMode.value) {
+                editor = OpenVimStore(node, this);
+            } else {
+                editor = OpenFileStore(node, this, offset)
+            }
             editorTabs.add(editor)
         }
         selectEditorTab(editor)
@@ -281,6 +285,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
     fun closeEditor(editorTab: EditorTab) {
         val index = editorTabs.indexOf(editorTab)
         editorTabs.remove(editorTab)
+        editorTab.dispose();
         selectEditorTab(editorTabs.getOrNull(index.coerceAtMost(editorTabs.lastIndex)))
     }
 
