@@ -42,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Cursor
 import java.awt.MouseInfo
+import java.awt.event.KeyEvent
 import java.lang.Integer.max
 
 /**
@@ -294,6 +295,8 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                     }
                                     '\n' -> {
                                         val cursorPosition = file.content.value.selection.start
+                                        if (cursorPosition < 3)
+                                            return@onKeyEvent false
                                         val incrementIndent =
                                             cursorPosition > 0 && file.content.value.text[cursorPosition - 2] == '{'
                                         val lines = file.content.value.text.subSequence(0, cursorPosition).split("\n")
