@@ -113,7 +113,9 @@ class CodeHighlight(val colors: Colors, val projectStore: ProjectStore) : Visual
                 }
                 else
                 {
-                    addStyle(SpanStyle(Color.Red, textDecoration = TextDecoration.Underline), diagnostic.startPosition.toInt(), diagnostic.endPosition.toInt())
+                    val start = diagnostic.startPosition.coerceAtMost(diagnostic.endPosition);
+                    val end = diagnostic.startPosition.coerceAtLeast(diagnostic.endPosition);
+                    addStyle(SpanStyle(Color.Red, textDecoration = TextDecoration.Underline), start.toInt(), end.toInt())
                 }
             }
         }
