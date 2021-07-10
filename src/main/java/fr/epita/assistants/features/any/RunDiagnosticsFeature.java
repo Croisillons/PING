@@ -44,7 +44,7 @@ public class RunDiagnosticsFeature implements Feature {
 
         var javaFileObjects = scanRecursivelyForJavaObjects(project.getRootNode().getPath().toFile(), fileManager);
 
-        boolean res = compiler.getTask(null, fileManager, diagnostics, List.of("-d", "/Users/gabriel/Desktop/tmp"), null, javaFileObjects)
+        boolean res = compiler.getTask(null, fileManager, diagnostics, List.of(), null, javaFileObjects)
                               .call();
 
         return diagnostics.getDiagnostics();
