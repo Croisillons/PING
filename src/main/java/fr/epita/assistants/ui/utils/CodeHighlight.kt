@@ -7,7 +7,9 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import fr.epita.assistants.ui.store.OpenFileStore
 import fr.epita.assistants.ui.store.ProjectStore
+import kotlin.io.path.absolutePathString
 
 
 class CodeHighlight(val colors: Colors, val projectStore: ProjectStore) : VisualTransformation {
@@ -107,6 +109,9 @@ class CodeHighlight(val colors: Colors, val projectStore: ProjectStore) : Visual
 
             for (diagnostic in projectStore.diagnostics)
             {
+                val openFile = projectStore.selectedEditorTab.value as OpenFileStore
+                if (diagnostic.source.name != openFile.node.path.absolutePathString())
+                    continue
                 if (diagnostic.startPosition == diagnostic.endPosition)
                 {
                     addStyle(SpanStyle(Color.Red, textDecoration = TextDecoration.Underline), diagnostic.startPosition.toInt() - 1, diagnostic.endPosition.toInt())
