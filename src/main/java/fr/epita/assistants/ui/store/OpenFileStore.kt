@@ -231,6 +231,8 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                 }
                             }
                                 .onKeyEvent { event ->
+                                    if (event.type == KeyEventType.KeyUp)
+                                        return@onKeyEvent false
                                     when (event.nativeKeyEvent.keyChar) {
                                         '(' -> {
                                             file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, ')').toString(), file.content.value.selection)
@@ -250,6 +252,17 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                         }
                                         '\'' -> {
                                             file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, '\'').toString(), file.content.value.selection)
+                                            true
+                                        }
+                                        '\n' -> {
+                                            val cursorPosition = file.content.value.selection.start
+                                            val lines = file.content.value.text.subSequence(0, cursorPosition).split("\n")
+                                            val line = lines[lines.lastIndex - 1]
+                                            var spaceCount = 0
+                                            while (spaceCount < line.count() && line[spaceCount] == ' ')
+                                                spaceCount++
+                                            val newText = StringBuilder(file.content.value.text).insert(file.content.value.selection.start, " ".repeat(spaceCount)).toString()
+                                            file.content.value = TextFieldValue(newText, TextRange(file.content.value.selection.start + spaceCount))
                                             true
                                         }
                                         else -> false
