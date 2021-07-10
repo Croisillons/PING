@@ -231,7 +231,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                 }
                             }
                                 .onKeyEvent { event ->
-                                    if (event.type == KeyEventType.KeyUp)
+                                    if (event.type == KeyEventType.KeyDown)
                                         return@onKeyEvent false
                                     when (event.nativeKeyEvent.keyChar) {
                                         '(' -> {
