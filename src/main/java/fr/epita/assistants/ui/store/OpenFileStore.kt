@@ -256,11 +256,14 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                         }
                                         '\n' -> {
                                             val cursorPosition = file.content.value.selection.start
+                                            val incrementIndent = cursorPosition > 0 && file.content.value.text[cursorPosition - 2] == '{'
                                             val lines = file.content.value.text.subSequence(0, cursorPosition).split("\n")
                                             val line = lines[lines.lastIndex - 1]
                                             var spaceCount = 0
                                             while (spaceCount < line.count() && line[spaceCount] == ' ')
                                                 spaceCount++
+                                            if (incrementIndent)
+                                                spaceCount += 4
                                             val newText = StringBuilder(file.content.value.text).insert(file.content.value.selection.start, " ".repeat(spaceCount)).toString()
                                             file.content.value = TextFieldValue(newText, TextRange(file.content.value.selection.start + spaceCount))
                                             true
