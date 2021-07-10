@@ -200,7 +200,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                             .fillMaxHeight()
                             .onPreviewKeyEvent {
                                 val shortcuts = ideStore.setting.shortcuts
-                                if (it.key == Key.Backspace && it.type == KeyEventType.KeyDown) {
+                                if (it.key == Key.Backspace && it.type == KeyEventType.KeyDown && file.content.value.selection.end < file.content.value.text.count()) {
                                     val c1 = file.content.value.text[max(0, file.content.value.selection.end-1)]
                                     val c2 = file.content.value.text[file.content.value.selection.end]
                                     if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')|| (c1 == '[' && c2 == ']')) {
