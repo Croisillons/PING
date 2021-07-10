@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.isTypedEvent
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -18,10 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -202,7 +200,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                             .fillMaxHeight()
                             .onPreviewKeyEvent {
                                 val shortcuts = ideStore.setting.shortcuts
-                                if (it.key == Key.Backspace) {
+                                if (it.key == Key.Backspace && it.type == KeyEventType.KeyDown) {
                                     val c1 = file.content.value.text[max(0, file.content.value.selection.end-1)]
                                     val c2 = file.content.value.text[file.content.value.selection.end]
                                     if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')|| (c1 == '[' && c2 == ']')) {
