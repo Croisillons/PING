@@ -110,7 +110,10 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
 
         val onValueChange: (it: TextFieldValue) -> Unit = {
             file.hasChanged.value = file.content.value.text != it.text
-            val selection = if (it.text.contains("\t")) TextRange(it.selection.start, it.selection.end + 3) else TextRange(it.selection.start, it.selection.end)
+            val selection = if (it.text.contains("\t")) TextRange(
+                it.selection.start,
+                it.selection.end + 3
+            ) else TextRange(it.selection.start, it.selection.end)
             val textFieldValue = TextFieldValue(it.text.replace("\t", "    "), selection)
             file.content.value = textFieldValue
 
@@ -118,8 +121,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                 ideStore.project.value!!.onEdit()
         }
 
-        for (diagnostic in ideStore.project.value!!.diagnostics)
-        {
+        for (diagnostic in ideStore.project.value!!.diagnostics) {
             // Empty loop juste to use the diagnostic list, to force recomposition on change
         }
 
@@ -167,7 +169,8 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
         val scope = rememberCoroutineScope()
 
         if (offset != 0) {
-            scope.launch { verticalScrollState.scrollTo((offset * textStyle.lineHeight.value).toInt())
+            scope.launch {
+                verticalScrollState.scrollTo((offset * textStyle.lineHeight.value).toInt())
             }
         }
 
@@ -201,11 +204,21 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                             .onPreviewKeyEvent {
                                 val shortcuts = ideStore.setting.shortcuts
                                 if (it.key == Key.Backspace && it.type == KeyEventType.KeyDown && file.content.value.selection.end < file.content.value.text.count()) {
-                                    val c1 = file.content.value.text[max(0, file.content.value.selection.end-1)]
+                                    val c1 = file.content.value.text[max(0, file.content.value.selection.end - 1)]
                                     val c2 = file.content.value.text[file.content.value.selection.end]
-                                    if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')|| (c1 == '[' && c2 == ']')) {
-                                        file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), file.content.value.selection)
-                                        file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), TextRange(max(0,file.content.value.selection.start-1), max(0, file.content.value.selection.end -1)))
+                                    if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}') || (c1 == '[' && c2 == ']')) {
+                                        file.content.value = TextFieldValue(
+                                            StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end - 1)
+                                                .toString(), file.content.value.selection
+                                        )
+                                        file.content.value = TextFieldValue(
+                                            StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end - 1)
+                                                .toString(),
+                                            TextRange(
+                                                max(0, file.content.value.selection.start - 1),
+                                                max(0, file.content.value.selection.end - 1)
+                                            )
+                                        )
                                         return@onPreviewKeyEvent true
                                     } else
                                         return@onPreviewKeyEvent false
@@ -230,47 +243,79 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                     else -> false
                                 }
                             }
-                                .onKeyEvent { event ->
-                                    if (event.type == KeyEventType.KeyDown)
-                                        return@onKeyEvent false
-                                    when (event.nativeKeyEvent.keyChar) {
-                                        '(' -> {
-                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, ')').toString(), file.content.value.selection)
-                                            true
-                                        }
-                                        '{' -> {
-                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, '}').toString(), file.content.value.selection)
-                                            true
-                                        }
-                                        '[' -> {
-                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, ']').toString(), file.content.value.selection)
-                                            true
-                                        }
-                                        '"' -> {
-                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, '"').toString(), file.content.value.selection)
-                                            true
-                                        }
-                                        '\'' -> {
-                                            file.content.value = TextFieldValue(StringBuilder(file.content.value.text).insert(file.content.value.selection.end, '\'').toString(), file.content.value.selection)
-                                            true
-                                        }
-                                        '\n' -> {
-                                            val cursorPosition = file.content.value.selection.start
-                                            val incrementIndent = cursorPosition > 0 && file.content.value.text[cursorPosition - 2] == '{'
-                                            val lines = file.content.value.text.subSequence(0, cursorPosition).split("\n")
-                                            val line = lines[lines.lastIndex - 1]
-                                            var spaceCount = 0
-                                            while (spaceCount < line.count() && line[spaceCount] == ' ')
-                                                spaceCount++
-                                            if (incrementIndent)
-                                                spaceCount += 4
-                                            val newText = StringBuilder(file.content.value.text).insert(file.content.value.selection.start, " ".repeat(spaceCount)).toString()
-                                            file.content.value = TextFieldValue(newText, TextRange(file.content.value.selection.start + spaceCount))
-                                            true
-                                        }
-                                        else -> false
+                            .onKeyEvent { event ->
+                                if (event.type == KeyEventType.KeyUp)
+                                    return@onKeyEvent false
+                                when (event.nativeKeyEvent.keyChar) {
+                                    '(' -> {
+                                        file.content.value = TextFieldValue(
+                                            StringBuilder(file.content.value.text).insert(
+                                                file.content.value.selection.end,
+                                                ')'
+                                            ).toString(), file.content.value.selection
+                                        )
+                                        true
                                     }
+                                    '{' -> {
+                                        file.content.value = TextFieldValue(
+                                            StringBuilder(file.content.value.text).insert(
+                                                file.content.value.selection.end,
+                                                '}'
+                                            ).toString(), file.content.value.selection
+                                        )
+                                        true
+                                    }
+                                    '[' -> {
+                                        file.content.value = TextFieldValue(
+                                            StringBuilder(file.content.value.text).insert(
+                                                file.content.value.selection.end,
+                                                ']'
+                                            ).toString(), file.content.value.selection
+                                        )
+                                        true
+                                    }
+                                    '"' -> {
+                                        file.content.value = TextFieldValue(
+                                            StringBuilder(file.content.value.text).insert(
+                                                file.content.value.selection.end,
+                                                '"'
+                                            ).toString(), file.content.value.selection
+                                        )
+                                        true
+                                    }
+                                    '\'' -> {
+                                        file.content.value = TextFieldValue(
+                                            StringBuilder(file.content.value.text).insert(
+                                                file.content.value.selection.end,
+                                                '\''
+                                            ).toString(), file.content.value.selection
+                                        )
+                                        true
+                                    }
+                                    '\n' -> {
+                                        val cursorPosition = file.content.value.selection.start
+                                        val incrementIndent =
+                                            cursorPosition > 0 && file.content.value.text[cursorPosition - 2] == '{'
+                                        val lines = file.content.value.text.subSequence(0, cursorPosition).split("\n")
+                                        val line = lines[lines.lastIndex - 1]
+                                        var spaceCount = 0
+                                        while (spaceCount < line.count() && line[spaceCount] == ' ')
+                                            spaceCount++
+                                        if (incrementIndent)
+                                            spaceCount += 4
+                                        val newText = StringBuilder(file.content.value.text).insert(
+                                            file.content.value.selection.start,
+                                            " ".repeat(spaceCount)
+                                        ).toString()
+                                        file.content.value = TextFieldValue(
+                                            newText,
+                                            TextRange(file.content.value.selection.start + spaceCount)
+                                        )
+                                        true
+                                    }
+                                    else -> false
                                 }
+                            }
                             .horizontalScroll(horizontalScrollState)
                             .verticalScroll(verticalScrollState),
                         visualTransformation = CodeHighlight(MaterialTheme.colors, projectStore)
