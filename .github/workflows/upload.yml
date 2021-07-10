@@ -8,6 +8,8 @@ jobs:
 
     steps:
       - uses: actions/labeler@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v2
       - name: Set up JDK 16
         uses: actions/setup-java@v1
