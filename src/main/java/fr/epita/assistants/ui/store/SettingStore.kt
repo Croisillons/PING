@@ -20,7 +20,7 @@ class SettingStore(val ideStore: IdeStore) {
     /**
      * Vim Mode
      */
-    val vimMode: MutableState<Boolean> = mutableStateOf(true)
+    val vimMode: MutableState<Boolean> = mutableStateOf(false)
 
     fun toggleVimMode() {
         vimMode.value = !vimMode.value
