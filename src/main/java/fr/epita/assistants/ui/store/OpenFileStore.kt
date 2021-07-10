@@ -208,9 +208,9 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                     if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')|| (c1 == '[' && c2 == ']')) {
                                         file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), file.content.value.selection)
                                         file.content.value = TextFieldValue(StringBuilder(file.content.value.text).deleteCharAt(file.content.value.selection.end-1).toString(), TextRange(max(0,file.content.value.selection.start-1), max(0, file.content.value.selection.end -1)))
-                                        true
+                                        return@onPreviewKeyEvent true
                                     } else
-                                        false
+                                        return@onPreviewKeyEvent false
                                 }
                                 when {
                                     (shortcuts.save.isPressed(it)) -> {
