@@ -245,8 +245,6 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                 }
                             }
                             .onKeyEvent { event ->
-                                if (event.type == KeyEventType.KeyUp)
-                                    return@onKeyEvent false
                                 when (event.nativeKeyEvent.keyChar) {
                                     '(' -> {
                                         file.content.value = TextFieldValue(
@@ -294,6 +292,8 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                         true
                                     }
                                     '\n' -> {
+                                        if (event.type == KeyEventType.KeyUp)
+                                            return@onKeyEvent false
                                         val cursorPosition = file.content.value.selection.start
                                         if (cursorPosition < 3)
                                             return@onKeyEvent false
