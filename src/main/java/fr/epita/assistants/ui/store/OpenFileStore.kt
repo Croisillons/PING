@@ -200,7 +200,7 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                             .fillMaxHeight()
                             .onPreviewKeyEvent {
                                 val shortcuts = ideStore.setting.shortcuts
-                                if (it.key == Key.Backspace && it.type == KeyEventType.KeyDown) {
+                                if (it.key == Key.Backspace && it.type == KeyEventType.KeyDown && file.content.value.selection.end < file.content.value.text.count()) {
                                     val c1 = file.content.value.text[max(0, file.content.value.selection.end-1)]
                                     val c2 = file.content.value.text[file.content.value.selection.end]
                                     if (file.content.value.selection.end < file.content.value.text.length && ((c1 == '\'' || c1 == '"' && c1 == c2)) || (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')|| (c1 == '[' && c2 == ']')) {
@@ -256,11 +256,14 @@ class OpenFileStore(val node: Node, val projectStore: ProjectStore, private val 
                                         }
                                         '\n' -> {
                                             val cursorPosition = file.content.value.selection.start
+                                            val incrementIndent = cursorPosition > 0 && file.content.value.text[cursorPosition - 2] == '{'
                                             val lines = file.content.value.text.subSequence(0, cursorPosition).split("\n")
                                             val line = lines[lines.lastIndex - 1]
                                             var spaceCount = 0
                                             while (spaceCount < line.count() && line[spaceCount] == ' ')
                                                 spaceCount++
+                                            if (incrementIndent)
+                                                spaceCount += 4
                                             val newText = StringBuilder(file.content.value.text).insert(file.content.value.selection.start, " ".repeat(spaceCount)).toString()
                                             file.content.value = TextFieldValue(newText, TextRange(file.content.value.selection.start + spaceCount))
                                             true
