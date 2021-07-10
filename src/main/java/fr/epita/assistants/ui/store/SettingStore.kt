@@ -25,4 +25,13 @@ class SettingStore(val ideStore: IdeStore) {
     fun toggleVimMode() {
         vimMode.value = !vimMode.value
     }
+
+    /**
+     * AutoSave
+     */
+    val autoSave: MutableState<Boolean> = mutableStateOf(true)
+
+    fun toggleAutoSave() {
+        autoSave.value = !autoSave.value
+    }
 }

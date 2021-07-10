@@ -309,7 +309,8 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
             saveOnEditRunnable!!.cancel()
         }
         saveOnEditRunnable = DelayedRunnable {
-            saveFile()
+            if (ideStore.setting.autoSave.value)
+                saveFile()
         }.runLater(300)
     }
 

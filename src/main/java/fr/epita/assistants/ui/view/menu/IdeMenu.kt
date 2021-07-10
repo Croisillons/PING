@@ -295,6 +295,14 @@ fun ToolMenu(ideStore: IdeStore) {
     ) {
         DropdownMenuItem(
             onClick = {
+                ideStore.setting.toggleAutoSave()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = if (ideStore.setting.autoSave.value) "Deactivate AutoSave" else "Activate AutoSave", color = MaterialTheme.colors.onPrimary)
+        }
+        DropdownMenuItem(
+            onClick = {
                 val newTerminal = TerminalToolTab(ideStore.project.value!!)
                 ideStore.project.value?.toolsTabs?.add(newTerminal)
                 ideStore.project.value?.selectedToolTab?.value = newTerminal
