@@ -272,7 +272,7 @@ fun MavenMenu(ideStore: IdeStore) {
             Text("Test", color = MaterialTheme.colors.onPrimary)
         }
         DropdownMenuItem(
-            onClick = { ideStore.project.value?.mavenTest() },
+            onClick = { ideStore.project.value?.mavenTree() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Tree", color = MaterialTheme.colors.onPrimary)

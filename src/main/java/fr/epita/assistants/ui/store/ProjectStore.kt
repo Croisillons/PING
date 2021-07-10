@@ -236,6 +236,7 @@ class ProjectStore(val ideStore: IdeStore, val project: Project) {
      */
     fun selectEditorTab(openFile: EditorTab?) {
         selectedEditorTab.value = openFile
+        diagnostics.clear()
     }
 
     /**
