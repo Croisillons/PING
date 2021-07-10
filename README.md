@@ -27,10 +27,7 @@
 * Java syntax highlighting
 * Add Terminal : Implementation with JediTerm
 * Code snippets
-
-## WIP
-* More code snippets
-* More shortcuts
 * Tag handling
-  
-## TODO
+* Completion of parenthesis/bracket/quotes...
+* Highlight errors in the code
+* Vim mode
