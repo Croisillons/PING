@@ -16,7 +16,7 @@ jobs:
 
       - name: Build with Gradle
         run: gradle run fatJar
-      - uses: actions/upload-artefact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: Bing
           path: /home/runner/work/Croisillons/PING/Ping/build/libs/ping-ref-1.0.0-SNAPSHOT-all.jar
